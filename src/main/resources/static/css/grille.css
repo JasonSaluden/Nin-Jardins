@@ -1,0 +1,6 @@
+.planche {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  grid-auto-rows: minmax(100px, auto);
+}
