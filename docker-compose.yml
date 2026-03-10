@@ -12,5 +12,47 @@ services:
       - db_data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
 
+  ollama:
+    image: ollama/ollama:0.17.7
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  ollama-init:
+    image: ollama/ollama:0.17.7
+    depends_on:
+      - ollama
+    entrypoint: >
+      /bin/sh -c "
+        until ollama list --host http://ollama:11434 > /dev/null 2>&1; do
+          echo 'Attente de Ollama...';
+          sleep 2;
+        done;
+        ollama pull mistral --host http://ollama:11434
+      "
+    volumes:
+      - ollama_data:/root/.ollama
+
+  app:
+    image: maven:3.9-eclipse-temurin-21
+    working_dir: /app
+    volumes:
+      - .:/app
+      - maven_cache:/root/.m2
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - ollama
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/othello?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: othello_user
+      SPRING_DATASOURCE_PASSWORD: othello_pass
+      SPRING_AI_OLLAMA_BASE_URL: http://ollama:11434
+    command: mvn spring-boot:run
+
 volumes:
   db_data:
+  maven_cache:
+  ollama_data:
