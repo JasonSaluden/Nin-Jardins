@@ -17,12 +17,19 @@ Jeu d'Othello jouable contre une IA propulsée par Mistral via Ollama.
 
 ## Prérequis
 
-Avant de lancer le projet, assurez-vous d'avoir installé :
+Avant de lancer le projet, soit assurez-vous d'avoir installé :
 
 - [Java 21](https://adoptium.net/)
 - [Maven 3.8+](https://maven.apache.org/download.cgi)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [Ollama](https://ollama.com/download)
+
+Sinon, récupérer les images docker correspondantes avec la commande 
+```bash
+docker-compose up
+```
+Ca téléchargera les images MySQL, Maven, Ollama
+
 
 Vérification des installations :
 ```bash
