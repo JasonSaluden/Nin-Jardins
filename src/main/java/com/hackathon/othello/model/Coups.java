@@ -1,14 +1,14 @@
 package com.hackathon.othello.model;
 
 public class Coups {
-    private int Id_coups; // Identifiant unique du coup
-    private int Id_parties; // Identifiant de la partie à laquelle le coup appartient
-    private int Id_joueurs; // Identifiant du joueur qui a effectué le coup
-    private int numero_coup; // Numéro du coup dans la partie (ex: 1 pour le premier coup, 2 pour le
-                             // deuxième, etc.)
-    private int position_x; // Position du coup sur le plateau (ex: "A1", "B2", etc.)
-    private int position_y; // Position du coup sur le plateau (ex: "A1", "B2", etc.)
-    private String couleur_pion; // Couleur du pion joué (ex: "blanc" ou "noir")
+    private int Id_coups;           // Identifiant unique du coup
+    private int Id_parties;         // Identifiant de la partie à laquelle le coup appartient
+    private int Id_joueurs;         // Identifiant du joueur qui a effectué le coup
+    private int numero_coup;        // Numéro du coup dans la partie (ex: 1 pour le premier coup, 2 pour le
+                                    // deuxième, etc.)
+    private int position_x;         // Position du coup sur le plateau (ex: "A1", "B2", etc.)
+    private int position_y;         // Position du coup sur le plateau (ex: "A1", "B2", etc.)
+    private String couleur_pion;    // Couleur du pion joué (ex: "blanc" ou "noir")
 
     // Constructeur
     public Coups(int Id_parties, int Id_joueurs, int numero_coup, int position_x, int position_y, String couleur_pion) {

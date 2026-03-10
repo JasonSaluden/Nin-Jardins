@@ -1,17 +1,17 @@
 package com.hackathon.othello.model;
 
 public class Parties {
-    private int Id_parties; // Identifiant unique de la partie
-    private java.util.Date date_partie; // Date de la partie
-    private String statut; // Statut de la partie (ex: "en cours", "terminée", etc.)
-    private int difficulte; // Difficulté de la partie (ex: 1 pour facile, 2 pour moyen, 3 pour difficile)
-    private java.sql.Time temps_jeu; // Temps de jeu de la partie
-    private Joueurs Id_joueur_Noir; // Joueur noir de la partie
-    private Joueurs Id_joueur_Blanc; // Joueur blanc de la partie
-    private Pion pionNoir; // Pion du joueur noir
-    private Pion pionBlanc; // Pion du joueur blanc
-    private int Id_vainqueur; // Identifiant du joueur gagnant (0 si la partie est en cours ou terminée sans
-                              // gagnant)
+    private int Id_parties;                     // Identifiant unique de la partie
+    private java.util.Date date_partie;         // Date de la partie
+    private String statut;                      // Statut de la partie (ex: "en cours", "terminée", etc.)
+    private int difficulte;                     // Difficulté de la partie (ex: 1 pour facile, 2 pour moyen, 3 pour difficile)
+    private java.sql.Time temps_jeu;            // Temps de jeu de la partie
+    private Joueurs Id_joueur_Noir;             // Joueur noir de la partie
+    private Joueurs Id_joueur_Blanc;            // Joueur blanc de la partie
+    private Pion pionNoir;                      // Pion du joueur noir
+    private Pion pionBlanc;                     // Pion du joueur blanc
+    private int Id_vainqueur;                   // Identifiant du joueur gagnant (0 si la partie est en cours ou terminée sans
+                                                // gagnant)
 
     // Constructeur
     public Parties(java.util.Date date_partie, String statut, int difficulte, java.sql.Time temps_jeu,
@@ -24,7 +24,7 @@ public class Parties {
         this.Id_joueur_Blanc = Id_joueur_Blanc;
         this.pionNoir = pionNoir;
         this.pionBlanc = pionBlanc;
-        this.Id_vainqueur = 0; // Par défaut, aucun gagnant au début de la partie
+        this.Id_vainqueur = 0;              // Par défaut, aucun gagnant au début de la partie
     }
 
     // Getters et setters
