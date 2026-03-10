@@ -30,9 +30,7 @@ public class Scores {
                                  // chaîne dans la base de données
     private CouleurPion couleur_pion; // Couleur du pion (NOIR ou BLANC)
 
-    private couleur_pion couleur_pion;          // Champ stockant la couleur du pion
-
-    private int nb_pions_final;                 // Nombre de pions du joueur à la fin de la partie
+    private int nb_pions_final; // Nombre de pions du joueur à la fin de la partie
 
     public enum CouleurPion {
         noir, blanc

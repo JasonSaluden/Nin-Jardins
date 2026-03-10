@@ -1,5 +1,7 @@
 package com.hackathon.othello.model;
 
+import java.util.Date;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,14 +20,14 @@ public class Joueurs {
     private String pseudo; // pseudo du joueur
     private String mail; // adresse e-mail du joueur
     private String mot_de_passe; // mot de passe du joueur
-    private java.util.Date date_inscription; // date d'inscription du joueur
+    private Date date_inscription; // date d'inscription du joueur
 
     protected Joueurs() {
         // Constructeur vide requis par JPA
     }
 
     // Constructeur
-    public Joueurs(String pseudo, String mail, String mot_de_passe, java.util.Date date_inscription) {
+    public Joueurs(String pseudo, String mail, String mot_de_passe, Date date_inscription) {
         this.pseudo = pseudo;
         this.mail = mail;
         this.mot_de_passe = mot_de_passe;
