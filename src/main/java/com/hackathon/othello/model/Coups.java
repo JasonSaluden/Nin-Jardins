@@ -1,17 +1,45 @@
 package com.hackathon.othello.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity // Annotation pour indiquer que cette classe est une entité JPA
+@Table(name = "coups") // Annotation pour spécifier le nom de la table dans la base de données
+
 public class Coups {
+    @Id // Annotation pour indiquer que ce champ est la clé primaire de l'entité
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Annotation pour spécifier la stratégie de génération de la
+                                                        // clé primaire
+    @Column(name = "Id_coup")
     private int Id_coups; // Identifiant unique du coup
-    private int Id_parties; // Identifiant de la partie à laquelle le coup appartient
-    private int Id_joueurs; // Identifiant du joueur qui a effectué le coup
+
+    @ManyToOne // Annotation pour indiquer une relation Many-to-One avec l'entité Parties
+    @JoinColumn(name = "Id_parties") // Annotation pour spécifier la colonne de jointure pour la partie
+    private Parties Id_parties; // Identifiant de la partie à laquelle le coup appartient
+
+    @ManyToOne // Annotation pour indiquer une relation Many-to-One avec l'entité Joueurs
+    @JoinColumn(name = "Id_joueurs") // Annotation pour spécifier la colonne de jointure pour le joueur
+    private Joueurs Id_joueurs; // Identifiant du joueur qui a effectué le coup
+
     private int numero_coup; // Numéro du coup dans la partie (ex: 1 pour le premier coup, 2 pour le
                              // deuxième, etc.)
     private int position_x; // Position du coup sur le plateau (ex: "A1", "B2", etc.)
     private int position_y; // Position du coup sur le plateau (ex: "A1", "B2", etc.)
     private String couleur_pion; // Couleur du pion joué (ex: "blanc" ou "noir")
 
+    protected Coups() {
+        // Constructeur vide requis par JPA
+    }
+
     // Constructeur
-    public Coups(int Id_parties, int Id_joueurs, int numero_coup, int position_x, int position_y, String couleur_pion) {
+    public Coups(Parties Id_parties, Joueurs Id_joueurs, int numero_coup, int position_x, int position_y,
+            String couleur_pion) {
         this.Id_parties = Id_parties;
         this.Id_joueurs = Id_joueurs;
         this.numero_coup = numero_coup;
@@ -25,19 +53,19 @@ public class Coups {
         return Id_coups;
     }
 
-    public int getId_parties() {
+    public Parties getId_parties() {
         return Id_parties;
     }
 
-    public void setId_parties(int Id_parties) {
+    public void setId_parties(Parties Id_parties) {
         this.Id_parties = Id_parties;
     }
 
-    public int getId_joueurs() {
+    public Joueurs getId_joueurs() {
         return Id_joueurs;
     }
 
-    public void setId_joueurs(int Id_joueurs) {
+    public void setId_joueurs(Joueurs Id_joueurs) {
         this.Id_joueurs = Id_joueurs;
     }
 
