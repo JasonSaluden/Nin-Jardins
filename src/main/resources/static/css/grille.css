@@ -1,6 +1,8 @@
 .planche {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
-  gap: 5px;
-  grid-auto-rows: minmax(100px, auto);
+  grid-auto-rows: minmax(1fr, auto);
+}
+.case{
+  border: black solid 1px;
 }
