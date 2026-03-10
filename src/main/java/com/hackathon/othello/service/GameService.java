@@ -10,6 +10,9 @@ public class GameService {
     // Création du plateau de jeu
     private int[][] plateau = new int[8][8];
 
+    // Joueur courant : 1 = noir, 2 = blanc
+    private int joueurCourant = 1;
+
     // Directions pour vérifier les coups (8 directions : haut, bas, gauche, droite et les 4 diagonales)
     private static final int[][] DIRECTIONS = {
         {-1,  0}, // haut
@@ -134,7 +137,28 @@ public class GameService {
         return 0;
     }
 
+    public int getJoueurCourant() {
+        return joueurCourant;
+    }
+
+    // Joue le coup du joueur courant et gère le passage de tour
+    public boolean jouerCoupEtPasserTour(int ligne, int colonne) {
+        if (!jouerCoup(ligne, colonne, joueurCourant)) return false;
+
+        // Passe au joueur suivant
+        int suivant = (joueurCourant == 1) ? 2 : 1;
+
+        // Si le suivant n'a aucun coup valide, il passe son tour
+        if (getCoupsValides(suivant).isEmpty()) {
+            // Le joueur courant rejoue (sauf si lui aussi est bloqué → fin de partie)
+        } else {
+            joueurCourant = suivant;
+        }
+        return true;
+    }
+
     public void startGame() {
         initialiserPlateau();
+        joueurCourant = 1;
     }
 }

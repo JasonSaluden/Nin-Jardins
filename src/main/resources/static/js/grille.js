@@ -1,133 +1,108 @@
+// ─── Conversion coordonnées ───────────────────────────────────────────────────
 
-// Get all grid cases
-const cases = document.querySelectorAll('.case');
-
-// Define background styles for different states
-const backgroundStyles = {
-    empty: 'url(/img/empty.png)',
-    white: 'url(/img/white-piece.png)',
-    black: 'url(/img/black-piece.png)',
-    playable: '#90EE90' // Light green for playable cases
-};
-
-// Current player (white or black)
-let currentPlayer = 'black';
-
-// Convert case ID (A1) to grid coordinates
-function getCaseCoordinates(caseId) {
-    const col = caseId.charCodeAt(0) - 65; // A=0, B=1, ..., H=7
-    const row = parseInt(caseId.substring(1)) - 1; // 1-8 to 0-7
+// "D4" → { row: 3, col: 3 }  (row = chiffre-1, col = lettre-'A')
+function caseIdToCoords(caseId) {
+    const col = caseId.charCodeAt(0) - 65;
+    const row = parseInt(caseId.substring(1)) - 1;
     return { row, col };
 }
 
-// Convert grid coordinates to case ID
-function getCoordinatesToCaseId(row, col) {
-    if (row < 0 || row > 7 || col < 0 || col > 7) return null;
+// { row: 3, col: 3 } → "D4"
+function coordsToCaseId(row, col) {
     return String.fromCharCode(65 + col) + (row + 1);
 }
 
-// Get case element by coordinates
-function getCaseByCoordinates(row, col) {
-    const caseId = getCoordinatesToCaseId(row, col);
-    return caseId ? document.getElementById(caseId) : null;
+// ─── Rendu du plateau ─────────────────────────────────────────────────────────
+
+const STYLES = {
+    empty:    { backgroundImage: 'url(/img/empty.png)',        backgroundColor: '' },
+    black:    { backgroundImage: 'url(/img/black-piece.png)',  backgroundColor: '' },
+    white:    { backgroundImage: 'url(/img/white-piece.png)',  backgroundColor: '' },
+    playable: { backgroundImage: '',                           backgroundColor: '#90EE90' }
+};
+
+function applyStyle(el, style) {
+    el.style.backgroundImage  = style.backgroundImage;
+    el.style.backgroundColor  = style.backgroundColor;
 }
 
-// Get piece state from a case
-function getPieceState(caseElement) {
-    return caseElement?.dataset?.state || 'empty';
-}
-
-// Check if a move is valid for current player at given coordinates
-function isValidMove(row, col, playerColor) {
-    const caseElement = getCaseByCoordinates(row, col);
-    if (!caseElement || getPieceState(caseElement) !== 'empty') {
-        return false;
-    }
-
-    const opponent = playerColor === 'white' ? 'black' : 'white';
-    
-    // Check all 8 directions
-    const directions = [
-        { dr: -1, dc: 0 },  // up
-        { dr: 1, dc: 0 },   // down
-        { dr: 0, dc: -1 },  // left
-        { dr: 0, dc: 1 },   // right
-        { dr: -1, dc: -1 }, // up-left
-        { dr: -1, dc: 1 },  // up-right
-        { dr: 1, dc: -1 },  // down-left
-        { dr: 1, dc: 1 }    // down-right
-    ];
-
-    for (const dir of directions) {
-        let r = row + dir.dr;
-        let c = col + dir.dc;
-        let hasOpponent = false;
-
-        // Count consecutive opponent pieces
-        while (r >= 0 && r < 8 && c >= 0 && c < 8) {
-            const piece = getPieceState(getCaseByCoordinates(r, c));
-            
-            if (piece === 'empty') {
-                break; // Empty space, direction is invalid
-            } else if (piece === opponent) {
-                hasOpponent = true;
-            } else if (piece === playerColor) {
-                // Found own piece after opponent pieces
-                if (hasOpponent) {
-                    return true; // Valid move
-                }
-                break;
-            }
-
-            r += dir.dr;
-            c += dir.dc;
-        }
-    }
-
-    return false;
-}
-
-// Highlight all valid moves for current player
-function highlightValidMoves(playerColor) {
-    // Clear previous highlights
-    cases.forEach(caseEl => {
-        if (caseEl.classList.contains('playable')) {
-            caseEl.classList.remove('playable');
-            caseEl.style.backgroundColor = '';
-        }
-    });
-
-    // Check all empty cases
+/** Met à jour toutes les cases d'après le plateau (int[][] 0=vide,1=noir,2=blanc) */
+function renderBoard(plateau) {
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
-            if (isValidMove(row, col, playerColor)) {
-                const caseElement = getCaseByCoordinates(row, col);
-                caseElement.classList.add('playable');
-                caseElement.style.backgroundColor = backgroundStyles.playable;
-            }
+            const el = document.getElementById(coordsToCaseId(row, col));
+            if (!el) continue;
+            const val = plateau[row][col];
+            el.dataset.state = val === 1 ? 'black' : val === 2 ? 'white' : 'empty';
+            el.classList.remove('playable');
+            applyStyle(el, val === 1 ? STYLES.black : val === 2 ? STYLES.white : STYLES.empty);
         }
     }
 }
 
-// Add click event listener to each case
-cases.forEach(caseElement => {
-    caseElement.addEventListener('click', function() {
-        const { row, col } = getCaseCoordinates(this.id);
-        
-        // Check if it's a valid move
-        if (this.classList.contains('playable') && isValidMove(row, col, currentPlayer)) {
-            // Place the current player's piece
-            this.style.backgroundImage = backgroundStyles[currentPlayer];
-            this.dataset.state = currentPlayer;
-            this.classList.remove('playable');
-            this.style.backgroundColor = '';
+/** Surligne les coups valides (liste de [row, col]) */
+function renderValidMoves(coupsValides) {
+    coupsValides.forEach(([row, col]) => {
+        const el = document.getElementById(coordsToCaseId(row, col));
+        if (!el) return;
+        el.classList.add('playable');
+        applyStyle(el, STYLES.playable);
+    });
+}
 
-            // Switch player and highlight new valid moves
-            currentPlayer = currentPlayer === 'white' ? 'black' : 'white';
-            highlightValidMoves(currentPlayer);
-        }
+/** Affiche le score et l'indicateur de tour */
+function renderInfo(state) {
+    const infoEl = document.getElementById('game-info');
+    if (!infoEl) return;
+
+    if (state.partieTerminee) {
+        const msg = state.vainqueur === 0 ? 'Égalité !'
+                  : state.vainqueur === 1 ? 'Victoire des Noirs !'
+                  : 'Victoire des Blancs !';
+        infoEl.textContent = `${msg}  (Noir: ${state.scoreNoir} | Blanc: ${state.scoreBlanc})`;
+    } else {
+        const tour = state.joueurCourant === 1 ? 'Noirs' : 'Blancs';
+        infoEl.textContent = `Tour : ${tour}  —  Noir: ${state.scoreNoir} | Blanc: ${state.scoreBlanc}`;
+    }
+}
+
+// ─── Appels API ───────────────────────────────────────────────────────────────
+
+async function applyState(state) {
+    renderBoard(state.plateau);
+    renderValidMoves(state.coupsValides);
+    renderInfo(state);
+}
+
+async function startGame() {
+    const res = await fetch('/api/game/start', { method: 'POST' });
+    const state = await res.json();
+    applyState(state);
+}
+
+async function playMove(row, col) {
+    const res = await fetch('/api/game/move', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ligne: row, colonne: col })
+    });
+
+    if (!res.ok) return; // coup invalide ignoré
+
+    const state = await res.json();
+    applyState(state);
+}
+
+// ─── Interactions ─────────────────────────────────────────────────────────────
+
+document.querySelectorAll('.case').forEach(el => {
+    el.addEventListener('click', function () {
+        if (!this.classList.contains('playable')) return;
+        const { row, col } = caseIdToCoords(this.id);
+        playMove(row, col);
     });
 });
 
-// Initial highlight for starting player
-highlightValidMoves(currentPlayer);
+// ─── Initialisation ───────────────────────────────────────────────────────────
+
+startGame();
