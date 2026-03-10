@@ -32,7 +32,6 @@ public class Joueurs {
         this.date_inscription = date_inscription;
     }
 
-    // Getters et setters
     public int getId_joueurs() {
         return Id_joueurs;
     }
@@ -61,11 +60,11 @@ public class Joueurs {
         this.mot_de_passe = mot_de_passe;
     }
 
-    public java.util.Date getDate_inscription() {
+    public Date getDate_inscription() {
         return date_inscription;
     }
 
-    public void setDate_inscription(java.util.Date date_inscription) {
+    public void setDate_inscription(Date date_inscription) {
         this.date_inscription = date_inscription;
     }
 }

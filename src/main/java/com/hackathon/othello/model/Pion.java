@@ -6,8 +6,8 @@ import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class Pion {
-    private String couleur; // Couleur du pion (ex: "blanc" ou "noir")
-    private String position; // Position actuelle du pion sur le plateau (ex: "A1", "B2", etc.)
+    private String couleur;     // Couleur du pion (ex: "blanc" ou "noir")
+    private String position;    // Position actuelle du pion sur le plateau (ex: "A1", "B2", etc.)
 
     protected Pion() {
         // Constructeur vide requis par JPA
