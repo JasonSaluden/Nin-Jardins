@@ -1,44 +1,85 @@
 package com.hackathon.othello.model;
 
-public class Scores {
-    private int Id_joueurs;                     // Identifiant unique du joueur
-    private int Id_parties;                     // Identifiant unique de la partie
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
 
-    private enum couleur_pion { NOIR, BLANC };  // Couleur du pion (NOIR ou BLANC)
+@Entity // Annotation pour indiquer que cette classe est une entité JPA
+@Table(name = "scores") // Annotation pour spécifier le nom de la table dans la base de données
+
+public class Scores {
+    @EmbeddedId
+    private ScoresId id;
+
+    @ManyToOne // Annotation pour indiquer une relation Many-to-One avec l'entité Joueurs
+    @MapsId("idJoueurs")
+    @JoinColumn(name = "Id_joueurs") // Annotation pour spécifier la colonne de jointure pour le joueur
+    private Joueurs joueur; // Référence à l'entité Joueurs
+
+    @ManyToOne // Annotation pour indiquer une relation Many-to-One avec l'entité Parties
+    @MapsId("idParties")
+    @JoinColumn(name = "Id_parties") // Annotation pour spécifier la colonne de jointure pour la partie
+    private Parties partie; // Référence à l'entité Parties
+
+    @Enumerated(EnumType.STRING) // Annotation pour indiquer que l'énumération doit être stockée sous forme de
+                                 // chaîne dans la base de données
+    private CouleurPion couleur_pion; // Couleur du pion (NOIR ou BLANC)
 
     private couleur_pion couleur_pion;          // Champ stockant la couleur du pion
 
     private int nb_pions_final;                 // Nombre de pions du joueur à la fin de la partie
 
+    public enum CouleurPion {
+        noir, blanc
+    }; // Couleur du pion (NOIR ou BLANC)
+
+    protected Scores() {
+        // Constructeur vide requis par JPA
+    }
+
     // Constructeur
-    public Scores(int Id_joueurs, int Id_parties, couleur_pion couleur_pion, int nb_pions_final) {
-        this.Id_joueurs = Id_joueurs;
-        this.Id_parties = Id_parties;
+    public Scores(Joueurs joueur, Parties partie, CouleurPion couleur_pion, int nb_pions_final) {
+        this.id = new ScoresId(joueur.getId_joueurs(), partie.getId_parties());
+        this.joueur = joueur;
+        this.partie = partie;
         this.couleur_pion = couleur_pion;
         this.nb_pions_final = nb_pions_final;
     }
 
-    public int getId_joueurs() {
-        return Id_joueurs;
+    public ScoresId getId() {
+        return id;
     }
 
-    public void setId_joueurs(int Id_joueurs) {
-        this.Id_joueurs = Id_joueurs;
+    public void setId(ScoresId id) {
+        this.id = id;
     }
 
-    public int getId_parties() {
-        return Id_parties;
+    public Joueurs getJoueur() {
+        return joueur;
     }
 
-    public void setId_parties(int Id_parties) {
-        this.Id_parties = Id_parties;
+    public void setJoueur(Joueurs joueur) {
+        this.joueur = joueur;
     }
 
-    public couleur_pion getCouleur_pion() {
+    public Parties getPartie() {
+        return partie;
+    }
+
+    public void setPartie(Parties partie) {
+        this.partie = partie;
+    }
+
+    public CouleurPion getCouleur_pion() {
         return couleur_pion;
     }
 
-    public void setCouleur_pion(couleur_pion couleur_pion) {
+    public void setCouleur_pion(CouleurPion couleur_pion) {
         this.couleur_pion = couleur_pion;
     }
 

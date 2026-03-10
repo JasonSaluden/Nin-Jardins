@@ -1,30 +1,63 @@
 package com.hackathon.othello.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
+@Entity // Annotation pour indiquer que cette classe est une entité JPA
+@Table(name = "parties") // Annotation pour spécifier le nom de la table dans la base de données
+
 public class Parties {
-    private int Id_parties;                     // Identifiant unique de la partie
-    private java.util.Date date_partie;         // Date de la partie
-    private String statut;                      // Statut de la partie (ex: "en cours", "terminée", etc.)
-    private int difficulte;                     // Difficulté de la partie (ex: 1 pour facile, 2 pour moyen, 3 pour difficile)
-    private java.sql.Time temps_jeu;            // Temps de jeu de la partie
-    private Joueurs Id_joueur_Noir;             // Joueur noir de la partie
-    private Joueurs Id_joueur_Blanc;            // Joueur blanc de la partie
-    private Pion pionNoir;                      // Pion du joueur noir
-    private Pion pionBlanc;                     // Pion du joueur blanc
-    private int Id_vainqueur;                   // Identifiant du joueur gagnant (0 si la partie est en cours ou terminée sans
-                                                // gagnant)
+    public enum StatutPartie {
+        en_cours,
+        terminee,
+        abandonnee
+    }
+
+    @Id // Annotation pour indiquer que ce champ est la clé primaire de l'entité
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int Id_parties; // Identifiant unique de la partie
+
+    private java.util.Date date_partie; // Date de la partie
+
+    @Enumerated(EnumType.STRING) // Annotation pour indiquer que l'énumération doit être stockée sous forme de
+                                 // chaîne dans la base de données
+    private StatutPartie statut;
+
+    private int difficulte; // Difficulté de la partie (ex: 1 pour facile, 2 pour moyen, 3 pour difficile)
+    private java.sql.Time temps_jeu; // Temps de jeu de la partie
+
+    @ManyToOne // Annotation pour indiquer une relation Many-to-One avec l'entité Joueurs
+    @JoinColumn(name = "Id_joueur_noir") // Annotation pour spécifier la colonne de jointure pour le joueur noir
+    private Joueurs Id_joueur_Noir; // Joueur noir de la partie
+
+    @ManyToOne // Annotation pour indiquer une relation Many-to-One avec l'entité Joueurs
+    @JoinColumn(name = "Id_joueur_blanc") // Annotation pour spécifier la colonne de jointure pour le joueur blanc
+    private Joueurs Id_joueur_Blanc; // Joueur blanc de la partie
+
+    @ManyToOne
+    @JoinColumn(name = "Id_vainqueur")
+    private Joueurs vainqueur;
+
+    protected Parties() {
+        // Constructeur vide requis par JPA
+    }
 
     // Constructeur
-    public Parties(java.util.Date date_partie, String statut, int difficulte, java.sql.Time temps_jeu,
-            Joueurs Id_joueur_Noir, Joueurs Id_joueur_Blanc, Pion pionNoir, Pion pionBlanc) {
+    public Parties(java.util.Date date_partie, StatutPartie statut, int difficulte, java.sql.Time temps_jeu,
+            Joueurs Id_joueur_Noir, Joueurs Id_joueur_Blanc) {
         this.date_partie = date_partie;
         this.statut = statut;
         this.difficulte = difficulte;
         this.temps_jeu = temps_jeu;
         this.Id_joueur_Noir = Id_joueur_Noir;
         this.Id_joueur_Blanc = Id_joueur_Blanc;
-        this.pionNoir = pionNoir;
-        this.pionBlanc = pionBlanc;
-        this.Id_vainqueur = 0;              // Par défaut, aucun gagnant au début de la partie
     }
 
     // Getters et setters
@@ -40,11 +73,11 @@ public class Parties {
         this.date_partie = date_partie;
     }
 
-    public String getStatut() {
+    public StatutPartie getStatut() {
         return statut;
     }
 
-    public void setStatut(String statut) {
+    public void setStatut(StatutPartie statut) {
         this.statut = statut;
     }
 
@@ -80,27 +113,11 @@ public class Parties {
         this.Id_joueur_Blanc = Id_joueur_Blanc;
     }
 
-    public Pion getPionNoir() {
-        return pionNoir;
+    public Joueurs getVainqueur() {
+        return vainqueur;
     }
 
-    public void setPionNoir(Pion pionNoir) {
-        this.pionNoir = pionNoir;
-    }
-
-    public Pion getPionBlanc() {
-        return pionBlanc;
-    }
-
-    public void setPionBlanc(Pion pionBlanc) {
-        this.pionBlanc = pionBlanc;
-    }
-
-    public int getId_vainqueur() {
-        return Id_vainqueur;
-    }
-
-    public void setId_vainqueur(int Id_vainqueur) {
-        this.Id_vainqueur = Id_vainqueur;
+    public void setVainqueur(Joueurs vainqueur) {
+        this.vainqueur = vainqueur;
     }
 }

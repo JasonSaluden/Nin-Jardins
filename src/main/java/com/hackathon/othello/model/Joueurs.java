@@ -1,26 +1,31 @@
 package com.hackathon.othello.model;
 
-import jakarta.persistence.*;
-import java.util.Date;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "joueurs")
+@Entity // Annotation pour indiquer que cette classe est une entité JPA
+@Table(name = "joueurs") // Annotation pour spécifier le nom de la table dans la base de données
+
 public class Joueurs {
+    @Id // Annotation pour indiquer que ce champ est la clé primaire de l'entité
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Annotation pour spécifier la stratégie de génération de la
+                                                        // clé primaire
+    private int Id_joueurs; // Identifiant unique du joueur
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int Id_joueurs;
+    private String pseudo; // pseudo du joueur
+    private String mail; // adresse e-mail du joueur
+    private String mot_de_passe; // mot de passe du joueur
+    private java.util.Date date_inscription; // date d'inscription du joueur
 
-    private String pseudo;
-    private String mail;
-    private String mot_de_passe;
+    protected Joueurs() {
+        // Constructeur vide requis par JPA
+    }
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date date_inscription;
-
-    public Joueurs() {}
-
-    public Joueurs(String pseudo, String mail, String mot_de_passe, Date date_inscription) {
+    // Constructeur
+    public Joueurs(String pseudo, String mail, String mot_de_passe, java.util.Date date_inscription) {
         this.pseudo = pseudo;
         this.mail = mail;
         this.mot_de_passe = mot_de_passe;
