@@ -19,5 +19,5 @@ public interface ScoresRepository extends JpaRepository<Scores, ScoresId> {
     List<Scores> findByPartie(Parties partie);
 
     @Query("SELECT s FROM Scores s WHERE s.couleur_pion = :couleurPion")
-    List<Scores> findByCouleur_pion(@Param("couleurPion") Scores.CouleurPion couleurPion);
+    List<Scores> findByCouleurPion(@Param("couleurPion") Scores.CouleurPion couleurPion);
 }
