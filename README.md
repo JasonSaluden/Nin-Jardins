@@ -17,88 +17,83 @@ Jeu d'Othello jouable contre une IA propulsée par Mistral via Ollama.
 
 ## Prérequis
 
-Avant de lancer le projet, soit assurez-vous d'avoir installé :
+Le seul prérequis est d'avoir **Docker Desktop** installé.
+Tout le reste (Java, Maven, MySQL, Ollama, Mistral) est géré automatiquement par Docker.
 
-- [Java 21](https://adoptium.net/)
-- [Maven 3.8+](https://maven.apache.org/download.cgi)
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Ollama](https://ollama.com/download)
+- [Télécharger Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-Sinon, récupérer les images docker correspondantes avec la commande 
+---
+
+## Lancer le projet
+
+### 1. Cloner le repository
+
+```bash
+git clone https://github.com/JasonSaluden/othello.git
+cd othello
+```
+
+### 2. Démarrer l'application
+
 ```bash
 docker-compose up
 ```
-Ca téléchargera les images MySQL, Maven, Ollama
 
+Cette commande télécharge et démarre automatiquement :
+- **MySQL** — la base de données avec les tables créées
+- **Ollama** — le moteur IA
+- **Mistral** — le modèle LLM (téléchargé automatiquement au premier démarrage)
+- **Spring Boot** — le backend via Maven
 
-Vérification des installations :
-```bash
-java -version
-mvn -version
-docker -v
-ollama -v
+> Le premier démarrage peut prendre quelques minutes le temps de télécharger les images et le modèle Mistral (~4 Go).
+> Les démarrages suivants sont quasi instantanés.
+
+### 3. Accéder à l'application
+
+Une fois les conteneurs démarrés, ouvrir dans le navigateur :
+
+```
+http://localhost:8080
 ```
 
 ---
 
-## Lancement du projet
+## Vérifier que tout fonctionne
 
-### 1. Démarrer la base de données (MySQL via Docker)
-
+### Vérifier les conteneurs
 ```bash
-docker-compose up -d
+docker-compose ps
+```
+Les 3 services doivent être en `Up` :
+```
+othello-db-1        Up
+othello-ollama-1    Up
+othello-app-1       Up
 ```
 
-La base `othello` est automatiquement créée avec les tables suivantes : `joueurs`, `parties`, `scores`, `coups`.
+### Vérifier le backend
+```
+http://localhost:8080
+```
+La page d'accueil doit s'afficher.
 
-Identifiants BDD :
-- **Host** : `localhost:3306`
-- **Base** : `othello`
-- **User** : `othello_user`
-- **Password** : `othello_pass`
-
-### 2. Démarrer Ollama avec le modèle Mistral
-
+### Vérifier la base de données
 ```bash
-ollama pull mistral
-ollama serve
+docker exec -it othello-db-1 mysql -u othello_user -pothello_pass othello -e "SHOW TABLES;"
 ```
+Doit afficher : `joueurs`, `parties`, `scores`, `coups`
 
-> Ollama doit tourner sur `http://localhost:11434`
-
-### 3. Lancer le backend Spring Boot
-
+### Vérifier Ollama + Mistral
 ```bash
-mvn spring-boot:run
+docker exec -it othello-ollama-1 ollama list
 ```
+Mistral doit apparaître dans la liste.
 
-Le serveur démarre sur `http://localhost:8080`
-
----
-
-## Tester l'application
-
-### Interface graphique
-
-Ouvrir dans le navigateur :
-```
-http://localhost:8080/grille.html
-```
-
-### API REST — Authentification
-
-**Inscription :**
+### Consulter les logs en cas de problème
 ```bash
-curl -X POST http://localhost:8080/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"pseudo":"joueur1","email":"joueur1@test.com","password":"motdepasse"}'
-```
-
-**Connexion :**
-```bash
-curl -X POST http://localhost:8080/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"pseudo":"joueur1","password":"motdepasse"}'
+docker-compose logs app       # logs Spring Boot
+docker-compose logs db        # logs MySQL
+docker-compose logs ollama    # logs Ollama
 ```
 
 ---
@@ -107,7 +102,7 @@ curl -X POST http://localhost:8080/api/auth/login \
 
 ```
 othello/
-├── docker-compose.yml               # Conteneur MySQL
+├── docker-compose.yml               # Orchestration des conteneurs
 ├── sql/
 │   └── init.sql                     # Schéma de la base de données
 └── src/main/
@@ -117,15 +112,18 @@ othello/
     │   ├── controller/              # Endpoints REST
     │   ├── service/                 # Logique métier
     │   ├── repository/              # Accès BDD (JPA)
-    │   ├── model/                   # Entités (Joueur, Partie, Coup...)
+    │   ├── model/                   # Entités (Joueurs, Parties, Coups...)
     │   └── dto/                     # Objets de transfert (Login, Register)
     └── resources/
         ├── application.properties   # Configuration Spring Boot
         └── static/
-            ├── index.html
+            ├── index.html           # Page d'accueil (connexion/inscription)
             ├── grille.html          # Interface du plateau de jeu
-            └── css/
-                └── grille.css
+            ├── css/
+            │   ├── accueil.css
+            │   └── grille.css
+            └── js/
+                └── accueil.js
 ```
 
 ---
@@ -143,14 +141,8 @@ coups       → Id_coup, Id_parties, Id_joueurs, numero_coup, position_x, positi
 
 ## Fonctionnement de l'IA
 
-L'IA utilise **Mistral** via **Ollama** (LLM local, pas de clé API nécessaire) et est intégrée grâce à **Spring AI**.
+L'IA utilise **Mistral** via **Ollama** (LLM local, aucune clé API nécessaire) intégré grâce à **Spring AI**.
 
-Elle peut intervenir comme :
+Elle intervient comme :
 - **IA adversaire** : calcule les coups à jouer
 - **IA d'assistance** : suggère des coups au joueur humain
-
-Configuration dans `application.properties` :
-```properties
-spring.ai.ollama.base-url=http://localhost:11434
-spring.ai.ollama.chat.model=mistral
-```
