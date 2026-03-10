@@ -23,13 +23,15 @@ services:
     image: ollama/ollama:0.17.7
     depends_on:
       - ollama
+    environment:
+      OLLAMA_HOST: http://ollama:11434
     entrypoint: >
       /bin/sh -c "
-        until ollama list --host http://ollama:11434 > /dev/null 2>&1; do
+        until ollama list > /dev/null 2>&1; do
           echo 'Attente de Ollama...';
           sleep 2;
         done;
-        ollama pull mistral --host http://ollama:11434
+        ollama pull mistral
       "
     volumes:
       - ollama_data:/root/.ollama
