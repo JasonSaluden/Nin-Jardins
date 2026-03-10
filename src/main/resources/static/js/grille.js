@@ -14,18 +14,6 @@ function coordsToCaseId(row, col) {
 
 // ─── Rendu du plateau ─────────────────────────────────────────────────────────
 
-const STYLES = {
-    empty:    { backgroundImage: 'url(/img/empty.png)',        backgroundColor: '' },
-    black:    { backgroundImage: 'url(/img/black-piece.png)',  backgroundColor: '' },
-    white:    { backgroundImage: 'url(/img/white-piece.png)',  backgroundColor: '' },
-    playable: { backgroundImage: '',                           backgroundColor: '#90EE90' }
-};
-
-function applyStyle(el, style) {
-    el.style.backgroundImage  = style.backgroundImage;
-    el.style.backgroundColor  = style.backgroundColor;
-}
-
 /** Met à jour toutes les cases d'après le plateau (int[][] 0=vide,1=noir,2=blanc) */
 function renderBoard(plateau) {
     for (let row = 0; row < 8; row++) {
@@ -33,9 +21,9 @@ function renderBoard(plateau) {
             const el = document.getElementById(coordsToCaseId(row, col));
             if (!el) continue;
             const val = plateau[row][col];
-            el.dataset.state = val === 1 ? 'black' : val === 2 ? 'white' : 'empty';
-            el.classList.remove('playable');
-            applyStyle(el, val === 1 ? STYLES.black : val === 2 ? STYLES.white : STYLES.empty);
+            el.classList.remove('black', 'white', 'playable');
+            if (val === 1) el.classList.add('black');
+            else if (val === 2) el.classList.add('white');
         }
     }
 }
@@ -46,7 +34,6 @@ function renderValidMoves(coupsValides) {
         const el = document.getElementById(coordsToCaseId(row, col));
         if (!el) return;
         el.classList.add('playable');
-        applyStyle(el, STYLES.playable);
     });
 }
 

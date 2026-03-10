@@ -1,18 +1,63 @@
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #1a1a1a;
+  font-family: sans-serif;
+  color: white;
+}
+
+#game-info {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
 .planche {
   display: grid;
-  grid-template-columns: repeat(8, 60px);
-  grid-template-rows: repeat(8, 60px);
+  grid-template-columns: repeat(8, 70px);
+  grid-template-rows: repeat(8, 70px);
   gap: 0;
-  border: 2px solid black;
+  border: 3px solid black;
+  background-image: url('/img/Cartoon_green_texture_grass.jpg');
+  background-size: cover;
 }
 
 .case {
-  width: 60px;
-  height: 60px;
-  border: 1px solid black;
+  width: 70px;
+  height: 70px;
+  border: 1px solid #1a5c1a;
   box-sizing: border-box;
-  background-color: #2d8c2d;
-  background-size: cover;
-  background-position: center;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+}
+
+.case.playable {
+  background-color: rgba(144, 238, 144, 0.5);
+  cursor: pointer;
+}
+
+.case::after {
+  content: '';
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: none;
+}
+
+.case.black::after {
+  display: block;
+  background: radial-gradient(circle at 35% 35%, #555, #000);
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+}
+
+.case.white::after {
+  display: block;
+  background: radial-gradient(circle at 35% 35%, #fff, #ccc);
+  box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
