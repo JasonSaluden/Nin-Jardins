@@ -1,0 +1,58 @@
+package com.hackathon.othello.controller;
+
+import com.hackathon.othello.dto.GameStateResponse;
+import com.hackathon.othello.dto.MoveRequest;
+import com.hackathon.othello.service.GameService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/game")
+public class GameController {
+
+    private final GameService gameService;
+
+    public GameController(GameService gameService) {
+        this.gameService = gameService;
+    }
+
+    /** Démarre une nouvelle partie et retourne l'état initial */
+    @PostMapping("/start")
+    public ResponseEntity<GameStateResponse> start() {
+        gameService.startGame();
+        return ResponseEntity.ok(buildState());
+    }
+
+    /** Retourne l'état courant du plateau */
+    @GetMapping("/state")
+    public ResponseEntity<GameStateResponse> state() {
+        return ResponseEntity.ok(buildState());
+    }
+
+    /** Joue un coup pour le joueur courant */
+    @PostMapping("/move")
+    public ResponseEntity<?> move(@RequestBody MoveRequest request) {
+        boolean ok = gameService.jouerCoupEtPasserTour(request.getLigne(), request.getColonne());
+        if (!ok) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Coup invalide");
+        }
+        return ResponseEntity.ok(buildState());
+    }
+
+    // -------------------------------------------------------------------------
+
+    private GameStateResponse buildState() {
+        int joueur = gameService.getJoueurCourant();
+        boolean termine = gameService.estPartieTerminee();
+        return new GameStateResponse(
+            gameService.getPlateau(),
+            termine ? java.util.Collections.emptyList() : gameService.getCoupsValides(joueur),
+            termine,
+            termine ? gameService.getVainqueur() : 0,
+            joueur,
+            gameService.compterPions(1),
+            gameService.compterPions(2)
+        );
+    }
+}
