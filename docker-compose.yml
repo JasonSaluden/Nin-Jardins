@@ -12,5 +12,22 @@ services:
       - db_data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
 
+  app:
+    image: maven:3.9-eclipse-temurin-21
+    working_dir: /app
+    volumes:
+      - .:/app
+      - maven_cache:/root/.m2
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/othello?allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: othello_user
+      SPRING_DATASOURCE_PASSWORD: othello_pass
+    command: mvn spring-boot:run
+
 volumes:
   db_data:
+  maven_cache:
