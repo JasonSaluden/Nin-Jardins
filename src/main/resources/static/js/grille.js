@@ -42,14 +42,24 @@ function renderInfo(state) {
     const infoEl = document.getElementById('game-info');
     if (!infoEl) return;
 
+    const difficultyLabels = {
+        easy: 'Facile',
+        medium: 'Moyen',
+        hard: 'Difficile'
+    };
+
+    const modeTexte = state.contreIA
+        ? `Mode : vs IA (${difficultyLabels[state.difficulteIA] || 'Moyen'})`
+        : 'Mode : 2 joueurs';
+
     if (state.partieTerminee) {
         const msg = state.vainqueur === 0 ? 'Égalité !'
                   : state.vainqueur === 1 ? 'Victoire des Noirs !'
                   : 'Victoire des Blancs !';
-        infoEl.textContent = `${msg}  (Noir: ${state.scoreNoir} | Blanc: ${state.scoreBlanc})`;
+        infoEl.textContent = `${msg}  (Noir: ${state.scoreNoir} | Blanc: ${state.scoreBlanc})  -  ${modeTexte}`;
     } else {
         const tour = state.joueurCourant === 1 ? 'Noirs' : 'Blancs';
-        infoEl.textContent = `Tour : ${tour}  —  Noir: ${state.scoreNoir} | Blanc: ${state.scoreBlanc}`;
+        infoEl.textContent = `Tour : ${tour}  -  Noir: ${state.scoreNoir} | Blanc: ${state.scoreBlanc}  -  ${modeTexte}`;
     }
 }
 
@@ -62,7 +72,16 @@ async function applyState(state) {
 }
 
 async function startGame() {
-    const res = await fetch('/api/game/start', { method: 'POST' });
+    const mode = sessionStorage.getItem('gameMode') || 'human';
+    const difficulty = sessionStorage.getItem('aiDifficulty') || 'medium';
+    const res = await fetch('/api/game/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            contreIA: mode === 'ai',
+            difficulteIA: difficulty
+        })
+    });
     const state = await res.json();
     applyState(state);
 }
