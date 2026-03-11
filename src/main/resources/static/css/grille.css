@@ -137,106 +137,14 @@ body {
   box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
-/* Pause dialog */
-#pause-dialog-content {
-  padding: 40px 32px 32px;
-  background: #fff;
-  border-radius: 8px;
-  text-align: center;
-}
-
-#pause-dialog-content h2 {
-  margin: 0 0 20px;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #212529;
-}
-
-.pause-value {
-  color: #495057;
-  margin: 0 0 8px;
-  font-size: 1rem;
-}
-
-/* End-of-game dialog */
-#end-dialog-content {
-  padding: 40px 32px 32px;
-  background: #fff;
-  border-radius: 8px;
-  text-align: center;
-}
-
-#end-title {
-  margin: 0 0 12px;
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #212529;
-}
-
-.end-score {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #212529;
-  margin: 0 0 6px;
-}
-
-.end-mode {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0 0 28px;
-}
-
-.end-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.end-btn-primary {
-  background: #212529;
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 10px 24px;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 1rem;
-}
-
-.end-btn-primary:hover {
-  background: #343a40;
-}
-
-.end-btn-secondary {
-  background: #fff;
-  color: #212529;
-  border: 1px solid #ced4da;
-  border-radius: 999px;
-  padding: 10px 24px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.end-btn-secondary:hover {
-  background: #f8f9fa;
-}
-
-.end-btn-secondary:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 /* Dialog styling */
 dialog {
   border: none;
   border-radius: 8px;
   padding: 0;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  max-width: 90%;
-  width: min(600px, 100%);
+  max-width: 100%;
+  width: min(75%, 100%);
 }
 
 dialog::backdrop {
