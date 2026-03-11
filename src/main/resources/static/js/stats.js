@@ -21,7 +21,7 @@ function initBackButton() {
     const fromGame = statsOrigin === 'game' && sessionStorage.getItem('resumeFromPause') === 'true';
 
     if (fromGame) {
-        link.href = '/pause.html';
+        link.href = '/grille.html';
         link.textContent = 'Retour à la partie';
         return;
     }
