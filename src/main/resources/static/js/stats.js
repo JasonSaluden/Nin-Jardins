@@ -11,6 +11,25 @@ function hasRegisteredPlayer(player) {
     return Boolean(player && Number.isInteger(player.id) && !player.guest);
 }
 
+function initBackButton() {
+    const link = document.getElementById('back-to-game-link');
+    if (!link) {
+        return;
+    }
+
+    const statsOrigin = sessionStorage.getItem('statsOrigin');
+    const fromGame = statsOrigin === 'game' && sessionStorage.getItem('resumeFromPause') === 'true';
+
+    if (fromGame) {
+        link.href = '/pause.html';
+        link.textContent = 'Retour à la partie';
+        return;
+    }
+
+    link.href = '/setup.html';
+    link.textContent = 'Configurer une partie';
+}
+
 let currentStats = null;
 
 function readCandidatePlayers() {
@@ -181,4 +200,5 @@ function initFilters() {
 
 populatePlayerSelect();
 initFilters();
+initBackButton();
 loadStats();

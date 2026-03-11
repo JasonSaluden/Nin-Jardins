@@ -34,6 +34,12 @@ function coordsToCaseId(row, col) {
     return String.fromCharCode(65 + col) + (row + 1);
 }
 
+function formatDuration(totalSeconds) {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
 // ─── Rendu du plateau ─────────────────────────────────────────────────────────
 
 /** Met à jour toutes les cases d'après le plateau (int[][] 0=vide,1=noir,2=blanc) */
@@ -64,15 +70,7 @@ function renderInfo(state) {
     const infoEl = document.getElementById('game-info');
     if (!infoEl) return;
 
-    const difficultyLabels = {
-        easy: 'Facile',
-        medium: 'Moyen',
-        hard: 'Difficile'
-    };
-
-    const modeTexte = state.contreIA
-        ? `Mode : vs IA (${difficultyLabels[state.difficulteIA] || 'Moyen'})`
-        : 'Mode : 2 joueurs';
+    const modeTexte = getModeTexte(state);
 
     if (state.partieTerminee) {
         const msg = state.vainqueur === 0 ? 'Égalité !'
@@ -91,6 +89,33 @@ async function applyState(state) {
     renderBoard(state.plateau);
     renderValidMoves(state.coupsValides);
     renderInfo(state);
+    savePauseSnapshot(state);
+
+    if (state.partieTerminee && chronoIntervalId !== null) {
+        clearInterval(chronoIntervalId);
+        chronoIntervalId = null;
+    }
+}
+
+function getModeTexte(state) {
+    const difficultyLabels = {
+        easy: 'Facile',
+        medium: 'Moyen',
+        hard: 'Difficile'
+    };
+
+    return state.contreIA
+        ? `Mode : vs IA (${difficultyLabels[state.difficulteIA] || 'Moyen'})`
+        : 'Mode : 2 joueurs';
+}
+
+function savePauseSnapshot(state) {
+    const snapshot = {
+        scoreNoir: state.scoreNoir,
+        scoreBlanc: state.scoreBlanc,
+        modeTexte: getModeTexte(state)
+    };
+    sessionStorage.setItem('pauseGameSnapshot', JSON.stringify(snapshot));
 }
 
 function getAIDelayMs(difficulteIA) {
@@ -102,6 +127,34 @@ function iaDoitJouer(state) {
 }
 
 let iaMovePending = false;
+let elapsedSeconds = Number(sessionStorage.getItem('gameElapsedSeconds') || '0');
+let chronoIntervalId = null;
+
+function renderChrono() {
+    const timerEl = document.getElementById('timer-display');
+    if (!timerEl) return;
+    timerEl.textContent = `Temps : ${formatDuration(elapsedSeconds)}`;
+}
+
+function startChrono() {
+    renderChrono();
+    if (chronoIntervalId !== null) {
+        clearInterval(chronoIntervalId);
+    }
+    chronoIntervalId = setInterval(() => {
+        elapsedSeconds += 1;
+        sessionStorage.setItem('gameElapsedSeconds', String(elapsedSeconds));
+        renderChrono();
+    }, 1000);
+}
+
+async function fetchGameState() {
+    const res = await fetch('/api/game/state');
+    if (!res.ok) {
+        throw new Error('Impossible de recuperer l\'etat de la partie');
+    }
+    return res.json();
+}
 
 async function startGame() {
     const mode = sessionStorage.getItem('gameMode') || 'human';
@@ -167,6 +220,7 @@ function initPageHeader() {
     const whitePlayer = getWhitePlayer();
     const playerInfo = document.getElementById('player-info');
     const statsButton = document.getElementById('stats-link');
+    const pauseButton = document.getElementById('pause-link');
 
     if (playerInfo) {
         const blackName = player?.pseudo || 'Invité';
@@ -179,6 +233,8 @@ function initPageHeader() {
     if (statsButton) {
         if (isAuthenticatedPlayer(player)) {
             statsButton.addEventListener('click', () => {
+                sessionStorage.setItem('resumeFromPause', 'true');
+                sessionStorage.setItem('statsOrigin', 'game');
                 window.location.href = '/stats.html';
             });
         } else {
@@ -186,9 +242,38 @@ function initPageHeader() {
             statsButton.title = 'Connectez-vous pour voir votre historique';
         }
     }
+
+    if (pauseButton) {
+        pauseButton.addEventListener('click', () => {
+            sessionStorage.setItem('resumeFromPause', 'true');
+            window.location.href = '/pause.html';
+        });
+    }
 }
 
 // ─── Initialisation ───────────────────────────────────────────────────────────
 
-initPageHeader();
-startGame();
+async function initGamePage() {
+    initPageHeader();
+
+    const resumeFromPause = sessionStorage.getItem('resumeFromPause') === 'true';
+    try {
+        if (resumeFromPause) {
+            const state = await fetchGameState();
+            applyState(state);
+            sessionStorage.removeItem('resumeFromPause');
+        } else {
+            elapsedSeconds = 0;
+            sessionStorage.setItem('gameElapsedSeconds', '0');
+            await startGame();
+        }
+    } catch {
+        elapsedSeconds = 0;
+        sessionStorage.setItem('gameElapsedSeconds', '0');
+        await startGame();
+    }
+
+    startChrono();
+}
+
+initGamePage();

@@ -52,6 +52,12 @@ body {
   color: #6c757d;
 }
 
+.timer-display {
+  margin: 8px 0 0;
+  color: #212529;
+  font-weight: 700;
+}
+
 .top-actions {
   display: flex;
   gap: 12px;
