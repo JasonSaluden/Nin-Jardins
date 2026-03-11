@@ -4,6 +4,14 @@ function showTab(tab, btn) {
 
     document.getElementById(tab).classList.remove('d-none');
     btn.classList.add('active');
+
+    const labels = { connexion: 'Se connecter', inscription: "S'inscrire" };
+    document.getElementById('submit-btn').textContent = labels[tab];
+}
+
+function submitActiveForm() {
+    const active = document.querySelector('.auth-form:not(.d-none)');
+    if (active) active.requestSubmit();
 }
 
 function readStoredPlayer(key = 'joueur') {

@@ -1,10 +1,8 @@
 body {
     margin: 0;
     min-height: 100vh;
-    background:
-        radial-gradient(circle at top left, rgba(245, 201, 122, 0.26), transparent 26%),
-        linear-gradient(180deg, #13261f 0%, #0c1411 100%);
-    color: #f5f1e8;
+    background-color: #f8f9fa;
+    color: #212529;
     font-family: "Segoe UI", sans-serif;
 }
 
@@ -24,19 +22,20 @@ body {
 
 .hero h1 {
     margin: 0;
-    font-size: clamp(2rem, 3vw, 3rem);
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
 }
 
 .subtitle {
     margin: 10px 0 0;
-    color: rgba(245, 241, 232, 0.74);
+    color: #6c757d;
 }
 
 .eyebrow {
     margin: 0 0 8px;
     text-transform: uppercase;
     letter-spacing: 0.18em;
-    color: #d9c287;
+    color: #6c757d;
     font-size: 0.78rem;
 }
 
@@ -48,21 +47,25 @@ body {
 }
 
 .ghost-button {
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(255, 255, 255, 0.08);
-    color: #f5f1e8;
+    border: 1px solid #ced4da;
+    background: #fff;
+    color: #495057;
     text-decoration: none;
-    padding: 10px 14px;
+    padding: 10px 16px;
     border-radius: 999px;
     font-weight: 600;
 }
 
+.ghost-button:hover {
+    background: #f8f9fa;
+}
+
 .panel {
-    background: rgba(12, 18, 15, 0.72);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 24px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 1rem;
     padding: 22px;
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .filters-panel {
@@ -79,16 +82,18 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    color: rgba(245, 241, 232, 0.78);
+    color: #495057;
     font-size: 0.92rem;
+    font-weight: 600;
 }
 
 .filters-grid select {
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.06);
-    color: #f5f1e8;
-    border-radius: 14px;
-    padding: 11px 12px;
+    border: 1px solid #ced4da;
+    background: #fff;
+    color: #212529;
+    border-radius: 0.375rem;
+    padding: 10px 12px;
+    font-size: 0.92rem;
 }
 
 .metrics-grid {
@@ -99,20 +104,24 @@ body {
 }
 
 .metric-card {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-    border-radius: 20px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 1rem;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .metric-card span {
-    color: rgba(245, 241, 232, 0.72);
+    color: #6c757d;
+    font-size: 0.9rem;
 }
 
 .metric-card strong {
     font-size: 2rem;
+    color: #212529;
 }
 
 .split-panel {
@@ -127,7 +136,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 12px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 
 .summary-row:last-child {
@@ -151,7 +160,7 @@ body {
 .section-head p,
 .empty-state p {
     margin: 0;
-    color: rgba(245, 241, 232, 0.72);
+    color: #6c757d;
 }
 
 .table-wrapper {
@@ -167,14 +176,14 @@ th,
 td {
     padding: 14px 12px;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.07);
 }
 
 th {
     font-size: 0.82rem;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: rgba(245, 241, 232, 0.68);
+    color: #6c757d;
 }
 
 .badge {
@@ -182,35 +191,35 @@ th {
     align-items: center;
     justify-content: center;
     border-radius: 999px;
-    padding: 6px 10px;
+    padding: 5px 10px;
     font-size: 0.82rem;
     font-weight: 700;
 }
 
 .badge.victoire {
-    background: rgba(109, 190, 117, 0.2);
-    color: #9be29d;
+    background: #d1e7dd;
+    color: #0f5132;
 }
 
 .badge.defaite {
-    background: rgba(210, 98, 98, 0.2);
-    color: #f1a1a1;
+    background: #f8d7da;
+    color: #842029;
 }
 
 .badge.egalite {
-    background: rgba(225, 189, 107, 0.2);
-    color: #f3d28b;
+    background: #fff3cd;
+    color: #664d03;
 }
 
 .muted {
     display: block;
-    color: rgba(245, 241, 232, 0.58);
+    color: #6c757d;
     font-size: 0.82rem;
 }
 
 .empty-state,
 .empty-inline {
-    color: rgba(245, 241, 232, 0.8);
+    color: #6c757d;
 }
 
 .empty-inline {
