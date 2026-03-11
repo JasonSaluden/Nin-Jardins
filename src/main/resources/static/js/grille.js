@@ -141,7 +141,13 @@ function getAIDelayMs(difficulteIA) {
 }
 
 function iaDoitJouer(state) {
-    return Boolean(state && state.contreIA && !state.partieTerminee && state.joueurCourant === 2);
+    if (!state || !state.contreIA || state.partieTerminee) {
+        return false;
+    }
+
+    const selectedColor = sessionStorage.getItem('playerColor') || 'black';
+    const aiColor = selectedColor === 'white' ? 1 : 2;
+    return state.joueurCourant === aiColor;
 }
 
 let iaMovePending = false;
@@ -184,7 +190,22 @@ async function startGame() {
     boardLocked = true;
     const mode = sessionStorage.getItem('gameMode') || 'human';
     const difficulty = sessionStorage.getItem('aiDifficulty') || 'medium';
+    const selectedColor = sessionStorage.getItem('playerColor') || 'black';
     const whitePlayer = getWhitePlayer();
+
+    let joueurNoirId = null;
+    let joueurBlancId = null;
+    if (selectedColor === 'white') {
+        joueurBlancId = isAuthenticatedPlayer(player) ? player.id : null;
+        if (mode === 'human' && isAuthenticatedPlayer(whitePlayer)) {
+            joueurNoirId = whitePlayer.id;
+        }
+    } else {
+        joueurNoirId = isAuthenticatedPlayer(player) ? player.id : null;
+        if (mode === 'human' && isAuthenticatedPlayer(whitePlayer)) {
+            joueurBlancId = whitePlayer.id;
+        }
+    }
 
     try {
         const res = await fetch('/api/game/start', {
@@ -193,8 +214,9 @@ async function startGame() {
             body: JSON.stringify({
                 contreIA: mode === 'ai',
                 difficulteIA: difficulty,
-                joueurId: isAuthenticatedPlayer(player) ? player.id : null,
-                joueurBlancId: isAuthenticatedPlayer(whitePlayer) ? whitePlayer.id : null
+                couleurJoueur: selectedColor,
+                joueurId: joueurNoirId,
+                joueurBlancId: joueurBlancId
             })
         });
 
@@ -229,26 +251,35 @@ async function playMove(row, col) {
         const state = await res.json();
         applyState(state);
 
-        if (iaDoitJouer(state)) {
-            iaMovePending = true;
-            setTimeout(async () => {
-                const aiRes = await fetch('/api/game/ai-move', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' }
-                });
-
-                iaMovePending = false;
-                if (!aiRes.ok) return;
-
-                const aiState = await aiRes.json();
-                applyState(aiState);
-            }, getAIDelayMs(state.difficulteIA));
-        }
+        scheduleAIMoveIfNeeded(state);
     } catch {
         showGameError('Impossible de jouer ce coup pour le moment.');
     } finally {
         boardLocked = false;
     }
+}
+
+function scheduleAIMoveIfNeeded(state) {
+    if (!iaDoitJouer(state) || iaMovePending) {
+        return;
+    }
+
+    iaMovePending = true;
+    setTimeout(async () => {
+        try {
+            const aiRes = await fetch('/api/game/ai-move', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!aiRes.ok) return;
+
+            const aiState = await aiRes.json();
+            applyState(aiState);
+        } finally {
+            iaMovePending = false;
+        }
+    }, getAIDelayMs(state.difficulteIA));
 }
 
 // ─── Interactions ─────────────────────────────────────────────────────────────
@@ -265,6 +296,8 @@ document.querySelectorAll('.case').forEach(el => {
 function initPageHeader() {
     const player = getCurrentPlayer();
     const whitePlayer = getWhitePlayer();
+    const mode = sessionStorage.getItem('gameMode') || 'human';
+    const selectedColor = sessionStorage.getItem('playerColor') || 'black';
     const playerInfo = document.getElementById('player-info');
     const statsButton = document.getElementById('stats-link');
     const pauseButton = document.getElementById('pause-link');
@@ -273,10 +306,12 @@ function initPageHeader() {
     const ruleDialogContent = document.getElementById('rule-dialog-content');
 
     if (playerInfo) {
-        const blackName = player?.pseudo || 'Invité';
-        const whiteName = isAuthenticatedPlayer(whitePlayer)
+        const opponentName = isAuthenticatedPlayer(whitePlayer)
             ? whitePlayer.pseudo
-            : (sessionStorage.getItem('gameMode') === 'ai' ? 'IA Othello' : 'Joueur local');
+            : (mode === 'ai' ? 'IA Othello' : 'Joueur local');
+
+        const blackName = selectedColor === 'white' ? opponentName : (player?.pseudo || 'Invité');
+        const whiteName = selectedColor === 'white' ? (player?.pseudo || 'Invité') : opponentName;
         playerInfo.textContent = `Noir : ${blackName}  |  Blanc : ${whiteName}`;
     }
 
@@ -337,16 +372,21 @@ async function initGamePage() {
         if (resumeFromPause) {
             const state = await fetchGameState();
             applyState(state);
+            scheduleAIMoveIfNeeded(state);
             sessionStorage.removeItem('resumeFromPause');
         } else {
             elapsedSeconds = 0;
             sessionStorage.setItem('gameElapsedSeconds', '0');
             await startGame();
+            const state = await fetchGameState();
+            scheduleAIMoveIfNeeded(state);
         }
     } catch {
         elapsedSeconds = 0;
         sessionStorage.setItem('gameElapsedSeconds', '0');
         await startGame();
+        const state = await fetchGameState();
+        scheduleAIMoveIfNeeded(state);
     }
 
     startChrono();

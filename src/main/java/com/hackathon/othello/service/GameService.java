@@ -33,7 +33,7 @@ public class GameService {
     // Joueur courant : 1 = noir, 2 = blanc
     private int joueurCourant = 1;
     private boolean contreIA = false;
-    private final int joueurIA = 2;
+    private int joueurIA = 2;
     private String difficulteIA = "medium";
     private final Random random = new Random();
     private final JoueursRepository joueursRepository;
@@ -142,7 +142,7 @@ public class GameService {
         return coups;
     }
 
-    public int evaluerPlateau(int[][] plateau){
+    public int evaluerPlateau(int[][] plateau) {
         int score = 0;
         for (int l = 0; l < 8; l++) {
             for (int c = 0; c < 8; c++) {
@@ -173,7 +173,7 @@ public class GameService {
             int c = coup[1] + dir[1];
             List<int[]> aRetourner = new ArrayList<>();
             while (l >= 0 && l < 8 && c >= 0 && c < 8 && copie[l][c] == adversaire) {
-                aRetourner.add(new int[]{l, c});
+                aRetourner.add(new int[] { l, c });
                 l += dir[0];
                 c += dir[1];
             }
@@ -191,7 +191,8 @@ public class GameService {
         List<int[]> coups = new ArrayList<>();
         for (int l = 0; l < 8; l++) {
             for (int c = 0; c < 8; c++) {
-                if (p[l][c] != 0) continue;
+                if (p[l][c] != 0)
+                    continue;
                 for (int[] dir : DIRECTIONS) {
                     int nl = l + dir[0];
                     int nc = c + dir[1];
@@ -202,7 +203,7 @@ public class GameService {
                         nc += dir[1];
                     }
                     if (aPionAdverse && nl >= 0 && nl < 8 && nc >= 0 && nc < 8 && p[nl][nc] == joueur) {
-                        coups.add(new int[]{l, c});
+                        coups.add(new int[] { l, c });
                         break;
                     }
                 }
@@ -223,24 +224,28 @@ public class GameService {
         if (maximise) {
             int maxEval = Integer.MIN_VALUE;
             List<int[]> coups = getCoupsValides(p, joueurIA);
-            if (coups.isEmpty()) return minimax(p, profondeur - 1, alpha, beta, false);
+            if (coups.isEmpty())
+                return minimax(p, profondeur - 1, alpha, beta, false);
             for (int[] coup : coups) {
                 int eval = minimax(simulerCoup(p, coup, joueurIA), profondeur - 1, alpha, beta, false);
                 maxEval = Math.max(maxEval, eval);
                 alpha = Math.max(alpha, eval);
-                if (beta <= alpha) break;
+                if (beta <= alpha)
+                    break;
             }
             return maxEval;
         } else {
             int minEval = Integer.MAX_VALUE;
             int adversaire = getAdversaire(joueurIA);
             List<int[]> coups = getCoupsValides(p, adversaire);
-            if (coups.isEmpty()) return minimax(p, profondeur - 1, alpha, beta, true);
+            if (coups.isEmpty())
+                return minimax(p, profondeur - 1, alpha, beta, true);
             for (int[] coup : coups) {
                 int eval = minimax(simulerCoup(p, coup, adversaire), profondeur - 1, alpha, beta, true);
                 minEval = Math.min(minEval, eval);
                 beta = Math.min(beta, eval);
-                if (beta <= alpha) break;
+                if (beta <= alpha)
+                    break;
             }
             return minEval;
         }
@@ -441,20 +446,42 @@ public class GameService {
         return total;
     }
 
-    public void startGame(boolean contreIA, String difficulteIA, Integer joueurId, Integer joueurBlancId) {
+    public void startGame(boolean contreIA, String difficulteIA, String couleurJoueur, Integer joueurId,
+            Integer joueurBlancId) {
         initialiserPlateau();
         joueurCourant = 1;
         this.contreIA = contreIA;
         this.difficulteIA = normaliserDifficulte(difficulteIA);
-        this.joueurNoir = joueurId != null ? joueursRepository.findById(joueurId).orElse(null) : null;
-        this.joueurBlanc = joueurNoir != null ? resoudreJoueurBlanc(contreIA, joueurBlancId) : null;
+        this.joueurIA = determinerCouleurIA(contreIA, couleurJoueur);
+        this.joueurNoir = resoudreJoueurNoir(contreIA, joueurId);
+        this.joueurBlanc = resoudreJoueurBlanc(contreIA, joueurBlancId, joueurNoir);
         this.debutPartie = Instant.now();
         this.partieSauvegardee = false;
+
+        // Le premier coup IA est declenche par le front avec une temporisation,
+        // pour laisser visible le plateau initial.
     }
 
-    private Joueurs resoudreJoueurBlanc(boolean contreIA, Integer joueurBlancId) {
-        if (!contreIA && joueurBlancId != null && joueurNoir != null && joueurBlancId != joueurNoir.getId_joueurs()) {
-            return joueursRepository.findById(joueurBlancId).orElseGet(() -> resoudreAdversairePersistant(false));
+    private int determinerCouleurIA(boolean contreIA, String couleurJoueur) {
+        if (!contreIA) {
+            return 2;
+        }
+        if ("white".equalsIgnoreCase(couleurJoueur)) {
+            return 1;
+        }
+        return 2;
+    }
+
+    private Joueurs resoudreJoueurNoir(boolean contreIA, Integer joueurId) {
+        if (joueurId != null) {
+            return joueursRepository.findById(joueurId).orElseGet(() -> resoudreAdversairePersistant(contreIA));
+        }
+        return resoudreAdversairePersistant(contreIA);
+    }
+
+    private Joueurs resoudreJoueurBlanc(boolean contreIA, Integer joueurBlancId, Joueurs joueurNoir) {
+        if (joueurBlancId != null && (joueurNoir == null || joueurBlancId != joueurNoir.getId_joueurs())) {
+            return joueursRepository.findById(joueurBlancId).orElseGet(() -> resoudreAdversairePersistant(contreIA));
         }
         return resoudreAdversairePersistant(contreIA);
     }
