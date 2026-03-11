@@ -142,6 +142,110 @@ public class GameService {
         return coups;
     }
 
+    public int evaluerPlateau(int[][] plateau){
+        int score = 0;
+        for (int l = 0; l < 8; l++) {
+            for (int c = 0; c < 8; c++) {
+                if (plateau[l][c] == joueurIA) {
+                    score += POSITION_WEIGHTS[l][c];
+                } else if (plateau[l][c] != 0) {
+                    score -= POSITION_WEIGHTS[l][c];
+                }
+            }
+        }
+        return score;
+    }
+
+    private int[][] copierPlateau(int[][] original) {
+        int[][] copie = new int[8][8];
+        for (int i = 0; i < 8; i++) {
+            copie[i] = original[i].clone();
+        }
+        return copie;
+    }
+
+    private int[][] simulerCoup(int[][] p, int[] coup, int joueur) {
+        int[][] copie = copierPlateau(p);
+        int adversaire = getAdversaire(joueur);
+        copie[coup[0]][coup[1]] = joueur;
+        for (int[] dir : DIRECTIONS) {
+            int l = coup[0] + dir[0];
+            int c = coup[1] + dir[1];
+            List<int[]> aRetourner = new ArrayList<>();
+            while (l >= 0 && l < 8 && c >= 0 && c < 8 && copie[l][c] == adversaire) {
+                aRetourner.add(new int[]{l, c});
+                l += dir[0];
+                c += dir[1];
+            }
+            if (l >= 0 && l < 8 && c >= 0 && c < 8 && copie[l][c] == joueur) {
+                for (int[] pos : aRetourner) {
+                    copie[pos[0]][pos[1]] = joueur;
+                }
+            }
+        }
+        return copie;
+    }
+
+    private List<int[]> getCoupsValides(int[][] p, int joueur) {
+        int adversaire = getAdversaire(joueur);
+        List<int[]> coups = new ArrayList<>();
+        for (int l = 0; l < 8; l++) {
+            for (int c = 0; c < 8; c++) {
+                if (p[l][c] != 0) continue;
+                for (int[] dir : DIRECTIONS) {
+                    int nl = l + dir[0];
+                    int nc = c + dir[1];
+                    boolean aPionAdverse = false;
+                    while (nl >= 0 && nl < 8 && nc >= 0 && nc < 8 && p[nl][nc] == adversaire) {
+                        aPionAdverse = true;
+                        nl += dir[0];
+                        nc += dir[1];
+                    }
+                    if (aPionAdverse && nl >= 0 && nl < 8 && nc >= 0 && nc < 8 && p[nl][nc] == joueur) {
+                        coups.add(new int[]{l, c});
+                        break;
+                    }
+                }
+            }
+        }
+        return coups;
+    }
+
+    private boolean estPartieTerminee(int[][] p) {
+        return getCoupsValides(p, 1).isEmpty() && getCoupsValides(p, 2).isEmpty();
+    }
+
+    public int minimax(int[][] p, int profondeur, int alpha, int beta, boolean maximise) {
+        if (profondeur == 0 || estPartieTerminee(p)) {
+            return evaluerPlateau(p);
+        }
+
+        if (maximise) {
+            int maxEval = Integer.MIN_VALUE;
+            List<int[]> coups = getCoupsValides(p, joueurIA);
+            if (coups.isEmpty()) return minimax(p, profondeur - 1, alpha, beta, false);
+            for (int[] coup : coups) {
+                int eval = minimax(simulerCoup(p, coup, joueurIA), profondeur - 1, alpha, beta, false);
+                maxEval = Math.max(maxEval, eval);
+                alpha = Math.max(alpha, eval);
+                if (beta <= alpha) break;
+            }
+            return maxEval;
+        } else {
+            int minEval = Integer.MAX_VALUE;
+            int adversaire = getAdversaire(joueurIA);
+            List<int[]> coups = getCoupsValides(p, adversaire);
+            if (coups.isEmpty()) return minimax(p, profondeur - 1, alpha, beta, true);
+            for (int[] coup : coups) {
+                int eval = minimax(simulerCoup(p, coup, adversaire), profondeur - 1, alpha, beta, true);
+                minEval = Math.min(minEval, eval);
+                beta = Math.min(beta, eval);
+                if (beta <= alpha) break;
+            }
+            return minEval;
+        }
+    }
+
     // Joue un coup et retourne les pions adverses
     public boolean jouerCoup(int ligne, int colonne, int joueur) {
         // Pas possible si le coup n'est pas valide
@@ -285,12 +389,8 @@ public class GameService {
         int meilleurScore = Integer.MIN_VALUE;
 
         for (int[] coup : coupsPossibles) {
-            int l = coup[0];
-            int c = coup[1];
-            int scorePosition = POSITION_WEIGHTS[l][c];
-            int scoreRetournement = compterPionsRetournes(l, c, joueurIA) * 4;
-            int score = scorePosition + scoreRetournement;
-
+            int[][] apres = simulerCoup(plateau, coup, joueurIA);
+            int score = minimax(apres, 3, Integer.MIN_VALUE, Integer.MAX_VALUE, false);
             if (score > meilleurScore) {
                 meilleurScore = score;
                 meilleur = coup;
