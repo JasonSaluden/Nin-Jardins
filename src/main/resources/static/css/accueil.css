@@ -24,14 +24,8 @@
     left: 0;
 }
 
-.session-panel {
+.entry-panel {
     border-top: 1px solid rgba(0, 0, 0, 0.08);
     padding-top: 1rem;
 }
 
-.session-card {
-    background: #f8f9fa;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 1rem;
-    padding: 1rem;
-}

@@ -75,68 +75,8 @@
                 <hr class="flex-grow-1 m-0">
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Adversaire</label>
-                <div class="d-flex gap-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="game-mode" id="mode-human" value="human" checked>
-                        <label class="form-check-label" for="mode-human">Joueur</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="game-mode" id="mode-ai" value="ai">
-                        <label class="form-check-label" for="mode-ai">IA</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-3" id="difficulty-wrapper">
-                <label for="ai-difficulty" class="form-label fw-semibold">Difficulté IA</label>
-                <select id="ai-difficulty" class="form-select">
-                    <option value="easy">Facile</option>
-                    <option value="medium" selected>Moyen</option>
-                    <option value="hard">Difficile</option>
-                </select>
-            </div>
-
-            <div id="session-panel" class="session-panel mt-4">
-                <div class="session-card mb-3">
-                    <div class="d-flex justify-content-between align-items-start gap-3">
-                        <div>
-                            <p class="text-uppercase small text-muted mb-1">Joueur noir</p>
-                            <strong id="player-one-name">Aucun joueur connecté</strong>
-                            <p id="player-one-meta" class="small text-muted mb-0">Connectez-vous pour enregistrer vos parties.</p>
-                        </div>
-                        <button id="logout-primary" type="button" class="btn btn-sm btn-outline-secondary d-none" onclick="logoutPrimary()">Déconnecter</button>
-                    </div>
-                </div>
-
-                <div id="second-player-panel" class="session-card mb-3 d-none">
-                    <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
-                        <div>
-                            <p class="text-uppercase small text-muted mb-1">Joueur blanc</p>
-                            <strong id="player-two-name">Aucun joueur connecté</strong>
-                            <p id="player-two-meta" class="small text-muted mb-0">Connectez le second joueur pour enregistrer l'historique des deux côtés.</p>
-                        </div>
-                        <button id="logout-secondary" type="button" class="btn btn-sm btn-outline-secondary d-none" onclick="logoutSecondary()">Déconnecter</button>
-                    </div>
-
-                    <form id="second-player-form" onsubmit="loginSecondPlayer(event)">
-                        <div class="mb-2">
-                            <label class="form-label fw-semibold">Pseudo du joueur blanc</label>
-                            <input type="text" id="second-pseudo" class="form-control" placeholder="Pseudo du second joueur">
-                        </div>
-                        <div class="mb-2">
-                            <label class="form-label fw-semibold">Mot de passe</label>
-                            <input type="password" id="second-mdp" class="form-control" placeholder="Mot de passe du second joueur">
-                        </div>
-                        <p class="text-danger small mb-2" id="second-error"></p>
-                        <p class="text-success small mb-2" id="second-success"></p>
-                        <button type="submit" class="btn btn-outline-dark w-100">Connecter le joueur blanc</button>
-                    </form>
-                </div>
-
-                <p id="launch-error" class="text-danger small mb-2"></p>
-                <button id="launch-game" type="button" class="btn btn-success w-100" onclick="startSelectedGame()">Lancer la partie</button>
+            <div class="entry-panel mt-4">
+                <p class="small text-muted mb-3">Après connexion, un second écran vous permettra de choisir le joueur 2 et la difficulté.</p>
             </div>
 
             <button class="btn btn-outline-secondary w-100" onclick="playAsGuest()">Jouer en invité</button>

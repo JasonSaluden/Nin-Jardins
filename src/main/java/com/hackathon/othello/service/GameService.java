@@ -385,10 +385,12 @@ public class GameService {
         }
 
         Parties partieSauvegardeeEntity = partiesRepository.save(partie);
-        scoresRepository.save(new Scores(joueurNoir, partieSauvegardeeEntity, Scores.CouleurPion.noir, compterPions(1)));
+        scoresRepository
+                .save(new Scores(joueurNoir, partieSauvegardeeEntity, Scores.CouleurPion.noir, compterPions(1)));
 
         if (joueurBlanc != null) {
-            scoresRepository.save(new Scores(joueurBlanc, partieSauvegardeeEntity, Scores.CouleurPion.blanc, compterPions(2)));
+            scoresRepository
+                    .save(new Scores(joueurBlanc, partieSauvegardeeEntity, Scores.CouleurPion.blanc, compterPions(2)));
         }
 
         partieSauvegardee = true;
