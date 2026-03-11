@@ -85,6 +85,24 @@ function renderInfo(state) {
     }
 }
 
+// ─── Verrou plateau ───────────────────────────────────────────────────────────
+
+let boardLocked = false;
+
+function showGameError(message) {
+    const el = document.getElementById('game-error');
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove('hidden');
+}
+
+function clearGameError() {
+    const el = document.getElementById('game-error');
+    if (!el) return;
+    el.textContent = '';
+    el.classList.add('hidden');
+}
+
 // ─── Appels API ───────────────────────────────────────────────────────────────
 
 async function applyState(state) {
@@ -94,42 +112,72 @@ async function applyState(state) {
 }
 
 async function startGame() {
+    const player = getCurrentPlayer();
+    if (!player) {
+        window.location.href = '/';
+        return;
+    }
+
+    boardLocked = true;
     const mode = sessionStorage.getItem('gameMode') || 'human';
     const difficulty = sessionStorage.getItem('aiDifficulty') || 'medium';
-    const player = getCurrentPlayer();
     const whitePlayer = getWhitePlayer();
-    const res = await fetch('/api/game/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            contreIA: mode === 'ai',
-            difficulteIA: difficulty,
-            joueurId: isAuthenticatedPlayer(player) ? player.id : null,
-            joueurBlancId: isAuthenticatedPlayer(whitePlayer) ? whitePlayer.id : null
-        })
-    });
-    const state = await res.json();
-    applyState(state);
+
+    try {
+        const res = await fetch('/api/game/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contreIA: mode === 'ai',
+                difficulteIA: difficulty,
+                joueurId: isAuthenticatedPlayer(player) ? player.id : null,
+                joueurBlancId: isAuthenticatedPlayer(whitePlayer) ? whitePlayer.id : null
+            })
+        });
+
+        if (!res.ok) {
+            showGameError('Impossible de démarrer la partie. Vérifiez votre connexion et réessayez.');
+            return;
+        }
+
+        const state = await res.json();
+        clearGameError();
+        applyState(state);
+    } catch {
+        showGameError('Impossible de joindre le serveur. Vérifiez votre connexion.');
+    } finally {
+        boardLocked = false;
+    }
 }
 
 async function playMove(row, col) {
-    const res = await fetch('/api/game/move', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ligne: row, colonne: col })
-    });
+    if (boardLocked) return;
+    boardLocked = true;
 
-    if (!res.ok) return; // coup invalide ignoré
+    try {
+        const res = await fetch('/api/game/move', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ligne: row, colonne: col })
+        });
 
-    const state = await res.json();
-    applyState(state);
+        if (!res.ok) return; // coup invalide ignoré silencieusement
+
+        const state = await res.json();
+        clearGameError();
+        applyState(state);
+    } catch {
+        showGameError('Erreur réseau lors du coup. Réessayez.');
+    } finally {
+        boardLocked = false;
+    }
 }
 
 // ─── Interactions ─────────────────────────────────────────────────────────────
 
 document.querySelectorAll('.case').forEach(el => {
     el.addEventListener('click', function () {
-        if (!this.classList.contains('playable')) return;
+        if (boardLocked || !this.classList.contains('playable')) return;
         const { row, col } = caseIdToCoords(this.id);
         playMove(row, col);
     });
