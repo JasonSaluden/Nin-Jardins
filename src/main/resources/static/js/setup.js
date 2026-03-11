@@ -56,6 +56,7 @@ function updateScreen() {
     const secondSummary = document.getElementById('second-player-summary');
     const clearSecondPlayer = document.getElementById('clear-second-player');
     const help = document.getElementById('player-two-help');
+    const statsButton = document.getElementById('setup-stats-link');
 
     setText('player-one-label', playerOne?.pseudo || 'Invité');
     setText('setup-subtitle', playerOne?.guest
@@ -86,6 +87,10 @@ function updateScreen() {
         secondSummary.classList.toggle('hidden', !hasPlayerTwo);
         clearSecondPlayer.classList.toggle('hidden', !hasPlayerTwo);
         setText('player-two-label', hasPlayerTwo ? playerTwo.pseudo : '');
+    }
+
+    if (statsButton) {
+        statsButton.classList.toggle('hidden', !isRegisteredPlayer(playerOne));
     }
 }
 
@@ -125,6 +130,16 @@ function initSetup() {
     document.getElementById('clear-second-player')?.addEventListener('click', () => {
         clearSecondPlayerState();
         updateScreen();
+    });
+
+    document.getElementById('setup-stats-link')?.addEventListener('click', () => {
+        sessionStorage.setItem('statsOrigin', 'setup');
+        window.location.href = '/stats.html';
+    });
+
+    document.getElementById('setup-logout-link')?.addEventListener('click', () => {
+        sessionStorage.clear();
+        window.location.href = '/';
     });
 
     updateScreen();

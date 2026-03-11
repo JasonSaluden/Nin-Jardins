@@ -11,9 +11,15 @@
     <main class="setup-shell">
         <section class="setup-card">
             <header class="setup-header">
-                <p class="eyebrow">Préparation de partie</p>
-                <h1>Configurer la partie</h1>
-                <p id="setup-subtitle" class="subtitle"></p>
+                <div>
+                    <p class="eyebrow">Préparation de partie</p>
+                    <h1>Configurer la partie</h1>
+                    <p id="setup-subtitle" class="subtitle"></p>
+                </div>
+                <div class="setup-top-actions">
+                    <button id="setup-stats-link" class="ghost-button hidden" type="button">Mes statistiques</button>
+                    <button id="setup-logout-link" class="ghost-button" type="button">Se déconnecter</button>
+                </div>
             </header>
 
             <section class="setup-panel">
@@ -65,7 +71,6 @@
             <p id="setup-error" class="feedback error"></p>
 
             <footer class="footer-actions">
-                <a class="ghost-button" href="/">Retour</a>
                 <button class="primary-button" type="button" onclick="startConfiguredGame()">Valider et jouer</button>
             </footer>
         </section>

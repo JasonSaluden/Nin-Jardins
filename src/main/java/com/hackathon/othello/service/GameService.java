@@ -340,6 +340,14 @@ public class GameService {
         boolean ok = jouerCoupEtPasserTour(ligne, colonne);
         if (!ok)
             return false;
+        enregistrerPartieSiTerminee();
+        return true;
+    }
+
+    public boolean jouerTourIAEtCompleterTour() {
+        if (!contreIA || joueurCourant != joueurIA || estPartieTerminee()) {
+            return false;
+        }
         jouerToursIA();
         enregistrerPartieSiTerminee();
         return true;

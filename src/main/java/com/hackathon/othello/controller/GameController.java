@@ -45,6 +45,16 @@ public class GameController {
         return ResponseEntity.ok(buildState());
     }
 
+    /** Déclenche le tour de l'IA (appelé après la temporisation côté client) */
+    @PostMapping("/ai-move")
+    public ResponseEntity<?> aiMove() {
+        boolean ok = gameService.jouerTourIAEtCompleterTour();
+        if (!ok) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tour IA indisponible");
+        }
+        return ResponseEntity.ok(buildState());
+    }
+
     // -------------------------------------------------------------------------
 
     private GameStateResponse buildState() {
