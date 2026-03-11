@@ -109,10 +109,92 @@ async function applyState(state) {
     renderInfo(state);
     savePauseSnapshot(state);
 
-    if (state.partieTerminee && chronoIntervalId !== null) {
+    if (state.partieTerminee) {
+        if (chronoIntervalId !== null) {
+            clearInterval(chronoIntervalId);
+            chronoIntervalId = null;
+        }
+        showEndModal(state);
+    }
+}
+
+function showPauseModal() {
+    const dialog = document.getElementById('pause-dialog');
+    if (!dialog) return;
+
+    if (chronoIntervalId !== null) {
         clearInterval(chronoIntervalId);
         chronoIntervalId = null;
     }
+
+    const snapshot = (() => {
+        try {
+            const raw = sessionStorage.getItem('pauseGameSnapshot');
+            return raw ? JSON.parse(raw) : null;
+        } catch { return null; }
+    })();
+
+    const timerEl = document.getElementById('pause-timer');
+    const scoreEl = document.getElementById('pause-score');
+    const modeEl = document.getElementById('pause-mode');
+    const resumeBtn = document.getElementById('pause-resume-btn');
+
+    if (timerEl) timerEl.textContent = `Temps : ${formatDuration(elapsedSeconds)}`;
+    if (scoreEl && snapshot) scoreEl.textContent = `Noir : ${snapshot.scoreNoir}  —  Blanc : ${snapshot.scoreBlanc}`;
+    if (modeEl && snapshot) modeEl.textContent = snapshot.modeTexte;
+
+    if (resumeBtn) {
+        resumeBtn.onclick = () => {
+            dialog.close();
+            startChrono();
+        };
+    }
+
+    dialog.showModal();
+}
+
+function showEndModal(state) {
+    const dialog = document.getElementById('end-dialog');
+    if (!dialog) return;
+
+    const player = getCurrentPlayer();
+    const whitePlayer = getWhitePlayer();
+    const blackName = player?.pseudo || 'Noirs';
+    const whiteName = isAuthenticatedPlayer(whitePlayer)
+        ? whitePlayer.pseudo
+        : (sessionStorage.getItem('gameMode') === 'ai' ? 'IA Othello' : 'Blancs');
+
+    const titleEl = document.getElementById('end-title');
+    const scoreEl = document.getElementById('end-score');
+    const modeEl = document.getElementById('end-mode');
+    const statsBtn = document.getElementById('end-stats-btn');
+
+    if (titleEl) {
+        if (state.vainqueur === 0) {
+            titleEl.textContent = 'Egalite !';
+        } else if (state.vainqueur === 1) {
+            titleEl.textContent = `${blackName} gagne !`;
+        } else {
+            titleEl.textContent = `${whiteName} gagne !`;
+        }
+    }
+
+    if (scoreEl) scoreEl.textContent = `Noir : ${state.scoreNoir}  —  Blanc : ${state.scoreBlanc}`;
+    if (modeEl) modeEl.textContent = getModeTexte(state);
+
+    if (statsBtn) {
+        if (isAuthenticatedPlayer(player)) {
+            statsBtn.addEventListener('click', () => {
+                sessionStorage.setItem('statsOrigin', 'game');
+                window.location.href = '/stats.html';
+            });
+        } else {
+            statsBtn.disabled = true;
+            statsBtn.title = 'Connectez-vous pour voir votre historique';
+        }
+    }
+
+    dialog.showModal();
 }
 
 function getModeTexte(state) {
@@ -295,8 +377,7 @@ function initPageHeader() {
 
     if (pauseButton) {
         pauseButton.addEventListener('click', () => {
-            sessionStorage.setItem('resumeFromPause', 'true');
-            window.location.href = '/pause.html';
+            showPauseModal();
         });
     }
 
