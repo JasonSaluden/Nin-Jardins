@@ -6,64 +6,31 @@ function showTab(tab, btn) {
     btn.classList.add('active');
 }
 
-function getSelectedGameMode() {
-    const checked = document.querySelector('input[name="game-mode"]:checked');
-    return checked ? checked.value : 'human';
-}
-
-function saveSelectedGameMode() {
-    sessionStorage.setItem('gameMode', getSelectedGameMode());
-}
-
-function getSelectedAIDifficulty() {
-    const select = document.getElementById('ai-difficulty');
-    return select ? select.value : 'medium';
-}
-
-function saveSelectedAIDifficulty() {
-    sessionStorage.setItem('aiDifficulty', getSelectedAIDifficulty());
-}
-
-function syncDifficultyAvailability() {
-    const select = document.getElementById('ai-difficulty');
-    const wrapper = document.getElementById('difficulty-wrapper');
-    if (!select || !wrapper) return;
-
-    const vsAI = getSelectedGameMode() === 'ai';
-    select.disabled = !vsAI;
-    wrapper.classList.toggle('opacity-50', !vsAI);
-}
-
-function initGameModeSelector() {
-    const savedMode = sessionStorage.getItem('gameMode') || 'human';
-    const savedDifficulty = sessionStorage.getItem('aiDifficulty') || 'medium';
-
-    const modeInput = document.querySelector(`input[name="game-mode"][value="${savedMode}"]`);
-    if (modeInput) modeInput.checked = true;
-
-    const difficultySelect = document.getElementById('ai-difficulty');
-    if (difficultySelect) difficultySelect.value = savedDifficulty;
-
-    document.querySelectorAll('input[name="game-mode"]').forEach(input => {
-        input.addEventListener('change', () => {
-            saveSelectedGameMode();
-            syncDifficultyAvailability();
-        });
-    });
-
-    if (difficultySelect) {
-        difficultySelect.addEventListener('change', saveSelectedAIDifficulty);
+function readStoredPlayer(key = 'joueur') {
+    try {
+        const raw = sessionStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
     }
+}
 
-    saveSelectedGameMode();
-    saveSelectedAIDifficulty();
-    syncDifficultyAvailability();
+function isRegisteredPlayer(player) {
+    return Boolean(player && Number.isInteger(player.id) && !player.guest);
+}
+
+function resetGameSetup() {
+    sessionStorage.removeItem('joueurBlanc');
+    sessionStorage.setItem('gameMode', 'human');
+    sessionStorage.setItem('aiDifficulty', 'medium');
 }
 
 async function login(e) {
     e.preventDefault();
     const errorEl = document.getElementById('login-error');
+    const successEl = document.getElementById('login-success');
     errorEl.textContent = '';
+    successEl.textContent = '';
 
     const body = {
         pseudo: document.getElementById('login-pseudo').value,
@@ -84,8 +51,9 @@ async function login(e) {
 
         const joueur = await res.json();
         sessionStorage.setItem('joueur', JSON.stringify(joueur));
-        saveSelectedGameMode();
-        window.location.href = '/grille.html';
+        resetGameSetup();
+        successEl.textContent = 'Connexion réussie. Redirection vers la configuration...';
+        window.location.href = '/setup.html';
     } catch (err) {
         errorEl.textContent = 'Erreur de connexion au serveur.';
     }
@@ -125,8 +93,7 @@ async function register(e) {
 
 function playAsGuest() {
     sessionStorage.setItem('joueur', JSON.stringify({ pseudo: 'Invité', guest: true }));
-    saveSelectedGameMode();
-    window.location.href = '/grille.html';
+    resetGameSetup();
+    window.location.href = '/setup.html';
 }
 
-initGameModeSelector();

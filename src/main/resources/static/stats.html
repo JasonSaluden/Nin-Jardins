@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Othello - Statistiques</title>
+    <link rel="stylesheet" href="/css/stats.css">
+</head>
+<body>
+    <main class="stats-shell">
+        <header class="hero">
+            <div>
+                <p class="eyebrow">Historique joueur</p>
+                <h1 id="stats-title">Mes statistiques</h1>
+                <p id="stats-subtitle" class="subtitle">Chargement de votre historique...</p>
+            </div>
+            <div class="hero-actions">
+                <a class="ghost-button" href="/grille.html">Retour au jeu</a>
+                <a class="ghost-button" href="/">Accueil</a>
+            </div>
+        </header>
+
+        <section id="guest-state" class="panel empty-state hidden">
+            <h2>Historique indisponible</h2>
+            <p>Connectez-vous pour enregistrer vos parties et consulter vos statistiques.</p>
+        </section>
+
+        <section id="stats-content" class="hidden">
+            <section class="panel filters-panel">
+                <div class="filters-grid">
+                    <label>
+                        <span>Profil affiché</span>
+                        <select id="player-select"></select>
+                    </label>
+                    <label>
+                        <span>Mode</span>
+                        <select id="filter-mode">
+                            <option value="all">Tous</option>
+                            <option value="VS IA">VS IA</option>
+                            <option value="Local">Local</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Résultat</span>
+                        <select id="filter-result">
+                            <option value="all">Tous</option>
+                            <option value="victoire">Victoire</option>
+                            <option value="defaite">Défaite</option>
+                            <option value="egalite">Égalité</option>
+                        </select>
+                    </label>
+                    <label>
+                        <span>Difficulté</span>
+                        <select id="filter-difficulty">
+                            <option value="all">Toutes</option>
+                            <option value="Facile">Facile</option>
+                            <option value="Moyen">Moyen</option>
+                            <option value="Difficile">Difficile</option>
+                            <option value="Joueur local">Joueur local</option>
+                        </select>
+                    </label>
+                </div>
+            </section>
+
+            <section class="metrics-grid">
+                <article class="metric-card">
+                    <span>Parties jouées</span>
+                    <strong id="metric-total">0</strong>
+                </article>
+                <article class="metric-card">
+                    <span>Taux de victoire</span>
+                    <strong id="metric-rate">0 %</strong>
+                </article>
+                <article class="metric-card">
+                    <span>Score moyen</span>
+                    <strong id="metric-average">0</strong>
+                </article>
+                <article class="metric-card">
+                    <span>Meilleur score</span>
+                    <strong id="metric-best">0</strong>
+                </article>
+            </section>
+
+            <section class="panel split-panel">
+                <div>
+                    <h2>Bilan</h2>
+                    <div class="summary-row">
+                        <span>Victoires</span>
+                        <strong id="summary-wins">0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Défaites</span>
+                        <strong id="summary-losses">0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Égalités</span>
+                        <strong id="summary-draws">0</strong>
+                    </div>
+                </div>
+                <div>
+                    <h2>Victoires par couleur</h2>
+                    <div class="summary-row">
+                        <span>Noir</span>
+                        <strong id="summary-black">0</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Blanc</span>
+                        <strong id="summary-white">0</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="section-head">
+                    <h2>Dernières parties</h2>
+                    <p id="history-count">Résultats enregistrés à la fin de chaque partie connectée.</p>
+                </div>
+                <div id="history-empty" class="empty-inline hidden">Aucune partie enregistrée pour le moment.</div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Mode</th>
+                                <th>Adversaire</th>
+                                <th>Couleur</th>
+                                <th>Résultat</th>
+                                <th>Score</th>
+                                <th>Durée</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body"></tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script src="/js/stats.js"></script>
+</body>
+</html>

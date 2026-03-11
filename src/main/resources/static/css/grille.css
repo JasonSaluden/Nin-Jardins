@@ -2,11 +2,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
   margin: 0;
-  background-color: #1a1a1a;
-  font-family: sans-serif;
+  padding: 24px 16px 40px;
+  background:
+    radial-gradient(circle at top, rgba(126, 181, 89, 0.18), transparent 35%),
+    linear-gradient(180deg, #102312 0%, #0b130d 100%);
+  font-family: "Segoe UI", sans-serif;
   color: white;
 }
 
@@ -15,19 +18,84 @@ body {
   font-size: 1.1rem;
 }
 
+.game-shell {
+  width: min(960px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.topbar h1 {
+  margin: 0;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #b9d6a2;
+  font-size: 0.78rem;
+}
+
+.player-info {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.ghost-button {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ghost-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.ghost-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .planche {
   display: grid;
-  grid-template-columns: repeat(8, 70px);
-  grid-template-rows: repeat(8, 70px);
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  grid-template-rows: repeat(8, minmax(0, 1fr));
   gap: 0;
   border: 3px solid black;
   background-image: url('/img/Cartoon_green_texture_grass.jpg');
   background-size: cover;
+  width: min(92vw, 560px);
+  aspect-ratio: 1 / 1;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
 }
 
 .case {
-  width: 70px;
-  height: 70px;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
   border: 1px solid #1a5c1a;
   box-sizing: border-box;
   background: none;
@@ -44,8 +112,8 @@ body {
 
 .case::after {
   content: '';
-  width: 54px;
-  height: 54px;
+  width: 76%;
+  height: 76%;
   border-radius: 50%;
   display: none;
 }
@@ -60,4 +128,15 @@ body {
   display: block;
   background: radial-gradient(circle at 35% 35%, #fff, #ccc);
   box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+}
+
+@media (max-width: 700px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-actions {
+    justify-content: flex-start;
+  }
 }

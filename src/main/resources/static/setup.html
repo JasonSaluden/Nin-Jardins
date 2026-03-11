@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Othello - Configuration</title>
+    <link rel="stylesheet" href="/css/setup.css">
+</head>
+<body>
+    <main class="setup-shell">
+        <section class="setup-card">
+            <header class="setup-header">
+                <p class="eyebrow">Préparation de partie</p>
+                <h1>Configurer la partie</h1>
+                <p id="setup-subtitle" class="subtitle"></p>
+            </header>
+
+            <section class="setup-panel">
+                <div class="player-summary">
+                    <span>Joueur 1</span>
+                    <strong id="player-one-label"></strong>
+                </div>
+            </section>
+
+            <section class="setup-panel">
+                <label class="field-label" for="player-two-type">Joueur 2</label>
+                <select id="player-two-type" class="field-control">
+                    <option value="local">Joueur local</option>
+                    <option value="connected">Joueur connecté</option>
+                    <option value="ai">IA</option>
+                </select>
+                <p id="player-two-help" class="helper-text"></p>
+            </section>
+
+            <section id="second-player-panel" class="setup-panel hidden">
+                <h2>Connexion du joueur 2</h2>
+                <form id="second-player-form" onsubmit="loginSecondPlayer(event)">
+                    <label class="field-label" for="second-pseudo">Pseudo</label>
+                    <input id="second-pseudo" class="field-control" type="text" placeholder="Pseudo du joueur 2">
+                    <label class="field-label" for="second-mdp">Mot de passe</label>
+                    <input id="second-mdp" class="field-control" type="password" placeholder="Mot de passe du joueur 2">
+                    <p id="second-error" class="feedback error"></p>
+                    <p id="second-success" class="feedback success"></p>
+                    <div class="inline-actions">
+                        <button class="secondary-button" type="submit">Connecter le joueur 2</button>
+                        <button id="clear-second-player" class="ghost-button hidden" type="button">Retirer</button>
+                    </div>
+                </form>
+                <div id="second-player-summary" class="player-summary hidden">
+                    <span>Joueur 2 connecté</span>
+                    <strong id="player-two-label"></strong>
+                </div>
+            </section>
+
+            <section id="difficulty-panel" class="setup-panel hidden">
+                <label class="field-label" for="ai-difficulty">Difficulté de l'IA</label>
+                <select id="ai-difficulty" class="field-control">
+                    <option value="easy">Facile</option>
+                    <option value="medium" selected>Moyen</option>
+                    <option value="hard">Difficile</option>
+                </select>
+            </section>
+
+            <p id="setup-error" class="feedback error"></p>
+
+            <footer class="footer-actions">
+                <a class="ghost-button" href="/">Retour</a>
+                <button class="primary-button" type="button" onclick="startConfiguredGame()">Valider et jouer</button>
+            </footer>
+        </section>
+    </main>
+
+    <script src="/js/setup.js"></script>
+</body>
+</html>

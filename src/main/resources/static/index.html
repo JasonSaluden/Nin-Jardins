@@ -43,6 +43,7 @@
                     <input type="password" id="login-mdp" class="form-control" placeholder="Votre mot de passe" required />
                 </div>
                 <p class="text-danger small" id="login-error"></p>
+                <p class="text-success small" id="login-success"></p>
                 <button type="submit" class="btn btn-dark w-100">Se connecter</button>
             </form>
 
@@ -74,27 +75,8 @@
                 <hr class="flex-grow-1 m-0">
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Adversaire</label>
-                <div class="d-flex gap-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="game-mode" id="mode-human" value="human" checked>
-                        <label class="form-check-label" for="mode-human">Joueur</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="game-mode" id="mode-ai" value="ai">
-                        <label class="form-check-label" for="mode-ai">IA</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-3" id="difficulty-wrapper">
-                <label for="ai-difficulty" class="form-label fw-semibold">Difficulté IA</label>
-                <select id="ai-difficulty" class="form-select">
-                    <option value="easy">Facile</option>
-                    <option value="medium" selected>Moyen</option>
-                    <option value="hard">Difficile</option>
-                </select>
+            <div class="entry-panel mt-4">
+                <p class="small text-muted mb-3">Après connexion, un second écran vous permettra de choisir le joueur 2 et la difficulté.</p>
             </div>
 
             <button class="btn btn-outline-secondary w-100" onclick="playAsGuest()">Jouer en invité</button>

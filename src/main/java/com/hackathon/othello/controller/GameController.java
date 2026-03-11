@@ -23,7 +23,9 @@ public class GameController {
     public ResponseEntity<GameStateResponse> start(@RequestBody(required = false) StartGameRequest request) {
         boolean contreIA = request != null && Boolean.TRUE.equals(request.getContreIA());
         String difficulteIA = request != null ? request.getDifficulteIA() : null;
-        gameService.startGame(contreIA, difficulteIA);
+        Integer joueurId = request != null ? request.getJoueurId() : null;
+        Integer joueurBlancId = request != null ? request.getJoueurBlancId() : null;
+        gameService.startGame(contreIA, difficulteIA, joueurId, joueurBlancId);
         return ResponseEntity.ok(buildState());
     }
 
