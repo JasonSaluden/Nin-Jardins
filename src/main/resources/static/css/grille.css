@@ -131,20 +131,69 @@ body {
   box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
-.hidden {
-  display: none !important;
+/* Dialog styling */
+dialog {
+  border: none;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 90%;
+  width: min(600px, 100%);
 }
 
-.game-error {
-  text-align: center;
-  color: #b91c1c;
-  background: #fee2e2;
-  border: 1px solid #fca5a5;
-  border-radius: 6px;
-  padding: 0.5rem 1rem;
-  margin: 0 auto 0.75rem;
-  width: min(92vw, 560px);
-  font-size: 0.9rem;
+dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#rule-dialog-content {
+  padding: 32px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+#rule-dialog-content h2 {
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+#rule-dialog-content p {
+  margin: 0 0 16px;
+  color: #495057;
+  line-height: 1.6;
+}
+
+#rule-dialog-content ul {
+  margin: 0 0 24px 20px;
+  padding: 0;
+  color: #495057;
+  line-height: 1.8;
+}
+
+#rule-dialog-content li {
+  margin-bottom: 12px;
+}
+
+#rule-close {
+  display: block;
+  margin: 24px auto 0;
+  padding: 10px 24px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+#rule-close:hover {
+  background-color: #0b5ed7;
+}
+
+#rule-close:active {
+  background-color: #0a58ca;
 }
 
 @media (max-width: 700px) {
@@ -155,5 +204,13 @@ body {
 
   .top-actions {
     justify-content: flex-start;
+  }
+
+  dialog {
+    width: 95%;
+  }
+
+  .rule-dialog-content {
+    padding: 24px;
   }
 }
