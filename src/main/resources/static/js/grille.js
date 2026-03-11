@@ -226,23 +226,28 @@ async function playMove(row, col) {
 
         if (!res.ok) return; // coup invalide ignoré silencieusement
 
-    const state = await res.json();
-    applyState(state);
+        const state = await res.json();
+        applyState(state);
 
-    if (iaDoitJouer(state)) {
-        iaMovePending = true;
-        setTimeout(async () => {
-            const aiRes = await fetch('/api/game/ai-move', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' }
-            });
+        if (iaDoitJouer(state)) {
+            iaMovePending = true;
+            setTimeout(async () => {
+                const aiRes = await fetch('/api/game/ai-move', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
 
-            iaMovePending = false;
-            if (!aiRes.ok) return;
+                iaMovePending = false;
+                if (!aiRes.ok) return;
 
-            const aiState = await aiRes.json();
-            applyState(aiState);
-        }, getAIDelayMs(state.difficulteIA));
+                const aiState = await aiRes.json();
+                applyState(aiState);
+            }, getAIDelayMs(state.difficulteIA));
+        }
+    } catch {
+        showGameError('Impossible de jouer ce coup pour le moment.');
+    } finally {
+        boardLocked = false;
     }
 }
 
@@ -263,6 +268,9 @@ function initPageHeader() {
     const playerInfo = document.getElementById('player-info');
     const statsButton = document.getElementById('stats-link');
     const pauseButton = document.getElementById('pause-link');
+    const ruleButton = document.getElementById('rule-link');
+    const ruleDialog = document.getElementById('rule-dialog');
+    const ruleDialogContent = document.getElementById('rule-dialog-content');
 
     if (playerInfo) {
         const blackName = player?.pseudo || 'Invité';
@@ -291,36 +299,33 @@ function initPageHeader() {
             window.location.href = '/pause.html';
         });
     }
-}
 
-    // Load rules dynamically
-    async function loadRules() {
-        if (ruleDialogContent.innerHTML) return; // Already loaded
-        try {
-            const response = await fetch('/rule.html');
-            const html = await response.text();
-            // Extract just the content from rule.html
-            ruleDialogContent.innerHTML = html;
-            // Add close button
-            const closeBtn = document.createElement('button');
-            closeBtn.id = 'rule-close';
-            closeBtn.textContent = 'Fermer';
-            closeBtn.addEventListener('click', () => {
-                ruleDialog.close();
-            });
-            ruleDialogContent.appendChild(closeBtn);
-        } catch (error) {
-            console.error('Error loading rules:', error);
-            ruleDialogContent.innerHTML = '<p>Erreur lors du chargement des règles.</p>';
+    if (ruleButton && ruleDialog && ruleDialogContent) {
+        async function loadRules() {
+            if (ruleDialogContent.innerHTML) return;
+            try {
+                const response = await fetch('/rule.html');
+                const html = await response.text();
+                ruleDialogContent.innerHTML = html;
+
+                const closeBtn = document.createElement('button');
+                closeBtn.id = 'rule-close';
+                closeBtn.textContent = 'Fermer';
+                closeBtn.addEventListener('click', () => {
+                    ruleDialog.close();
+                });
+                ruleDialogContent.appendChild(closeBtn);
+            } catch (error) {
+                console.error('Error loading rules:', error);
+                ruleDialogContent.innerHTML = '<p>Erreur lors du chargement des règles.</p>';
+            }
         }
-    }
 
-    ruleButton.addEventListener('click', async () => {
-        if (ruleDialog) {
+        ruleButton.addEventListener('click', async () => {
             await loadRules();
             ruleDialog.showModal();
-        }
-    });
+        });
+    }
 }
 // ─── Initialisation ───────────────────────────────────────────────────────────
 
