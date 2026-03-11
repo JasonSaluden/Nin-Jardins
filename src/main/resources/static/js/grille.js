@@ -34,6 +34,12 @@ function coordsToCaseId(row, col) {
     return String.fromCharCode(65 + col) + (row + 1);
 }
 
+function formatDuration(totalSeconds) {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
 // ─── Rendu du plateau ─────────────────────────────────────────────────────────
 
 /** Met à jour toutes les cases d'après le plateau (int[][] 0=vide,1=noir,2=blanc) */
@@ -64,15 +70,7 @@ function renderInfo(state) {
     const infoEl = document.getElementById('game-info');
     if (!infoEl) return;
 
-    const difficultyLabels = {
-        easy: 'Facile',
-        medium: 'Moyen',
-        hard: 'Difficile'
-    };
-
-    const modeTexte = state.contreIA
-        ? `Mode : vs IA (${difficultyLabels[state.difficulteIA] || 'Moyen'})`
-        : 'Mode : 2 joueurs';
+    const modeTexte = getModeTexte(state);
 
     if (state.partieTerminee) {
         const msg = state.vainqueur === 0 ? 'Égalité !'
@@ -109,6 +107,71 @@ async function applyState(state) {
     renderBoard(state.plateau);
     renderValidMoves(state.coupsValides);
     renderInfo(state);
+    savePauseSnapshot(state);
+
+    if (state.partieTerminee && chronoIntervalId !== null) {
+        clearInterval(chronoIntervalId);
+        chronoIntervalId = null;
+    }
+}
+
+function getModeTexte(state) {
+    const difficultyLabels = {
+        easy: 'Facile',
+        medium: 'Moyen',
+        hard: 'Difficile'
+    };
+
+    return state.contreIA
+        ? `Mode : vs IA (${difficultyLabels[state.difficulteIA] || 'Moyen'})`
+        : 'Mode : 2 joueurs';
+}
+
+function savePauseSnapshot(state) {
+    const snapshot = {
+        scoreNoir: state.scoreNoir,
+        scoreBlanc: state.scoreBlanc,
+        modeTexte: getModeTexte(state)
+    };
+    sessionStorage.setItem('pauseGameSnapshot', JSON.stringify(snapshot));
+}
+
+function getAIDelayMs(difficulteIA) {
+    return 2000;
+}
+
+function iaDoitJouer(state) {
+    return Boolean(state && state.contreIA && !state.partieTerminee && state.joueurCourant === 2);
+}
+
+let iaMovePending = false;
+let elapsedSeconds = Number(sessionStorage.getItem('gameElapsedSeconds') || '0');
+let chronoIntervalId = null;
+
+function renderChrono() {
+    const timerEl = document.getElementById('timer-display');
+    if (!timerEl) return;
+    timerEl.textContent = `Temps : ${formatDuration(elapsedSeconds)}`;
+}
+
+function startChrono() {
+    renderChrono();
+    if (chronoIntervalId !== null) {
+        clearInterval(chronoIntervalId);
+    }
+    chronoIntervalId = setInterval(() => {
+        elapsedSeconds += 1;
+        sessionStorage.setItem('gameElapsedSeconds', String(elapsedSeconds));
+        renderChrono();
+    }, 1000);
+}
+
+async function fetchGameState() {
+    const res = await fetch('/api/game/state');
+    if (!res.ok) {
+        throw new Error('Impossible de recuperer l\'etat de la partie');
+    }
+    return res.json();
 }
 
 async function startGame() {
@@ -163,13 +226,23 @@ async function playMove(row, col) {
 
         if (!res.ok) return; // coup invalide ignoré silencieusement
 
-        const state = await res.json();
-        clearGameError();
-        applyState(state);
-    } catch {
-        showGameError('Erreur réseau lors du coup. Réessayez.');
-    } finally {
-        boardLocked = false;
+    const state = await res.json();
+    applyState(state);
+
+    if (iaDoitJouer(state)) {
+        iaMovePending = true;
+        setTimeout(async () => {
+            const aiRes = await fetch('/api/game/ai-move', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            iaMovePending = false;
+            if (!aiRes.ok) return;
+
+            const aiState = await aiRes.json();
+            applyState(aiState);
+        }, getAIDelayMs(state.difficulteIA));
     }
 }
 
@@ -177,7 +250,8 @@ async function playMove(row, col) {
 
 document.querySelectorAll('.case').forEach(el => {
     el.addEventListener('click', function () {
-        if (boardLocked || !this.classList.contains('playable')) return;
+        if (iaMovePending) return;
+        if (!this.classList.contains('playable')) return;
         const { row, col } = caseIdToCoords(this.id);
         playMove(row, col);
     });
@@ -188,9 +262,7 @@ function initPageHeader() {
     const whitePlayer = getWhitePlayer();
     const playerInfo = document.getElementById('player-info');
     const statsButton = document.getElementById('stats-link');
-    const ruleButton = document.getElementById('rule-link');
-    const ruleDialog = document.getElementById('rule-dialog');
-    const ruleDialogContent = document.getElementById('rule-dialog-content');
+    const pauseButton = document.getElementById('pause-link');
 
     if (playerInfo) {
         const blackName = player?.pseudo || 'Invité';
@@ -203,6 +275,8 @@ function initPageHeader() {
     if (statsButton) {
         if (isAuthenticatedPlayer(player)) {
             statsButton.addEventListener('click', () => {
+                sessionStorage.setItem('resumeFromPause', 'true');
+                sessionStorage.setItem('statsOrigin', 'game');
                 window.location.href = '/stats.html';
             });
         } else {
@@ -210,6 +284,14 @@ function initPageHeader() {
             statsButton.title = 'Connectez-vous pour voir votre historique';
         }
     }
+
+    if (pauseButton) {
+        pauseButton.addEventListener('click', () => {
+            sessionStorage.setItem('resumeFromPause', 'true');
+            window.location.href = '/pause.html';
+        });
+    }
+}
 
     // Load rules dynamically
     async function loadRules() {
@@ -242,5 +324,27 @@ function initPageHeader() {
 }
 // ─── Initialisation ───────────────────────────────────────────────────────────
 
-initPageHeader();
-startGame();
+async function initGamePage() {
+    initPageHeader();
+
+    const resumeFromPause = sessionStorage.getItem('resumeFromPause') === 'true';
+    try {
+        if (resumeFromPause) {
+            const state = await fetchGameState();
+            applyState(state);
+            sessionStorage.removeItem('resumeFromPause');
+        } else {
+            elapsedSeconds = 0;
+            sessionStorage.setItem('gameElapsedSeconds', '0');
+            await startGame();
+        }
+    } catch {
+        elapsedSeconds = 0;
+        sessionStorage.setItem('gameElapsedSeconds', '0');
+        await startGame();
+    }
+
+    startChrono();
+}
+
+initGamePage();

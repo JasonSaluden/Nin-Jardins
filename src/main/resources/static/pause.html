@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Othello - Pause</title>
+    <link rel="stylesheet" href="/css/pause.css">
+</head>
+<body>
+    <main class="pause-shell">
+        <header class="pause-header">
+            <p class="eyebrow">Ninja Warrior</p>
+            <h1>Partie en pause</h1>
+        </header>
+
+        <section class="pause-board-wrapper" aria-label="Grille en pause">
+            <div id="pause-board" class="planche pause-board" aria-hidden="true"></div>
+
+            <div class="pause-overlay" role="dialog" aria-modal="true" aria-labelledby="pause-title">
+                <h2 id="pause-title">Pause</h2>
+                <p id="pause-timer" class="pause-value">Temps : 00:00</p>
+                <p id="pause-score" class="pause-value">Score : Noir 0 - Blanc 0</p>
+                <p id="pause-mode" class="pause-value">Mode : 2 joueurs</p>
+                <div class="pause-actions">
+                    <button id="resume-button" type="button">Reprendre</button>
+                    <a id="quit-button" href="/setup.html">Quitter</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/pause.js"></script>
+</body>
+</html>

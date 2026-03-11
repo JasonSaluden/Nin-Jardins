@@ -22,6 +22,19 @@ body {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
 
+.setup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.setup-top-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
 .setup-header h1 {
     margin: 0;
     font-size: clamp(1.6rem, 4vw, 2.2rem);
@@ -171,9 +184,14 @@ body {
 }
 
 @media (max-width: 640px) {
+    .setup-header,
     .player-summary,
     .footer-actions {
         flex-direction: column;
         align-items: stretch;
+    }
+
+    .setup-top-actions {
+        justify-content: flex-start;
     }
 }
