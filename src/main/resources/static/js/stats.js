@@ -181,9 +181,10 @@ async function loadStats(playerId) {
             select.value = String(idToLoad);
         }
         renderStats(stats);
-    } catch (error) {
-        showGuestState();
-        fillText('stats-subtitle', 'Impossible de charger les statistiques pour le moment.');
+    } catch {
+        document.getElementById('stats-content')?.classList.add('hidden');
+        document.getElementById('guest-state')?.classList.add('hidden');
+        fillText('stats-subtitle', 'Impossible de charger les statistiques. Réessayez plus tard.');
     }
 }
 

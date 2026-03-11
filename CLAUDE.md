@@ -27,7 +27,7 @@ Ce projet est réalisé dans le cadre du **Hackathon Ninja IA**, dont l'objectif
 
 ## Project Overview
 
-Full-stack **Othello/Reversi game** with AI integration. Backend: Spring Boot 3.3.4 + Java 21 + MySQL. Frontend: vanilla HTML/CSS/JS + Bootstrap 5. AI: Ollama/Mistral via Spring AI. Deployment: Docker Compose.
+Full-stack **Othello/Reversi game** with AI integration. Backend: Spring Boot 3.3.4 + Java 21 + MySQL. Frontend: vanilla HTML/CSS/JS + Bootstrap 5. AI: Ollama/qwen via Spring AI. Deployment: Docker Compose.
 
 ## Commands
 
@@ -94,9 +94,9 @@ Connection: `jdbc:mysql://localhost:3306/othello` (user: `othello_user`, pass: `
 
 ## Ollama / Spring AI
 
-Mistral model pulled automatically on first `docker-compose up` (~4GB). Config in `application.properties`:
+Qwen model pulled automatically on first `docker-compose up` (~4GB). Config in `application.properties`:
 ```
 spring.ai.ollama.base-url=http://localhost:11434
-spring.ai.ollama.chat.model=mistral
+spring.ai.ollama.chat.model=qwen
 ```
 Spring AI dependency: `spring-ai-ollama-spring-boot-starter` (version 1.0.0-M4).

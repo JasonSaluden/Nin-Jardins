@@ -83,6 +83,24 @@ function renderInfo(state) {
     }
 }
 
+// ─── Verrou plateau ───────────────────────────────────────────────────────────
+
+let boardLocked = false;
+
+function showGameError(message) {
+    const el = document.getElementById('game-error');
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove('hidden');
+}
+
+function clearGameError() {
+    const el = document.getElementById('game-error');
+    if (!el) return;
+    el.textContent = '';
+    el.classList.add('hidden');
+}
+
 // ─── Appels API ───────────────────────────────────────────────────────────────
 
 async function applyState(state) {
@@ -157,32 +175,56 @@ async function fetchGameState() {
 }
 
 async function startGame() {
+    const player = getCurrentPlayer();
+    if (!player) {
+        window.location.href = '/';
+        return;
+    }
+
+    boardLocked = true;
     const mode = sessionStorage.getItem('gameMode') || 'human';
     const difficulty = sessionStorage.getItem('aiDifficulty') || 'medium';
-    const player = getCurrentPlayer();
     const whitePlayer = getWhitePlayer();
-    const res = await fetch('/api/game/start', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            contreIA: mode === 'ai',
-            difficulteIA: difficulty,
-            joueurId: isAuthenticatedPlayer(player) ? player.id : null,
-            joueurBlancId: isAuthenticatedPlayer(whitePlayer) ? whitePlayer.id : null
-        })
-    });
-    const state = await res.json();
-    applyState(state);
+
+    try {
+        const res = await fetch('/api/game/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contreIA: mode === 'ai',
+                difficulteIA: difficulty,
+                joueurId: isAuthenticatedPlayer(player) ? player.id : null,
+                joueurBlancId: isAuthenticatedPlayer(whitePlayer) ? whitePlayer.id : null
+            })
+        });
+
+        if (!res.ok) {
+            showGameError('Impossible de démarrer la partie. Vérifiez votre connexion et réessayez.');
+            return;
+        }
+
+        const state = await res.json();
+        clearGameError();
+        applyState(state);
+    } catch {
+        showGameError('Impossible de joindre le serveur. Vérifiez votre connexion.');
+    } finally {
+        boardLocked = false;
+    }
 }
 
 async function playMove(row, col) {
-    const res = await fetch('/api/game/move', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ligne: row, colonne: col })
-    });
+    if (boardLocked) return;
+    boardLocked = true;
 
-    if (!res.ok) return; // coup invalide ignoré
+    try {
+        const res = await fetch('/api/game/move', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ligne: row, colonne: col })
+        });
+
+        if (!res.ok) return; // coup invalide ignoré silencieusement
 
     const state = await res.json();
     applyState(state);
@@ -251,6 +293,35 @@ function initPageHeader() {
     }
 }
 
+    // Load rules dynamically
+    async function loadRules() {
+        if (ruleDialogContent.innerHTML) return; // Already loaded
+        try {
+            const response = await fetch('/rule.html');
+            const html = await response.text();
+            // Extract just the content from rule.html
+            ruleDialogContent.innerHTML = html;
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.id = 'rule-close';
+            closeBtn.textContent = 'Fermer';
+            closeBtn.addEventListener('click', () => {
+                ruleDialog.close();
+            });
+            ruleDialogContent.appendChild(closeBtn);
+        } catch (error) {
+            console.error('Error loading rules:', error);
+            ruleDialogContent.innerHTML = '<p>Erreur lors du chargement des règles.</p>';
+        }
+    }
+
+    ruleButton.addEventListener('click', async () => {
+        if (ruleDialog) {
+            await loadRules();
+            ruleDialog.showModal();
+        }
+    });
+}
 // ─── Initialisation ───────────────────────────────────────────────────────────
 
 async function initGamePage() {
