@@ -2,6 +2,7 @@ package com.hackathon.othello.controller;
 
 import com.hackathon.othello.dto.GameStateResponse;
 import com.hackathon.othello.dto.MoveRequest;
+import com.hackathon.othello.dto.StartGameRequest;
 import com.hackathon.othello.service.GameService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,10 @@ public class GameController {
 
     /** Démarre une nouvelle partie et retourne l'état initial */
     @PostMapping("/start")
-    public ResponseEntity<GameStateResponse> start() {
-        gameService.startGame();
+    public ResponseEntity<GameStateResponse> start(@RequestBody(required = false) StartGameRequest request) {
+        boolean contreIA = request != null && Boolean.TRUE.equals(request.getContreIA());
+        String difficulteIA = request != null ? request.getDifficulteIA() : null;
+        gameService.startGame(contreIA, difficulteIA);
         return ResponseEntity.ok(buildState());
     }
 
@@ -33,7 +36,7 @@ public class GameController {
     /** Joue un coup pour le joueur courant */
     @PostMapping("/move")
     public ResponseEntity<?> move(@RequestBody MoveRequest request) {
-        boolean ok = gameService.jouerCoupEtPasserTour(request.getLigne(), request.getColonne());
+        boolean ok = gameService.jouerCoupEtCompleterTour(request.getLigne(), request.getColonne());
         if (!ok) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Coup invalide");
         }
@@ -46,13 +49,14 @@ public class GameController {
         int joueur = gameService.getJoueurCourant();
         boolean termine = gameService.estPartieTerminee();
         return new GameStateResponse(
-            gameService.getPlateau(),
-            termine ? java.util.Collections.emptyList() : gameService.getCoupsValides(joueur),
-            termine,
-            termine ? gameService.getVainqueur() : 0,
-            joueur,
-            gameService.compterPions(1),
-            gameService.compterPions(2)
-        );
+                gameService.getPlateau(),
+                termine ? java.util.Collections.emptyList() : gameService.getCoupsValides(joueur),
+                termine,
+                termine ? gameService.getVainqueur() : 0,
+                joueur,
+                gameService.compterPions(1),
+                gameService.compterPions(2),
+                gameService.isContreIA(),
+                gameService.getDifficulteIA());
     }
 }

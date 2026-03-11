@@ -7,7 +7,7 @@ services:
       MYSQL_USER: othello_user
       MYSQL_PASSWORD: othello_pass
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./sql:/docker-entrypoint-initdb.d
@@ -15,7 +15,7 @@ services:
   ollama:
     image: ollama/ollama:0.17.7
     ports:
-      - "11434:11434"
+      - "11435:11434"
     volumes:
       - ollama_data:/root/.ollama
 
