@@ -67,6 +67,21 @@ function formatResultLabel(resultat) {
     return 'Égalité';
 }
 
+function computeWorstScore(stats) {
+    const historique = Array.isArray(stats?.historique) ? stats.historique : [];
+    if (!historique.length) {
+        return 0;
+    }
+
+    return historique.reduce((worst, item) => {
+        const value = Number(item?.scoreJoueur);
+        if (!Number.isFinite(value)) {
+            return worst;
+        }
+        return Math.min(worst, value);
+    }, Number.MAX_SAFE_INTEGER);
+}
+
 function renderHistory(items) {
     const body = document.getElementById('history-body');
     const empty = document.getElementById('history-empty');
@@ -78,14 +93,14 @@ function renderHistory(items) {
     if (!items.length) {
         empty.classList.remove('hidden');
         if (count) {
-            count.textContent = '0 partie visible avec les filtres actifs.';
+            count.textContent = '0 partie enregistree pour le moment.';
         }
         return;
     }
 
     empty.classList.add('hidden');
     if (count) {
-        count.textContent = `${items.length} partie(s) visible(s) avec les filtres actifs.`;
+        count.textContent = `${items.length} partie(s) enregistree(s).`;
     }
 
     items.forEach(item => {
@@ -108,9 +123,9 @@ function renderStats(stats) {
     fillText('stats-title', `Statistiques de ${stats.pseudo}`);
     fillText('stats-subtitle', `${stats.totalParties} partie(s) enregistrée(s).`);
     fillText('metric-total', stats.totalParties);
-    fillText('metric-rate', `${stats.tauxVictoire} %`);
     fillText('metric-average', stats.scoreMoyen);
     fillText('metric-best', stats.meilleurScore);
+    fillText('metric-worst', computeWorstScore(stats));
     fillText('summary-wins', stats.victoires);
     fillText('summary-losses', stats.defaites);
     fillText('summary-draws', stats.egalites);
