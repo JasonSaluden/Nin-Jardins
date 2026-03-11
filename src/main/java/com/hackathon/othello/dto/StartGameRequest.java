@@ -3,6 +3,7 @@ package com.hackathon.othello.dto;
 public class StartGameRequest {
     private Boolean contreIA;
     private String difficulteIA;
+    private String couleurJoueur;
     private Integer joueurId;
     private Integer joueurBlancId;
 
@@ -20,6 +21,14 @@ public class StartGameRequest {
 
     public void setDifficulteIA(String difficulteIA) {
         this.difficulteIA = difficulteIA;
+    }
+
+    public String getCouleurJoueur() {
+        return couleurJoueur;
+    }
+
+    public void setCouleurJoueur(String couleurJoueur) {
+        this.couleurJoueur = couleurJoueur;
     }
 
     public Integer getJoueurId() {

@@ -14,6 +14,19 @@ function submitActiveForm() {
     if (active) active.requestSubmit();
 }
 
+function bindEnterToSubmit() {
+    document.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+
+        const activeForm = document.querySelector('.auth-form:not(.d-none)');
+        const focused = document.activeElement;
+        if (!activeForm || !focused || !activeForm.contains(focused)) return;
+
+        event.preventDefault();
+        submitActiveForm();
+    });
+}
+
 function readStoredPlayer(key = 'joueur') {
     try {
         const raw = sessionStorage.getItem(key);
@@ -122,4 +135,6 @@ function playAsGuest() {
     resetGameSetup();
     window.location.href = '/setup.html';
 }
+
+bindEnterToSubmit();
 

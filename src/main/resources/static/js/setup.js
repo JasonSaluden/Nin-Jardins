@@ -57,8 +57,12 @@ function updateScreen() {
     const clearSecondPlayer = document.getElementById('clear-second-player');
     const help = document.getElementById('player-two-help');
     const statsButton = document.getElementById('setup-stats-link');
+    const authButton = document.getElementById('setup-logout-link');
+    const colorSelect = document.getElementById('player-color');
+    const selectedColor = colorSelect?.value || 'black';
 
-    setText('player-one-label', playerOne?.pseudo || 'Invité');
+    const blackRole = selectedColor === 'black' ? '(Noir)' : '(Blanc)';
+    setText('player-one-label', `${playerOne?.pseudo || 'Invité'} ${blackRole}`);
     setText('setup-subtitle', playerOne?.guest
         ? 'Choisissez un adversaire local ou une IA pour lancer la partie.'
         : 'Choisissez maintenant qui joue en blanc et le niveau de l’IA si besoin.');
@@ -91,6 +95,10 @@ function updateScreen() {
 
     if (statsButton) {
         statsButton.classList.toggle('hidden', !isRegisteredPlayer(playerOne));
+    }
+
+    if (authButton) {
+        authButton.textContent = playerOne?.guest ? "Se connecter/S'inscrire" : 'Se déconnecter';
     }
 }
 
@@ -127,6 +135,15 @@ function initSetup() {
         difficulty.value = sessionStorage.getItem('aiDifficulty') || 'medium';
     }
 
+    const colorSelect = document.getElementById('player-color');
+    if (colorSelect) {
+        colorSelect.value = sessionStorage.getItem('playerColor') || 'black';
+        colorSelect.addEventListener('change', () => {
+            setText('setup-error', '');
+            updateScreen();
+        });
+    }
+
     document.getElementById('clear-second-player')?.addEventListener('click', () => {
         clearSecondPlayerState();
         updateScreen();
@@ -138,7 +155,16 @@ function initSetup() {
     });
 
     document.getElementById('setup-logout-link')?.addEventListener('click', () => {
-        sessionStorage.clear();
+        const playerOne = readPlayer('joueur');
+        if (playerOne?.guest) {
+            sessionStorage.removeItem('joueur');
+            sessionStorage.removeItem('joueurBlanc');
+            sessionStorage.removeItem('gameMode');
+            sessionStorage.removeItem('aiDifficulty');
+            sessionStorage.removeItem('playerColor');
+        } else {
+            sessionStorage.clear();
+        }
         window.location.href = '/';
     });
 
@@ -189,6 +215,7 @@ async function loginSecondPlayer(event) {
 
 function startConfiguredGame() {
     const opponentType = document.getElementById('player-two-type')?.value || 'local';
+    const selectedColor = document.getElementById('player-color')?.value || 'black';
     const playerOne = readPlayer('joueur');
     const playerTwo = readPlayer('joueurBlanc');
     setText('setup-error', '');
@@ -216,6 +243,13 @@ function startConfiguredGame() {
         sessionStorage.setItem('gameMode', 'human');
         sessionStorage.removeItem('joueurBlanc');
     }
+
+    sessionStorage.setItem('playerColor', selectedColor);
+    // En quittant setup pour lancer une nouvelle partie, on annule tout contexte de reprise.
+    sessionStorage.removeItem('resumeFromPause');
+    sessionStorage.removeItem('pauseGameSnapshot');
+    sessionStorage.removeItem('statsOrigin');
+    sessionStorage.setItem('gameElapsedSeconds', '0');
 
     window.location.href = '/grille.html';
 }
