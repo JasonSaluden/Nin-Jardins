@@ -37,14 +37,21 @@ async function login(e) {
     e.preventDefault();
     const errorEl = document.getElementById('login-error');
     const successEl = document.getElementById('login-success');
+    const submitBtn = document.getElementById('submit-btn');
     errorEl.textContent = '';
     successEl.textContent = '';
 
     const body = {
-        pseudo: document.getElementById('login-pseudo').value,
+        pseudo: document.getElementById('login-pseudo').value.trim(),
         motDePasse: document.getElementById('login-mdp').value
     };
 
+    if (!body.pseudo || !body.motDePasse) {
+        errorEl.textContent = 'Veuillez remplir tous les champs.';
+        return;
+    }
+
+    submitBtn.disabled = true;
     try {
         const res = await fetch('/api/auth/login', {
             method: 'POST',
@@ -60,10 +67,12 @@ async function login(e) {
         const joueur = await res.json();
         sessionStorage.setItem('joueur', JSON.stringify(joueur));
         resetGameSetup();
-        successEl.textContent = 'Connexion réussie. Redirection vers la configuration...';
+        successEl.textContent = 'Connexion réussie. Redirection...';
         window.location.href = '/setup.html';
-    } catch (err) {
-        errorEl.textContent = 'Erreur de connexion au serveur.';
+    } catch {
+        errorEl.textContent = 'Impossible de joindre le serveur.';
+    } finally {
+        submitBtn.disabled = false;
     }
 }
 
@@ -71,15 +80,22 @@ async function register(e) {
     e.preventDefault();
     const errorEl = document.getElementById('reg-error');
     const successEl = document.getElementById('reg-success');
+    const submitBtn = document.getElementById('submit-btn');
     errorEl.textContent = '';
     successEl.textContent = '';
 
     const body = {
-        pseudo: document.getElementById('reg-pseudo').value,
-        mail: document.getElementById('reg-mail').value,
+        pseudo: document.getElementById('reg-pseudo').value.trim(),
+        mail: document.getElementById('reg-mail').value.trim(),
         motDePasse: document.getElementById('reg-mdp').value
     };
 
+    if (!body.pseudo || !body.mail || !body.motDePasse) {
+        errorEl.textContent = 'Veuillez remplir tous les champs.';
+        return;
+    }
+
+    submitBtn.disabled = true;
     try {
         const res = await fetch('/api/auth/register', {
             method: 'POST',
@@ -94,8 +110,10 @@ async function register(e) {
 
         successEl.textContent = 'Compte créé ! Vous pouvez vous connecter.';
         document.getElementById('inscription').reset();
-    } catch (err) {
-        errorEl.textContent = 'Erreur de connexion au serveur.';
+    } catch {
+        errorEl.textContent = 'Impossible de joindre le serveur.';
+    } finally {
+        submitBtn.disabled = false;
     }
 }
 
