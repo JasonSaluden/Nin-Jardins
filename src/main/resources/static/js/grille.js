@@ -153,16 +153,59 @@ function showPauseModal() {
     dialog.showModal();
 }
 
+function togglePauseFromKeyboard() {
+    const pauseDialog = document.getElementById('pause-dialog');
+    const endDialog = document.getElementById('end-dialog');
+    if (!pauseDialog || endDialog?.open) return;
+
+    if (pauseDialog.open) {
+        pauseDialog.close();
+        if (chronoIntervalId === null) {
+            startChrono();
+        }
+        return;
+    }
+
+    showPauseModal();
+}
+
+function bindPauseShortcut() {
+    document.addEventListener('keydown', (event) => {
+        if (event.repeat || event.key.toLowerCase() !== 'p') {
+            return;
+        }
+
+        const target = event.target;
+        const isTyping = target && (
+            target.tagName === 'INPUT'
+            || target.tagName === 'TEXTAREA'
+            || target.isContentEditable
+        );
+        if (isTyping) {
+            return;
+        }
+
+        event.preventDefault();
+        togglePauseFromKeyboard();
+    });
+}
+
 function showEndModal(state) {
     const dialog = document.getElementById('end-dialog');
     if (!dialog) return;
 
     const player = getCurrentPlayer();
     const whitePlayer = getWhitePlayer();
-    const blackName = player?.pseudo || 'Noirs';
-    const whiteName = isAuthenticatedPlayer(whitePlayer)
+    const mode = sessionStorage.getItem('gameMode') || 'human';
+    const selectedColor = sessionStorage.getItem('playerColor') || 'black';
+    const playerColor = selectedColor === 'white' ? 2 : 1;
+
+    const opponentName = isAuthenticatedPlayer(whitePlayer)
         ? whitePlayer.pseudo
-        : (sessionStorage.getItem('gameMode') === 'ai' ? 'IA Othello' : 'Blancs');
+        : (mode === 'ai' ? 'IA Othello' : 'Joueur local');
+
+    const blackName = selectedColor === 'white' ? opponentName : (player?.pseudo || 'Invité');
+    const whiteName = selectedColor === 'white' ? (player?.pseudo || 'Invité') : opponentName;
 
     const titleEl = document.getElementById('end-title');
     const scoreEl = document.getElementById('end-score');
@@ -172,6 +215,10 @@ function showEndModal(state) {
     if (titleEl) {
         if (state.vainqueur === 0) {
             titleEl.textContent = 'Egalite !';
+        } else if (state.vainqueur === playerColor) {
+            titleEl.textContent = isAuthenticatedPlayer(player)
+                ? `${player.pseudo} gagne !`
+                : 'Vous avez gagne !';
         } else if (state.vainqueur === 1) {
             titleEl.textContent = `${blackName} gagne !`;
         } else {
@@ -447,6 +494,7 @@ function initPageHeader() {
 
 async function initGamePage() {
     initPageHeader();
+    bindPauseShortcut();
 
     const resumeFromPause = sessionStorage.getItem('resumeFromPause') === 'true';
     try {

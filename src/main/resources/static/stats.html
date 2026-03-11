@@ -27,50 +27,10 @@
         </section>
 
         <section id="stats-content" class="hidden">
-            <section class="panel filters-panel">
-                <div class="filters-grid">
-                    <label>
-                        <span>Profil affiché</span>
-                        <select id="player-select"></select>
-                    </label>
-                    <label>
-                        <span>Mode</span>
-                        <select id="filter-mode">
-                            <option value="all">Tous</option>
-                            <option value="VS IA">VS IA</option>
-                            <option value="Local">Local</option>
-                        </select>
-                    </label>
-                    <label>
-                        <span>Résultat</span>
-                        <select id="filter-result">
-                            <option value="all">Tous</option>
-                            <option value="victoire">Victoire</option>
-                            <option value="defaite">Défaite</option>
-                            <option value="egalite">Égalité</option>
-                        </select>
-                    </label>
-                    <label>
-                        <span>Difficulté</span>
-                        <select id="filter-difficulty">
-                            <option value="all">Toutes</option>
-                            <option value="Facile">Facile</option>
-                            <option value="Moyen">Moyen</option>
-                            <option value="Difficile">Difficile</option>
-                            <option value="Joueur local">Joueur local</option>
-                        </select>
-                    </label>
-                </div>
-            </section>
-
             <section class="metrics-grid">
                 <article class="metric-card">
                     <span>Parties jouées</span>
                     <strong id="metric-total">0</strong>
-                </article>
-                <article class="metric-card">
-                    <span>Taux de victoire</span>
-                    <strong id="metric-rate">0 %</strong>
                 </article>
                 <article class="metric-card">
                     <span>Score moyen</span>
@@ -79,6 +39,10 @@
                 <article class="metric-card">
                     <span>Meilleur score</span>
                     <strong id="metric-best">0</strong>
+                </article>
+                <article class="metric-card">
+                    <span>Pire score</span>
+                    <strong id="metric-worst">0</strong>
                 </article>
             </section>
 
