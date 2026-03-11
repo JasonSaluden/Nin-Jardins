@@ -1,13 +1,31 @@
 package com.hackathon.othello.service;
 
+import com.hackathon.othello.model.Joueurs;
+import com.hackathon.othello.model.Parties;
+import com.hackathon.othello.model.Scores;
+import com.hackathon.othello.repository.JoueursRepository;
+import com.hackathon.othello.repository.PartiesRepository;
+import com.hackathon.othello.repository.ScoresRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.sql.Time;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.List;
 import java.util.Random;
 
 @Service
 public class GameService {
+
+    private static final String SYSTEM_AI_PSEUDO = "__system_ai__";
+    private static final String SYSTEM_AI_MAIL = "__system_ai__@local";
+    private static final String SYSTEM_LOCAL_PSEUDO = "__system_local__";
+    private static final String SYSTEM_LOCAL_MAIL = "__system_local__@local";
 
     // Création du plateau de jeu
     private int[][] plateau = new int[8][8];
@@ -18,6 +36,14 @@ public class GameService {
     private final int joueurIA = 2;
     private String difficulteIA = "medium";
     private final Random random = new Random();
+    private final JoueursRepository joueursRepository;
+    private final PartiesRepository partiesRepository;
+    private final ScoresRepository scoresRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
+    private Joueurs joueurNoir;
+    private Joueurs joueurBlanc;
+    private Instant debutPartie;
+    private boolean partieSauvegardee;
 
     private static final int[][] POSITION_WEIGHTS = {
             { 120, -20, 20, 5, 5, 20, -20, 120 },
@@ -42,6 +68,17 @@ public class GameService {
             { 1, -1 }, // diagonale bas-gauche
             { 1, 1 } // diagonale bas-droite
     };
+
+    public GameService(
+            JoueursRepository joueursRepository,
+            PartiesRepository partiesRepository,
+            ScoresRepository scoresRepository,
+            BCryptPasswordEncoder passwordEncoder) {
+        this.joueursRepository = joueursRepository;
+        this.partiesRepository = partiesRepository;
+        this.scoresRepository = scoresRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     // Initialise le plateau avec les 4 pions de départ
     public void initialiserPlateau() {
@@ -200,6 +237,7 @@ public class GameService {
         if (!ok)
             return false;
         jouerToursIA();
+        enregistrerPartieSiTerminee();
         return true;
     }
 
@@ -295,10 +333,81 @@ public class GameService {
         return total;
     }
 
-    public void startGame(boolean contreIA, String difficulteIA) {
+    public void startGame(boolean contreIA, String difficulteIA, Integer joueurId, Integer joueurBlancId) {
         initialiserPlateau();
         joueurCourant = 1;
         this.contreIA = contreIA;
         this.difficulteIA = normaliserDifficulte(difficulteIA);
+        this.joueurNoir = joueurId != null ? joueursRepository.findById(joueurId).orElse(null) : null;
+        this.joueurBlanc = joueurNoir != null ? resoudreJoueurBlanc(contreIA, joueurBlancId) : null;
+        this.debutPartie = Instant.now();
+        this.partieSauvegardee = false;
+    }
+
+    private Joueurs resoudreJoueurBlanc(boolean contreIA, Integer joueurBlancId) {
+        if (!contreIA && joueurBlancId != null && joueurNoir != null && joueurBlancId != joueurNoir.getId_joueurs()) {
+            return joueursRepository.findById(joueurBlancId).orElseGet(() -> resoudreAdversairePersistant(false));
+        }
+        return resoudreAdversairePersistant(contreIA);
+    }
+
+    private Joueurs resoudreAdversairePersistant(boolean contreIA) {
+        if (contreIA) {
+            return findOrCreateSystemPlayer(SYSTEM_AI_PSEUDO, SYSTEM_AI_MAIL);
+        }
+        return findOrCreateSystemPlayer(SYSTEM_LOCAL_PSEUDO, SYSTEM_LOCAL_MAIL);
+    }
+
+    private Joueurs findOrCreateSystemPlayer(String pseudo, String mail) {
+        return joueursRepository.findByPseudo(pseudo)
+                .orElseGet(() -> joueursRepository.save(
+                        new Joueurs(pseudo, mail, passwordEncoder.encode("system-account"), new Date())));
+    }
+
+    private void enregistrerPartieSiTerminee() {
+        if (partieSauvegardee || !estPartieTerminee() || joueurNoir == null || debutPartie == null) {
+            return;
+        }
+
+        Parties partie = new Parties(
+                Date.from(debutPartie),
+                Parties.StatutPartie.terminee,
+                mapperDifficulte(),
+                calculerTempsJeu(),
+                joueurNoir,
+                joueurBlanc);
+
+        int vainqueur = getVainqueur();
+        if (vainqueur == 1) {
+            partie.setVainqueur(joueurNoir);
+        } else if (vainqueur == 2) {
+            partie.setVainqueur(joueurBlanc);
+        }
+
+        Parties partieSauvegardeeEntity = partiesRepository.save(partie);
+        scoresRepository.save(new Scores(joueurNoir, partieSauvegardeeEntity, Scores.CouleurPion.noir, compterPions(1)));
+
+        if (joueurBlanc != null) {
+            scoresRepository.save(new Scores(joueurBlanc, partieSauvegardeeEntity, Scores.CouleurPion.blanc, compterPions(2)));
+        }
+
+        partieSauvegardee = true;
+    }
+
+    private int mapperDifficulte() {
+        if (!contreIA) {
+            return 0;
+        }
+        return switch (difficulteIA) {
+            case "easy" -> 1;
+            case "hard" -> 3;
+            default -> 2;
+        };
+    }
+
+    private Time calculerTempsJeu() {
+        long secondes = Duration.between(debutPartie, Instant.now()).getSeconds();
+        long bornees = Math.max(0, Math.min(secondes, 86399));
+        return Time.valueOf(LocalTime.ofSecondOfDay(bornees));
     }
 }

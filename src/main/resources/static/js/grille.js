@@ -1,5 +1,27 @@
 // ─── Conversion coordonnées ───────────────────────────────────────────────────
 
+function getCurrentPlayer() {
+    try {
+        const raw = sessionStorage.getItem('joueur');
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+
+function getWhitePlayer() {
+    try {
+        const raw = sessionStorage.getItem('joueurBlanc');
+        return raw ? JSON.parse(raw) : null;
+    } catch {
+        return null;
+    }
+}
+
+function isAuthenticatedPlayer(player) {
+    return Boolean(player && Number.isInteger(player.id) && !player.guest);
+}
+
 // "D4" → { row: 3, col: 3 }  (row = chiffre-1, col = lettre-'A')
 function caseIdToCoords(caseId) {
     const col = caseId.charCodeAt(0) - 65;
@@ -74,12 +96,16 @@ async function applyState(state) {
 async function startGame() {
     const mode = sessionStorage.getItem('gameMode') || 'human';
     const difficulty = sessionStorage.getItem('aiDifficulty') || 'medium';
+    const player = getCurrentPlayer();
+    const whitePlayer = getWhitePlayer();
     const res = await fetch('/api/game/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
             contreIA: mode === 'ai',
-            difficulteIA: difficulty
+            difficulteIA: difficulty,
+            joueurId: isAuthenticatedPlayer(player) ? player.id : null,
+            joueurBlancId: isAuthenticatedPlayer(whitePlayer) ? whitePlayer.id : null
         })
     });
     const state = await res.json();
@@ -109,6 +135,33 @@ document.querySelectorAll('.case').forEach(el => {
     });
 });
 
+function initPageHeader() {
+    const player = getCurrentPlayer();
+    const whitePlayer = getWhitePlayer();
+    const playerInfo = document.getElementById('player-info');
+    const statsButton = document.getElementById('stats-link');
+
+    if (playerInfo) {
+        const blackName = player?.pseudo || 'Invité';
+        const whiteName = isAuthenticatedPlayer(whitePlayer)
+            ? whitePlayer.pseudo
+            : (sessionStorage.getItem('gameMode') === 'ai' ? 'IA Othello' : 'Joueur local');
+        playerInfo.textContent = `Noir : ${blackName}  |  Blanc : ${whiteName}`;
+    }
+
+    if (statsButton) {
+        if (isAuthenticatedPlayer(player)) {
+            statsButton.addEventListener('click', () => {
+                window.location.href = '/stats.html';
+            });
+        } else {
+            statsButton.disabled = true;
+            statsButton.title = 'Connectez-vous pour voir votre historique';
+        }
+    }
+}
+
 // ─── Initialisation ───────────────────────────────────────────────────────────
 
+initPageHeader();
 startGame();

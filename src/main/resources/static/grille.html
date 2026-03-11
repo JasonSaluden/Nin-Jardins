@@ -8,6 +8,19 @@
 </head>
 <body>
 
+<div class="game-shell">
+    <header class="topbar">
+        <div>
+            <p class="eyebrow">Ninja Warrior</p>
+            <h1>Partie en cours</h1>
+            <p id="player-info" class="player-info"></p>
+        </div>
+        <div class="top-actions">
+            <a class="ghost-button" href="/">Accueil</a>
+            <button id="stats-link" class="ghost-button" type="button">Mes statistiques</button>
+        </div>
+    </header>
+
 <div id="game-info" style="text-align:center; font-size:1.2rem; margin: 1rem 0;"></div>
 
 <div class="planche">
@@ -82,6 +95,8 @@
     <div class="case" id="F8" data-state="empty"></div>
     <div class="case" id="G8" data-state="empty"></div>
     <div class="case" id="H8" data-state="empty"></div>
+</div>
+
 </div>
 
 <script src="/js/grille.js"></script>
