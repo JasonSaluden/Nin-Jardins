@@ -93,6 +93,16 @@ async function applyState(state) {
     renderInfo(state);
 }
 
+function getAIDelayMs(difficulteIA) {
+    return 2000;
+}
+
+function iaDoitJouer(state) {
+    return Boolean(state && state.contreIA && !state.partieTerminee && state.joueurCourant === 2);
+}
+
+let iaMovePending = false;
+
 async function startGame() {
     const mode = sessionStorage.getItem('gameMode') || 'human';
     const difficulty = sessionStorage.getItem('aiDifficulty') || 'medium';
@@ -123,12 +133,29 @@ async function playMove(row, col) {
 
     const state = await res.json();
     applyState(state);
+
+    if (iaDoitJouer(state)) {
+        iaMovePending = true;
+        setTimeout(async () => {
+            const aiRes = await fetch('/api/game/ai-move', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            iaMovePending = false;
+            if (!aiRes.ok) return;
+
+            const aiState = await aiRes.json();
+            applyState(aiState);
+        }, getAIDelayMs(state.difficulteIA));
+    }
 }
 
 // ─── Interactions ─────────────────────────────────────────────────────────────
 
 document.querySelectorAll('.case').forEach(el => {
     el.addEventListener('click', function () {
+        if (iaMovePending) return;
         if (!this.classList.contains('playable')) return;
         const { row, col } = caseIdToCoords(this.id);
         playMove(row, col);
