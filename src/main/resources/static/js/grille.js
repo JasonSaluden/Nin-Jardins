@@ -140,6 +140,9 @@ function initPageHeader() {
     const whitePlayer = getWhitePlayer();
     const playerInfo = document.getElementById('player-info');
     const statsButton = document.getElementById('stats-link');
+    const ruleButton = document.getElementById('rule-link');
+    const ruleDialog = document.getElementById('rule-dialog');
+    const ruleDialogContent = document.getElementById('rule-dialog-content');
 
     if (playerInfo) {
         const blackName = player?.pseudo || 'Invité';
@@ -159,8 +162,36 @@ function initPageHeader() {
             statsButton.title = 'Connectez-vous pour voir votre historique';
         }
     }
-}
 
+    // Load rules dynamically
+    async function loadRules() {
+        if (ruleDialogContent.innerHTML) return; // Already loaded
+        try {
+            const response = await fetch('/rule.html');
+            const html = await response.text();
+            // Extract just the content from rule.html
+            ruleDialogContent.innerHTML = html;
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.id = 'rule-close';
+            closeBtn.textContent = 'Fermer';
+            closeBtn.addEventListener('click', () => {
+                ruleDialog.close();
+            });
+            ruleDialogContent.appendChild(closeBtn);
+        } catch (error) {
+            console.error('Error loading rules:', error);
+            ruleDialogContent.innerHTML = '<p>Erreur lors du chargement des règles.</p>';
+        }
+    }
+
+    ruleButton.addEventListener('click', async () => {
+        if (ruleDialog) {
+            await loadRules();
+            ruleDialog.showModal();
+        }
+    });
+}
 // ─── Initialisation ───────────────────────────────────────────────────────────
 
 initPageHeader();
