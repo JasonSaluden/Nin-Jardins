@@ -44,7 +44,6 @@
                 </div>
                 <p class="text-danger small" id="login-error"></p>
                 <p class="text-success small" id="login-success"></p>
-                <button type="submit" class="btn btn-dark w-100">Se connecter</button>
             </form>
 
             <!-- Formulaire Inscription -->
@@ -63,24 +62,17 @@
                 </div>
                 <p class="text-danger small" id="reg-error"></p>
                 <p class="text-success small" id="reg-success"></p>
-                <button type="submit" class="btn btn-dark w-100">S'inscrire</button>
             </form>
 
             </div><!-- /forms-wrapper -->
 
-            <!-- Séparateur -->
+            <button id="submit-btn" type="button" class="btn btn-dark w-100" onclick="submitActiveForm()">Se connecter</button>
             <div class="d-flex align-items-center gap-2 my-4 text-muted small">
                 <hr class="flex-grow-1 m-0">
                 <span>ou</span>
                 <hr class="flex-grow-1 m-0">
             </div>
-
-            <div class="entry-panel mt-4">
-                <p class="small text-muted mb-3">Après connexion, un second écran vous permettra de choisir le joueur 2 et la difficulté.</p>
-            </div>
-
             <button class="btn btn-outline-secondary w-100" onclick="playAsGuest()">Jouer en invité</button>
-
         </div>
     </div>
 

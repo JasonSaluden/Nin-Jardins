@@ -6,16 +6,15 @@ body {
   min-height: 100vh;
   margin: 0;
   padding: 24px 16px 40px;
-  background:
-    radial-gradient(circle at top, rgba(126, 181, 89, 0.18), transparent 35%),
-    linear-gradient(180deg, #102312 0%, #0b130d 100%);
+  background-color: #f8f9fa;
   font-family: "Segoe UI", sans-serif;
-  color: white;
+  color: #212529;
 }
 
 #game-info {
   margin-bottom: 1rem;
   font-size: 1.1rem;
+  color: #495057;
 }
 
 .game-shell {
@@ -37,19 +36,20 @@ body {
 .topbar h1 {
   margin: 0;
   font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-weight: 700;
 }
 
 .eyebrow {
   margin: 0 0 6px;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: #b9d6a2;
+  color: #6c757d;
   font-size: 0.78rem;
 }
 
 .player-info {
   margin: 8px 0 0;
-  color: rgba(255, 255, 255, 0.78);
+  color: #6c757d;
 }
 
 .top-actions {
@@ -60,18 +60,18 @@ body {
 }
 
 .ghost-button {
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
+  border: 1px solid #ced4da;
+  background: #fff;
+  color: #495057;
   text-decoration: none;
-  padding: 10px 14px;
+  padding: 10px 16px;
   border-radius: 999px;
   font-weight: 600;
   cursor: pointer;
 }
 
 .ghost-button:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: #f8f9fa;
 }
 
 .ghost-button:disabled {
@@ -84,12 +84,13 @@ body {
   grid-template-columns: repeat(8, minmax(0, 1fr));
   grid-template-rows: repeat(8, minmax(0, 1fr));
   gap: 0;
-  border: 3px solid black;
+  border: 3px solid #212529;
   background-image: url('/img/Cartoon_green_texture_grass.jpg');
   background-size: cover;
   width: min(92vw, 560px);
   aspect-ratio: 1 / 1;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-radius: 4px;
 }
 
 .case {
