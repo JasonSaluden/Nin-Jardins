@@ -71,20 +71,169 @@ function closeDialog(dialog) {
     dialog.removeAttribute('open');
 }
 
+const CASE_ANIMATION_CLASSES = ['flip-to-black', 'flip-to-white', 'place-black', 'place-white'];
+const FLIP_DOMINO_STEP_MS = 110;
+const FLIP_ANIMATION_TOTAL_MS = 620;
+const PLACE_ANIMATION_TOTAL_MS = 320;
+const FLIP_LINE_GAP_MS = 160;
+const FLIP_DIRECTION_ORDER = [
+    [-1, -1],
+    [-1, 0],
+    [-1, 1],
+    [0, -1],
+    [0, 1],
+    [1, -1],
+    [1, 0],
+    [1, 1]
+];
+let previousPlateau = null;
+
+function initCaseDiscs() {
+    document.querySelectorAll('.case').forEach((cell) => {
+        if (cell.querySelector('.disc')) {
+            return;
+        }
+
+        const disc = document.createElement('span');
+        disc.className = 'disc';
+
+        const blackFace = document.createElement('span');
+        blackFace.className = 'disc-face black-face';
+
+        const whiteFace = document.createElement('span');
+        whiteFace.className = 'disc-face white-face';
+
+        disc.appendChild(blackFace);
+        disc.appendChild(whiteFace);
+        cell.appendChild(disc);
+    });
+}
+
+function clonePlateau(plateau) {
+    return plateau.map((row) => [...row]);
+}
+
+function findPlayedMove(previousBoard, currentBoard) {
+    if (!previousBoard) return null;
+
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            if (previousBoard[row][col] === 0 && currentBoard[row][col] !== 0) {
+                return { row, col };
+            }
+        }
+    }
+
+    return null;
+}
+
+function buildFlipLinePlan(previousBoard, currentBoard, originMove) {
+    const delays = new Map();
+    if (!previousBoard || !originMove) {
+        return delays;
+    }
+
+    const lines = new Map();
+
+    for (let row = 0; row < 8; row++) {
+        for (let col = 0; col < 8; col++) {
+            const before = previousBoard[row][col];
+            const after = currentBoard[row][col];
+            const isFlip = (before === 1 && after === 2) || (before === 2 && after === 1);
+            if (!isFlip) continue;
+
+            const deltaRow = row - originMove.row;
+            const deltaCol = col - originMove.col;
+            const dirRow = Math.sign(deltaRow);
+            const dirCol = Math.sign(deltaCol);
+            const directionKey = `${dirRow},${dirCol}`;
+            const distance = Math.max(Math.abs(deltaRow), Math.abs(deltaCol));
+
+            if (!lines.has(directionKey)) {
+                lines.set(directionKey, []);
+            }
+
+            lines.get(directionKey).push({ row, col, distance });
+        }
+    }
+
+    let lineBaseDelay = 0;
+    for (const [dirRow, dirCol] of FLIP_DIRECTION_ORDER) {
+        const key = `${dirRow},${dirCol}`;
+        const line = lines.get(key);
+        if (!line || line.length === 0) {
+            continue;
+        }
+
+        const maxDistance = line.reduce((max, item) => Math.max(max, item.distance), 0);
+        for (const item of line) {
+            const withinLineDelay = Math.max(0, maxDistance - item.distance) * FLIP_DOMINO_STEP_MS;
+            delays.set(`${item.row},${item.col}`, lineBaseDelay + withinLineDelay);
+        }
+
+        const lineDuration = Math.max(0, (maxDistance - 1) * FLIP_DOMINO_STEP_MS);
+        lineBaseDelay += lineDuration + FLIP_LINE_GAP_MS;
+    }
+
+    return delays;
+}
+
+function triggerCaseAnimation(el, animationClass, delayMs = 0) {
+    el.classList.remove(...CASE_ANIMATION_CLASSES);
+    el.style.setProperty('--disc-anim-delay', `${delayMs}ms`);
+    void el.offsetWidth;
+    el.classList.add(animationClass);
+
+    const animationDuration = animationClass.startsWith('place-')
+        ? PLACE_ANIMATION_TOTAL_MS
+        : FLIP_ANIMATION_TOTAL_MS;
+
+    setTimeout(() => {
+        el.classList.remove(animationClass);
+        el.style.removeProperty('--disc-anim-delay');
+    }, animationDuration + delayMs);
+}
+
 // ─── Rendu du plateau ─────────────────────────────────────────────────────────
 
 /** Met à jour toutes les cases d'après le plateau (int[][] 0=vide,1=noir,2=blanc) */
 function renderBoard(plateau) {
+    const playedMove = findPlayedMove(previousPlateau, plateau);
+    const flipDelays = buildFlipLinePlan(previousPlateau, plateau, playedMove);
+
     for (let row = 0; row < 8; row++) {
         for (let col = 0; col < 8; col++) {
             const el = document.getElementById(coordsToCaseId(row, col));
             if (!el) continue;
+
+            const previousValue = previousPlateau ? previousPlateau[row][col] : null;
             const val = plateau[row][col];
-            el.classList.remove('black', 'white', 'playable');
-            if (val === 1) el.classList.add('black');
-            else if (val === 2) el.classList.add('white');
+            el.classList.remove('black', 'white', 'playable', 'occupied');
+            if (val === 1) {
+                el.classList.add('black', 'occupied');
+            } else if (val === 2) {
+                el.classList.add('white', 'occupied');
+            }
+
+            if (previousValue === null || previousValue === val) {
+                continue;
+            }
+
+            if (previousValue === 2 && val === 1) {
+                const delayMs = flipDelays.get(`${row},${col}`) || 0;
+                triggerCaseAnimation(el, 'flip-to-black', delayMs);
+            } else if (previousValue === 1 && val === 2) {
+                const delayMs = flipDelays.get(`${row},${col}`) || 0;
+                triggerCaseAnimation(el, 'flip-to-white', delayMs);
+            } else if (previousValue === 0 && val === 1) {
+                triggerCaseAnimation(el, 'place-black');
+            } else if (previousValue === 0 && val === 2) {
+                triggerCaseAnimation(el, 'place-white');
+            }
         }
     }
+
+    previousPlateau = clonePlateau(plateau);
 }
 
 /** Surligne les coups valides (liste de [row, col]) */
@@ -602,6 +751,7 @@ function initPageHeader() {
 // ─── Initialisation ───────────────────────────────────────────────────────────
 
 async function initGamePage() {
+    initCaseDiscs();
     initPageHeader();
     bindPauseShortcut();
 

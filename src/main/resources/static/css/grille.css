@@ -23,7 +23,7 @@ body {
 }
 
 .game-shell {
-  width: min(1160px, 100%);
+  width: min(1340px, 100%);
   margin: 0 auto;
   padding: 10px 20px 18px;
   position: relative;
@@ -48,7 +48,7 @@ body {
 
 .game-layout {
   display: grid;
-  grid-template-columns: auto minmax(92px, 110px) minmax(280px, 360px) minmax(92px, 110px) auto;
+  grid-template-columns: auto minmax(92px, 110px) minmax(420px, 520px) minmax(92px, 110px) auto;
   align-items: start;
   justify-content: center;
   gap: 16px;
@@ -135,7 +135,7 @@ body {
 }
 
 .board-stage {
-  width: min(372px, 100%);
+  width: min(520px, 100%);
   position: relative;
 }
 
@@ -187,26 +187,96 @@ body {
   justify-content: center;
   cursor: pointer;
   position: relative;
+  --disc-anim-delay: 0ms;
+  perspective: 900px;
 }
 
-.case::after {
-  content: '';
-  width: 76%;
-  height: 76%;
+
+.case .disc {
+  width: 94%;
+  height: 94%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform-origin: center;
+  opacity: 0;
+}
+
+.case.occupied .disc {
+  opacity: 1;
+}
+
+.case.black .disc {
+  transform: rotateY(0deg);
+}
+
+.case.white .disc {
+  transform: rotateY(180deg);
+}
+
+.case .disc-face {
+  position: absolute;
+  inset: 0;
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
-  display: none;
+  backface-visibility: hidden;
 }
 
-.case.black::after {
-  display: block;
+.case .disc-face.black-face {
   background-image: url('/img/pions/pion-noir-1.svg');
+  transform: rotateY(0deg);
 }
 
-.case.white::after {
-  display: block;
+.case .disc-face.white-face {
   background-image: url('/img/pions/pion-blanc-1.svg');
+  transform: rotateY(180deg);
+}
+
+.case.flip-to-black .disc {
+  animation: flipToBlack3d 560ms cubic-bezier(0.42, 0, 0.2, 1) var(--disc-anim-delay);
+}
+
+.case.flip-to-white .disc {
+  animation: flipToWhite3d 560ms cubic-bezier(0.42, 0, 0.2, 1) var(--disc-anim-delay);
+}
+
+.case.place-black .disc,
+.case.place-white .disc {
+  opacity: 1;
+  animation: placeDisc3d 250ms ease-out var(--disc-anim-delay);
+}
+
+@keyframes flipToBlack3d {
+  0% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes flipToWhite3d {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes placeDisc3d {
+  0% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .case.playable {
