@@ -177,13 +177,18 @@
 
     <dialog id="pause-dialog">
       <div id="pause-dialog-content">
-        <h2>Pause</h2>
-        <p id="pause-timer" class="pause-value"></p>
-        <p id="pause-score" class="pause-value"></p>
-        <p id="pause-mode" class="pause-value"></p>
-        <div class="end-actions">
-          <button id="pause-resume-btn" class="end-btn-primary" type="button">Reprendre</button>
-          <a class="end-btn-secondary" href="/setup.html">Quitter la partie</a>
+        <h2 class="pause-title">EN PAUSE</h2>
+        <div class="pause-hero" aria-hidden="true">
+          <img class="pause-illustration" src="/img/persos/nain-pause-zen.svg" alt="" />
+        </div>
+        <div class="pause-meta">
+          <p id="pause-timer" class="pause-value"></p>
+          <p id="pause-score" class="pause-value"></p>
+          <p id="pause-mode" class="pause-value"></p>
+          <div class="end-actions">
+            <button id="pause-resume-btn" class="end-btn-primary" type="button">Reprendre</button>
+            <a class="end-btn-secondary" href="/setup.html">Quitter la partie</a>
+          </div>
         </div>
       </div>
     </dialog>

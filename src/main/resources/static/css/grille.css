@@ -5,6 +5,7 @@
   --accent-red: #d5072f;
   --text-dark: #18140f;
   --board-grid-line: rgba(0, 0, 0, 0.78);
+  --board-stage-size: 520px;
 }
 
 * {
@@ -135,7 +136,7 @@ body {
 }
 
 .board-stage {
-  width: min(520px, 100%);
+  width: min(var(--board-stage-size), 100%);
   position: relative;
 }
 
@@ -403,6 +404,137 @@ body {
   text-align: center;
 }
 
+#pause-dialog-content {
+  background-color: #f6f6f6;
+  background-image: linear-gradient(rgba(246, 246, 246, 0.62), rgba(246, 246, 246, 0.62)), url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-position: 24% center, 24% center;
+  background-repeat: no-repeat;
+  background-size: 190% 190%, 180% 180%;
+  border: 1px solid rgba(38, 30, 16, 0.14);
+  border-radius: 8px;
+  box-shadow: 0 16px 38px rgba(26, 19, 8, 0.32);
+  width: min(var(--board-stage-size), 92vw);
+  aspect-ratio: 1 / 1;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 18px;
+  overflow: hidden;
+}
+
+.pause-hero {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0 0 4px;
+  position: relative;
+  isolation: isolate;
+}
+
+.pause-hero::before {
+  content: "";
+  position: absolute;
+  width: min(260px, 88%);
+  aspect-ratio: 1 / 1;
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.72;
+  z-index: -1;
+}
+
+.pause-illustration {
+  width: min(250px, 82%);
+  height: auto;
+  display: block;
+}
+
+.pause-meta {
+  width: min(300px, 100%);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.pause-title {
+  margin: 0 0 6px;
+  text-align: center;
+  font-size: 1.85rem;
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  font-weight: 900;
+  color: #100b07;
+  text-transform: uppercase;
+  font-family: "Cinzel Black", "Trajan Pro", "Copperplate", serif;
+}
+
+#pause-dialog-content .pause-value {
+  margin: 0 0 6px;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(39, 29, 18, 0.18);
+  color: #2b2018;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+#pause-dialog-content .end-actions {
+  margin-top: 10px;
+  gap: 8px;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+#pause-dialog-content .end-btn-primary,
+#pause-dialog-content .end-btn-secondary {
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  padding: 9px 10px;
+  font-size: 0.82rem;
+  line-height: 1.15;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+#pause-dialog-content .end-btn-primary {
+  background: linear-gradient(180deg, #f20f37 0%, #cc0629 100%);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(213, 7, 47, 0.3);
+}
+
+#pause-dialog-content .end-btn-secondary {
+  background: #fff;
+  color: #b60728;
+  border: 2px solid #d5072f;
+}
+
+#pause-dialog[open] #pause-dialog-content {
+  animation: pauseModalPop 220ms ease-out;
+}
+
+@keyframes pauseModalPop {
+  0% {
+    transform: translateY(10px) scale(0.96);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
 #hint-dialog-content,
 #rule-dialog-content {
   padding: 28px;
@@ -467,6 +599,23 @@ dialog {
 
 dialog::backdrop {
   background: rgba(0, 0, 0, 0.5);
+}
+
+#pause-dialog {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+#pause-dialog[open] {
+  display: grid;
+  place-items: center;
+}
+
+#pause-dialog[open] #pause-dialog-content {
+  margin: 0;
 }
 
 @media (max-width: 1080px) {
@@ -553,6 +702,54 @@ dialog::backdrop {
     height: 78px;
     justify-self: start;
   }
+
+  #pause-dialog-content {
+    width: min(var(--board-stage-size), 92vw);
+    aspect-ratio: 1 / 1;
+    background-position: 22% center, 22% center;
+    background-size: 210% 210%, 190% 190%;
+    padding: 16px 12px 14px;
+  }
+
+  .pause-title {
+    font-size: 1.62rem;
+  }
+
+  .pause-meta {
+    width: min(280px, 100%);
+  }
+
+  .pause-illustration {
+    width: min(210px, 80%);
+  }
+}
+
+@media (max-width: 640px) {
+  #pause-dialog-content {
+    width: min(var(--board-stage-size), 92vw);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    background-position: center top, center top;
+    background-size: 185% 185%, cover;
+  }
+
+  .pause-hero {
+    margin-bottom: 6px;
+  }
+
+  .pause-title {
+    text-align: center;
+    font-size: 1.9rem;
+  }
+
+  .pause-meta {
+    width: min(280px, 100%);
+  }
+
+  #pause-dialog-content .end-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 640px) {
@@ -613,6 +810,10 @@ dialog::backdrop {
 }
 
 @media (max-width: 480px) {
+  :root {
+    --board-stage-size: 560px;
+  }
+
   .game-shell {
     padding: 10px 8px 18px;
   }
@@ -671,7 +872,7 @@ dialog::backdrop {
   }
 
   .board-stage {
-    width: min(560px, 100%);
+    width: min(var(--board-stage-size), 100%);
   }
 
   .board-base {
