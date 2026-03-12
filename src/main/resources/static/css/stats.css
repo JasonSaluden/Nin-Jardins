@@ -301,6 +301,60 @@ body {
     }
 }
 
+@media (max-height: 760px) {
+    .stats-shell {
+        padding: 6px 10px 14px;
+    }
+
+    .hero {
+        min-height: 80px;
+        margin-bottom: 6px;
+    }
+
+    .metrics-grid {
+        gap: 12px;
+        margin: 0 auto 12px;
+    }
+
+    .metric-card {
+        min-height: 130px;
+        padding: 10px 12px;
+    }
+
+    .metric-card strong {
+        margin-top: 10px;
+        font-size: clamp(2rem, 4.5vw, 3.5rem);
+    }
+
+    .bottom-grid {
+        gap: 14px;
+    }
+
+    .panel {
+        padding: 8px 12px 10px;
+    }
+
+    .panel-head {
+        margin-bottom: 6px;
+    }
+
+    .summary-list {
+        gap: 6px;
+    }
+
+    .summary-row {
+        padding: 4px 8px;
+    }
+
+    .colors-panel {
+        gap: 6px;
+    }
+
+    .color-card {
+        min-height: 100px;
+    }
+}
+
 @media (max-width: 760px) {
     .stats-shell {
         width: calc(100% - 10px);

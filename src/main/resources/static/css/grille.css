@@ -340,6 +340,7 @@ body {
 
 .assistant-fab {
   grid-column: 1;
+  grid-row: 1;
   position: static;
   justify-self: center;
   align-self: end;
@@ -405,7 +406,7 @@ body {
 }
 
 #pause-dialog-content {
-  background-color: #f6f6f6;
+  background-color: red;
   background-image: linear-gradient(rgba(246, 246, 246, 0.62), rgba(246, 246, 246, 0.62)), url('/img/arriere-plan/rayon-arriere-plan-web.svg');
   background-position: 24% center, 24% center;
   background-repeat: no-repeat;
@@ -1217,5 +1218,46 @@ dialog::backdrop {
 
   .board-timer {
     font-size: 0.84rem;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 1081px) {
+  :root {
+    --board-stage-size: min(600px, calc(100vh - 120px));
+  }
+
+  .game-shell {
+    padding: 4px 20px 8px;
+  }
+
+  .score-panel {
+    margin-top: 50px;
+    padding: 8px 6px;
+    gap: 4px;
+  }
+
+  .score-avatar,
+  .score-pion {
+    width: 46px;
+    height: 46px;
+  }
+
+  .score-value {
+    font-size: 1.8rem;
+  }
+
+  .board-base {
+    padding: 6px;
+  }
+
+  .board-timer {
+    margin-top: 6px;
+    font-size: 0.88rem;
+    padding: 3px 12px;
+  }
+
+  .assistant-fab {
+    width: 80px;
+    height: 80px;
   }
 }
