@@ -125,10 +125,22 @@
             <!-- Footer actions -->
             <footer class="setup-footer">
                 <a href="/connexion.html" class="btn-retour">&lt; Retour</a>
+                <button id="setup-stats-link" class="btn-stats hidden" type="button">
+                    <img src="/img/icones/stats.svg" alt="" aria-hidden="true">
+                    <span>Mes statistiques</span>
+                </button>
+                <button id="setup-rule-link" class="btn-rules" type="button">
+                    <img src="/img/icones/doc-regles.svg" alt="" aria-hidden="true">
+                    <span>Règles</span>
+                </button>
                 <button class="btn-valider" type="button" onclick="startConfiguredGame()">Valider et jouer &gt;</button>
             </footer>
 
         </main>
+
+        <dialog id="setup-rule-dialog">
+            <div id="setup-rule-dialog-content"></div>
+        </dialog>
 
         <!-- Right icon toolbar -->
         <!-- <nav class="icon-toolbar" aria-label="Actions de configuration">

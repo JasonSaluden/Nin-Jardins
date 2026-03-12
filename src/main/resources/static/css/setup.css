@@ -459,6 +459,62 @@ body {
     color: #fff;
 }
 
+.btn-stats {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 2px solid var(--accent-red);
+    background: var(--surface-white);
+    font-family: "Trebuchet MS", "Verdana", sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--accent-red);
+    cursor: pointer;
+    transition: background 0.14s ease, color 0.14s ease;
+}
+
+.btn-stats img {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.btn-rules {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: 2px solid var(--accent-red);
+    background: var(--surface-white);
+    font-family: "Trebuchet MS", "Verdana", sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--accent-red);
+    cursor: pointer;
+    transition: background 0.14s ease, color 0.14s ease;
+}
+
+.btn-rules img {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.btn-rules:hover {
+    background: var(--accent-red);
+    color: #fff;
+}
+
+.btn-stats:hover {
+    background: var(--accent-red);
+    color: #fff;
+}
+
 .btn-valider {
     display: inline-block;
     padding: 10px 26px;
@@ -475,6 +531,70 @@ body {
 
 .btn-valider:hover {
     filter: brightness(1.1);
+}
+
+#setup-rule-dialog {
+    border: none;
+    padding: 0;
+    width: min(760px, 92vw);
+    max-width: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+#setup-rule-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#setup-rule-dialog-content {
+    background: var(--surface-white);
+    border-radius: 16px;
+    padding: 22px 22px 18px;
+    border: 2px solid var(--panel-yellow);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+    max-height: min(78vh, 760px);
+    overflow: auto;
+}
+
+#setup-rule-dialog-content h2 {
+    margin: 0 0 14px;
+    text-align: center;
+    font-family: 'Shojumaru', "Trebuchet MS", sans-serif;
+    font-size: 1.5rem;
+    line-height: 1.05;
+}
+
+#setup-rule-dialog-content h3 {
+    margin: 12px 0 6px;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+#setup-rule-dialog-content p,
+#setup-rule-dialog-content li {
+    font-size: 0.95rem;
+    line-height: 1.45;
+}
+
+#setup-rule-dialog-content ul {
+    margin: 0 0 6px;
+    padding-left: 20px;
+}
+
+#setup-rule-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 14px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: none;
+    background: var(--accent-red);
+    font-family: "Trebuchet MS", "Verdana", sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
 }
 
 /* ─── Right icon toolbar ─────────────────────────────────────────── */
@@ -581,9 +701,19 @@ body {
     }
 
     .btn-retour,
+    .btn-stats,
+    .btn-rules,
     .btn-valider {
         text-align: center;
         width: 100%;
+    }
+
+    #setup-rule-dialog {
+        width: min(92vw, 620px);
+    }
+
+    #setup-rule-dialog-content {
+        padding: 18px 16px 16px;
     }
 }
 
