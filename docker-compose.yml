@@ -58,3 +58,7 @@ volumes:
   db_data:
   maven_cache:
   ollama_data:
+
+networks:
+  default:
+    enable_ipv6: true   
