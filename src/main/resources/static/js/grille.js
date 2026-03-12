@@ -40,6 +40,37 @@ function formatDuration(totalSeconds) {
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
+function openDialog(dialog) {
+    if (!dialog) return;
+
+    if (typeof dialog.showModal === 'function') {
+        try {
+            if (!dialog.open) {
+                dialog.showModal();
+            }
+            return;
+        } catch {
+            dialog.setAttribute('open', 'open');
+        }
+        return;
+    }
+
+    dialog.setAttribute('open', 'open');
+}
+
+function closeDialog(dialog) {
+    if (!dialog) return;
+
+    if (typeof dialog.close === 'function') {
+        if (dialog.open) {
+            dialog.close();
+        }
+        return;
+    }
+
+    dialog.removeAttribute('open');
+}
+
 // ─── Rendu du plateau ─────────────────────────────────────────────────────────
 
 /** Met à jour toutes les cases d'après le plateau (int[][] 0=vide,1=noir,2=blanc) */
@@ -68,6 +99,12 @@ function renderValidMoves(coupsValides) {
 /** Affiche le score et l'indicateur de tour */
 function renderInfo(state) {
     const infoEl = document.getElementById('game-info');
+    const scoreNoirEl = document.getElementById('score-noir');
+    const scoreBlancEl = document.getElementById('score-blanc');
+
+    if (scoreNoirEl) scoreNoirEl.textContent = String(state.scoreNoir).padStart(2, '0');
+    if (scoreBlancEl) scoreBlancEl.textContent = String(state.scoreBlanc).padStart(2, '0');
+
     if (!infoEl) return;
 
     const modeTexte = getModeTexte(state);
@@ -122,7 +159,7 @@ async function fetchHint() {
     const dialog = document.getElementById('hint-dialog');
     const textEl = document.getElementById('hint-text');
     const btn = document.getElementById('hint-btn');
-    if (!dialog || !textEl) return;
+    if (!dialog || !textEl || !btn) return;
 
     btn.disabled = true;
     textEl.textContent = '';
@@ -206,12 +243,12 @@ function showPauseModal() {
 
     if (resumeBtn) {
         resumeBtn.onclick = () => {
-            dialog.close();
+            closeDialog(dialog);
             startChrono();
         };
     }
 
-    dialog.showModal();
+    openDialog(dialog);
 }
 
 function togglePauseFromKeyboard() {
@@ -220,7 +257,7 @@ function togglePauseFromKeyboard() {
     if (!pauseDialog || endDialog?.open) return;
 
     if (pauseDialog.open) {
-        pauseDialog.close();
+        closeDialog(pauseDialog);
         if (chronoIntervalId === null) {
             startChrono();
         }
@@ -302,7 +339,7 @@ function showEndModal(state) {
         }
     }
 
-    dialog.showModal();
+    openDialog(dialog);
 }
 
 function getModeTexte(state) {
@@ -489,20 +526,33 @@ function initPageHeader() {
     const mode = sessionStorage.getItem('gameMode') || 'human';
     const selectedColor = sessionStorage.getItem('playerColor') || 'black';
     const playerInfo = document.getElementById('player-info');
+    const blackNameEl = document.getElementById('black-player-name');
+    const whiteNameEl = document.getElementById('white-player-name');
     const statsButton = document.getElementById('stats-link');
     const pauseButton = document.getElementById('pause-link');
     const ruleButton = document.getElementById('rule-link');
     const ruleDialog = document.getElementById('rule-dialog');
     const ruleDialogContent = document.getElementById('rule-dialog-content');
 
-    if (playerInfo) {
+    {
         const opponentName = isAuthenticatedPlayer(whitePlayer)
             ? whitePlayer.pseudo
-            : (mode === 'ai' ? 'IA Othello' : 'Joueur local');
+            : 'Invité';
 
         const blackName = selectedColor === 'white' ? opponentName : (player?.pseudo || 'Invité');
         const whiteName = selectedColor === 'white' ? (player?.pseudo || 'Invité') : opponentName;
-        playerInfo.textContent = `Noir : ${blackName}  |  Blanc : ${whiteName}`;
+
+        if (playerInfo) {
+            playerInfo.textContent = `Noir : ${blackName}  |  Blanc : ${whiteName}`;
+        }
+        if (blackNameEl) {
+            blackNameEl.textContent = blackName;
+            blackNameEl.title = blackName;
+        }
+        if (whiteNameEl) {
+            whiteNameEl.textContent = whiteName;
+            whiteNameEl.title = whiteName;
+        }
     }
 
     if (statsButton) {
@@ -532,10 +582,14 @@ function initPageHeader() {
     const hintClose = document.getElementById('hint-close');
     if (hintClose) {
         hintClose.addEventListener('click', () => {
+
             document.getElementById('hint-dialog')?.close();
             if (chronoIntervalId === null) {
                 startChrono();
             }
+
+            closeDialog(document.getElementById('hint-dialog'));
+
         });
     }
 
@@ -551,7 +605,7 @@ function initPageHeader() {
                 closeBtn.id = 'rule-close';
                 closeBtn.textContent = 'Fermer';
                 closeBtn.addEventListener('click', () => {
-                    ruleDialog.close();
+                    closeDialog(ruleDialog);
                 });
                 ruleDialogContent.appendChild(closeBtn);
             } catch (error) {
@@ -562,7 +616,7 @@ function initPageHeader() {
 
         ruleButton.addEventListener('click', async () => {
             await loadRules();
-            ruleDialog.showModal();
+            openDialog(ruleDialog);
         });
     }
 }
