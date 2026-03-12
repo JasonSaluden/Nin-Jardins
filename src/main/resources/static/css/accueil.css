@@ -1,3 +1,9 @@
+body{
+    background-image: url("../img/arriere-plan/rayon-arriere-plan-web.svg");
+    background-repeat: no-repeat;
+    background-size:cover;
+    background-position: center;
+}
 .pion {
     width: 26px;
     height: 26px;
@@ -28,4 +34,36 @@
     border-top: 1px solid rgba(0, 0, 0, 0.08);
     padding-top: 1rem;
 }
-
+#fight{
+    text-align: center;
+}
+.button-principale{
+    background-color:#DC0122;
+    color: whitesmoke;
+    border: none;
+    border-radius: 1em;
+    padding: 0.5em 20%;
+    margin-top: 1em;
+}
+.button-principale:hover{
+    background-color:red;
+    color: whitesmoke;
+    box-shadow: 0 0 10px 5px crimson;
+}
+.button-secondary{
+    background-color:whitesmoke;
+    color: #DC0122;
+    border: #DC0122 solid 2px;
+    border-radius: 1em;
+    padding: 0.5em 20%;
+    margin-top: 1em;
+}
+.button-secondary:hover{
+    background-color:azure;
+    color: red;
+    border: red solid 2px;
+    box-shadow: 0 0 10px 2px #DC0122;
+}
+.form-control{
+    background-color: #FFF9DC;
+}
