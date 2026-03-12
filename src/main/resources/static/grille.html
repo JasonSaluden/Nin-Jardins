@@ -146,31 +146,29 @@
           </a>
         </nav>
 
-        <button
-          id="hint-btn"
-          class="assistant-fab"
-          type="button"
-          title="Demander un conseil a l'IA"
-          aria-label="Demander un conseil a l'IA"
-        >
-          <img
-            src="/img/persos/profil-nain-jardin-converse.svg"
-            alt="Assistant IA"
-          />
-        </button>
+        <div class="assistant-wrapper">
+          <div id="hint-bubble" class="hint-bubble hidden">
+            <button id="hint-close" class="hint-bubble-close" type="button" aria-label="Fermer">✕</button>
+            <p id="hint-text" class="hint-text"></p>
+          </div>
+          <button
+            id="hint-btn"
+            class="assistant-fab"
+            type="button"
+            title="Demander un conseil a l'IA"
+            aria-label="Demander un conseil a l'IA"
+          >
+            <img
+              src="/img/persos/profil-nain-jardin-converse.svg"
+              alt="Assistant IA"
+            />
+          </button>
+        </div>
       </main>
 
       <dialog id="rule-dialog">
         <div id="rule-dialog-content"></div>
       </dialog>
-
-    <dialog id="hint-dialog">
-      <div id="hint-dialog-content">
-        <h2>Conseil IA</h2>
-        <p id="hint-text" class="hint-text"></p>
-        <button id="hint-close" type="button">Fermer</button>
-      </div>
-    </dialog>
 
     <dialog id="pause-dialog">
       <div id="pause-dialog-content">

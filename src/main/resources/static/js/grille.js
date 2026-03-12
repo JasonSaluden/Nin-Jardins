@@ -342,18 +342,14 @@ async function prefetchHint() {
 }
 
 async function fetchHint() {
-    const dialog = document.getElementById('hint-dialog');
+    const bubble = document.getElementById('hint-bubble');
     const textEl = document.getElementById('hint-text');
     const btn = document.getElementById('hint-btn');
-    if (!dialog || !textEl || !btn) return;
+    if (!bubble || !textEl || !btn) return;
 
     btn.disabled = true;
-    textEl.textContent = '';
-    if (chronoIntervalId !== null) {
-        clearInterval(chronoIntervalId);
-        chronoIntervalId = null;
-    }
-    dialog.showModal();
+    textEl.textContent = '…';
+    bubble.classList.remove('hidden');
 
     if (cachedHint !== null) {
         textEl.textContent = cachedHint;
@@ -447,7 +443,6 @@ function showPauseModal() {
 
 const BOARD_SIZED_DIALOGS = [
     { dialogId: 'pause-dialog', contentId: 'pause-dialog-content' },
-    { dialogId: 'rule-dialog', contentId: 'rule-dialog-content' },
     { dialogId: 'end-dialog', contentId: 'end-dialog-content' }
 ];
 
@@ -887,22 +882,23 @@ function initPageHeader() {
     const hintClose = document.getElementById('hint-close');
     if (hintClose) {
         hintClose.addEventListener('click', () => {
-
-            document.getElementById('hint-dialog')?.close();
-            if (chronoIntervalId === null) {
-                startChrono();
-            }
-
-            closeDialog(document.getElementById('hint-dialog'));
-
+            document.getElementById('hint-bubble')?.classList.add('hidden');
         });
     }
+
+    document.addEventListener('click', (e) => {
+        const bubble = document.getElementById('hint-bubble');
+        const wrapper = document.querySelector('.assistant-wrapper');
+        if (bubble && !bubble.classList.contains('hidden') && wrapper && !wrapper.contains(e.target)) {
+            bubble.classList.add('hidden');
+        }
+    });
 
     if (ruleButton && ruleDialog && ruleDialogContent) {
         async function loadRules() {
             if (ruleDialogContent.innerHTML) return;
             try {
-                const response = await fetch('/rule.html');
+                const response = await fetch('/rule.html', { cache: 'no-store' });
                 const html = await response.text();
                 ruleDialogContent.innerHTML = html;
 
@@ -910,7 +906,7 @@ function initPageHeader() {
                 closeBtn.id = 'rule-close';
                 closeBtn.textContent = 'Fermer';
                 closeBtn.addEventListener('click', () => {
-                    closeBoardSizedDialog(ruleDialog, 'rule-dialog-content');
+                    closeDialog(ruleDialog);
                 });
                 ruleDialogContent.appendChild(closeBtn);
             } catch (error) {
@@ -922,12 +918,11 @@ function initPageHeader() {
         ruleButton.addEventListener('click', async () => {
             await loadRules();
             openDialog(ruleDialog);
-            requestAnimationFrame(syncBoardSizedDialogs);
         });
 
         ruleDialog.addEventListener('click', (e) => {
             if (e.target === ruleDialog) {
-                closeBoardSizedDialog(ruleDialog, 'rule-dialog-content');
+                closeDialog(ruleDialog);
             }
         });
     }

@@ -1,3 +1,9 @@
+@font-face {
+  font-family: "Shojumaru";
+  src: url('/police/Shojumaru-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
 :root {
   --panel-yellow: #f7b409;
   --panel-yellow-dark: #d69200;
@@ -186,7 +192,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: default;
   position: relative;
   --disc-anim-delay: 0ms;
   perspective: 900px;
@@ -282,6 +288,7 @@ body {
 
 .case.playable {
   background-color: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
 }
 
 .case.playable::before {
@@ -338,13 +345,72 @@ body {
   filter: none;
 }
 
-.assistant-fab {
+.assistant-wrapper {
   grid-column: 1;
   grid-row: 1;
-  position: static;
-  justify-self: center;
   align-self: end;
-  margin-bottom: 0;
+  justify-self: center;
+  position: relative;
+  width: 140px;
+}
+
+.hint-bubble {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 0;
+  width: 230px;
+  background: #fffef5;
+  border: 2px solid #f7b409;
+  border-radius: 14px;
+  padding: 10px 32px 10px 14px;
+  font-size: 0.87rem;
+  line-height: 1.5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 100;
+  color: var(--text-dark);
+}
+
+.hint-bubble::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 58px;
+  border: 11px solid transparent;
+  border-top-color: #f7b409;
+}
+
+.hint-bubble::after {
+  content: '';
+  position: absolute;
+  top: calc(100% - 2px);
+  left: 60px;
+  border: 9px solid transparent;
+  border-top-color: #fffef5;
+}
+
+.hint-bubble .hint-text {
+  margin: 0;
+}
+
+.hint-bubble-close {
+  position: absolute;
+  top: 7px;
+  right: 9px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #aaa;
+  line-height: 1;
+  padding: 0;
+}
+
+.hint-bubble-close:hover {
+  color: #555;
+}
+
+.assistant-fab {
+  position: static;
   width: 140px;
   height: 140px;
   border: none;
@@ -392,9 +458,7 @@ body {
 }
 
 #pause-dialog-content,
-#hint-dialog-content,
-#end-dialog-content,
-#rule-dialog-content {
+#end-dialog-content {
   background: #fff;
   border-radius: 10px;
 }
@@ -427,8 +491,7 @@ body {
   overflow: hidden;
 }
 
-#end-dialog-content,
-#rule-dialog-content {
+#end-dialog-content {
   background-color: #f6f6f6;
   background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
   background-position: 24% center;
@@ -447,18 +510,21 @@ body {
   align-items: center;
   padding: 16px 18px;
   overflow: auto;
-}
-
-#end-dialog-content {
   gap: 6px;
 }
 
 #rule-dialog-content {
-  justify-content: flex-start;
-  align-items: stretch;
-  text-align: left;
+  background: #fff;
+  border-radius: 16px;
+  padding: 22px 22px 18px;
+  border: 2px solid var(--panel-yellow);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+  max-height: min(92vh, 800px);
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
   gap: 4px;
-  overflow: hidden;
+  text-align: left;
 }
 
 .pause-hero {
@@ -558,11 +624,6 @@ body {
   }
 }
 
-#hint-dialog-content {
-  padding: 28px;
-}
-
-#hint-dialog-content h2,
 #pause-dialog-content h2,
 #end-title {
   margin: 0 0 14px;
@@ -584,25 +645,19 @@ body {
 }
 
 #rule-dialog-content h2 {
+  margin: 0 0 10px;
   text-align: center;
-  font-size: 1.4rem;
+  font-family: "Shojumaru", cursive;
+  font-size: 1.5rem;
   line-height: 1.05;
-  letter-spacing: 0.03em;
-  font-weight: 900;
-  color: #100b07;
-  text-transform: uppercase;
-  font-family: "Cinzel Black", "Trajan Pro", "Copperplate", serif;
+  font-weight: normal;
 }
 
 #rule-dialog-content h3 {
   margin: 10px 0 4px;
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 800;
-  color: #5e280d;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  border-left: 3px solid var(--accent-red);
-  padding-left: 8px;
+  color: #2b2018;
 }
 
 #end-score,
@@ -622,12 +677,7 @@ body {
 #rule-dialog-content p,
 #rule-dialog-content li {
   margin: 0;
-  padding: 0;
-  background: none;
-  border: none;
-  color: #2b2018;
-  font-size: 0.84rem;
-  font-weight: 500;
+  font-size: 0.95rem;
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
@@ -699,11 +749,8 @@ body {
 }
 
 #rule-dialog-content ul {
-  margin: 0;
-  padding-left: 14px;
-  list-style: disc;
-  display: grid;
-  gap: 4px;
+  margin: 0 0 6px;
+  padding-left: 20px;
 }
 
 .hint-text {
@@ -740,7 +787,6 @@ body {
 
 .end-btn-primary,
 .end-btn-secondary,
-#hint-close,
 #rule-close {
   border-radius: 999px;
   border: none;
@@ -764,7 +810,6 @@ body {
 }
 
 .end-btn-primary,
-#hint-close,
 #rule-close {
   background: #212529;
   color: #fff;
@@ -808,8 +853,7 @@ dialog::backdrop {
   box-shadow: none;
 }
 
-#end-dialog,
-#rule-dialog {
+#end-dialog {
   width: 100vw;
   height: 100vh;
   max-width: none;
@@ -817,13 +861,21 @@ dialog::backdrop {
   box-shadow: none;
 }
 
+#rule-dialog {
+  width: min(760px, 92vw);
+  max-width: none;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  border: none;
+}
+
 #pause-dialog[open] {
   display: grid;
   place-items: center;
 }
 
-#end-dialog[open],
-#rule-dialog[open] {
+#end-dialog[open] {
   display: grid;
   place-items: center;
 }
@@ -863,7 +915,7 @@ dialog::backdrop {
   .board-section,
   .score-panel-right,
   .icon-toolbar,
-  .assistant-fab {
+  .assistant-wrapper {
     grid-column: auto;
   }
 
@@ -916,11 +968,15 @@ dialog::backdrop {
     justify-content: center;
   }
 
+  .assistant-wrapper {
+    width: 78px;
+    justify-self: start;
+  }
+
   .assistant-fab {
     position: static;
     width: 78px;
     height: 78px;
-    justify-self: start;
   }
 
   #pause-dialog-content {

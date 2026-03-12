@@ -136,12 +136,12 @@ h1{
     padding: 22px 22px 18px;
     border: 2px solid #f7b409;
     box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
-    max-height: min(78vh, 760px);
+    max-height: min(92vh, 800px);
     overflow: auto;
 }
 
 #home-rule-dialog-content h2 {
-    margin: 0 0 14px;
+    margin: 0 0 10px;
     text-align: center;
     font-family: "Shojumaru";
     font-size: 1.5rem;
@@ -149,13 +149,14 @@ h1{
 }
 
 #home-rule-dialog-content h3 {
-    margin: 12px 0 6px;
+    margin: 10px 0 4px;
     font-size: 1rem;
     font-weight: 800;
 }
 
 #home-rule-dialog-content p,
 #home-rule-dialog-content li {
+    margin: 0;
     font-size: 0.95rem;
     line-height: 1.45;
 }
