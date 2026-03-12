@@ -125,17 +125,44 @@ async function fetchHint() {
     if (!dialog || !textEl) return;
 
     btn.disabled = true;
-    textEl.textContent = "L'IA analyse la position...";
+    textEl.textContent = '';
     dialog.showModal();
 
-    try {
-        const res = await fetch('/api/game/hint');
-        textEl.textContent = await res.text();
-    } catch {
-        textEl.textContent = "Impossible de contacter l'IA pour le moment.";
-    } finally {
+    let fullText = '';
+    let sentenceDone = false;
+
+    const source = new EventSource('/api/game/hint/stream');
+
+    source.onmessage = (event) => {
+        if (sentenceDone) return;
+        fullText += event.data;
+        const end = fullText.search(/[.!?]/);
+        if (end !== -1) {
+            textEl.textContent = fullText.substring(0, end + 1);
+            sentenceDone = true;
+            source.close();
+            btn.disabled = false;
+        } else {
+            textEl.textContent = fullText;
+        }
+    };
+
+    source.addEventListener('done', () => {
+        source.close();
         btn.disabled = false;
-    }
+    });
+
+    source.addEventListener('error', (event) => {
+        textEl.textContent = event.data || "Impossible de contacter l'IA pour le moment.";
+        source.close();
+        btn.disabled = false;
+    });
+
+    source.onerror = () => {
+        source.close();
+        if (!fullText) textEl.textContent = "Impossible de contacter l'IA pour le moment.";
+        btn.disabled = false;
+    };
 }
 
 function showPauseModal() {
