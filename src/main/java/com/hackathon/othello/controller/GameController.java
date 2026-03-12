@@ -6,8 +6,12 @@ import com.hackathon.othello.dto.StartGameRequest;
 import com.hackathon.othello.service.GameService;
 import com.hackathon.othello.service.HintService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/game")
@@ -68,6 +72,39 @@ public class GameController {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                     .body("L'IA n'est pas disponible pour le moment.");
         }
+    }
+
+    /** Conseil IA en streaming (SSE) */
+    @GetMapping(value = "/hint/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter hintStream() {
+        SseEmitter emitter = new SseEmitter(60_000L);
+        try {
+            hintService.getHintStream().subscribe(
+                chunk -> {
+                    try {
+                        // Préfixer d'un espace pour compenser le stripping SSE (spec retire 1 espace en tête de data:)
+                        emitter.send(SseEmitter.event().data(" " + chunk));
+                    } catch (IOException e) {
+                        emitter.completeWithError(e);
+                    }
+                },
+                e -> {
+                    try {
+                        emitter.send(SseEmitter.event().name("error").data("L'IA n'est pas disponible pour le moment."));
+                    } catch (IOException ignored) {}
+                    emitter.complete();
+                },
+                () -> {
+                    try {
+                        emitter.send(SseEmitter.event().name("done").data(""));
+                    } catch (IOException ignored) {}
+                    emitter.complete();
+                }
+            );
+        } catch (Exception e) {
+            emitter.completeWithError(e);
+        }
+        return emitter;
     }
 
     // -------------------------------------------------------------------------
