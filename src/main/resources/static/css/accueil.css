@@ -38,7 +38,7 @@ h1{
 
 .forms-wrapper {
     position: relative;
-    min-height: 340px;
+    min-height: 200px;
 }
 
 .auth-form {
@@ -55,6 +55,13 @@ h1{
 #fight{
     text-align: center;
 }
+
+.home-actions {
+    margin-top: 14px;
+    display: flex;
+    justify-content: center;
+}
+
 .button-principale{
     background-color:#DC0122;
     color: whitesmoke;
@@ -82,6 +89,98 @@ h1{
     border: red solid 2px;
     box-shadow: 0 0 10px 2px #DC0122;
 }
+
+.button-rules{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color:whitesmoke;
+    color: #DC0122;
+    border: #DC0122 solid 2px;
+    border-radius: 1em;
+    padding: 0.5em 1.4em;
+    margin-top: 1em;
+    font-weight: 700;
+}
+
+.button-rules img{
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
+.button-rules:hover{
+    background-color:azure;
+    color: red;
+    border: red solid 2px;
+    box-shadow: 0 0 10px 2px #DC0122;
+}
+
+#home-rule-dialog {
+    border: none;
+    padding: 0;
+    width: min(760px, 92vw);
+    max-width: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+#home-rule-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#home-rule-dialog-content {
+    background: #fff;
+    border-radius: 16px;
+    padding: 22px 22px 18px;
+    border: 2px solid #f7b409;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+    max-height: min(78vh, 760px);
+    overflow: auto;
+}
+
+#home-rule-dialog-content h2 {
+    margin: 0 0 14px;
+    text-align: center;
+    font-family: "Shojumaru";
+    font-size: 1.5rem;
+    line-height: 1.05;
+}
+
+#home-rule-dialog-content h3 {
+    margin: 12px 0 6px;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+#home-rule-dialog-content p,
+#home-rule-dialog-content li {
+    font-size: 0.95rem;
+    line-height: 1.45;
+}
+
+#home-rule-dialog-content ul {
+    margin: 0 0 6px;
+    padding-left: 20px;
+}
+
+#home-rule-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 14px;
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: none;
+    background: #DC0122;
+    font-family: "InriaSans", sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+}
+
 .form-control{
     background-color: #FFF9DC;
 }

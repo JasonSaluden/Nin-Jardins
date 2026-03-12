@@ -847,7 +847,6 @@ function initPageHeader() {
     const playerInfo = document.getElementById('player-info');
     const blackNameEl = document.getElementById('black-player-name');
     const whiteNameEl = document.getElementById('white-player-name');
-    const statsButton = document.getElementById('stats-link');
     const pauseButton = document.getElementById('pause-link');
     const ruleButton = document.getElementById('rule-link');
     const ruleDialog = document.getElementById('rule-dialog');
@@ -871,19 +870,6 @@ function initPageHeader() {
         if (whiteNameEl) {
             whiteNameEl.textContent = whiteName;
             whiteNameEl.title = whiteName;
-        }
-    }
-
-    if (statsButton) {
-        if (isAuthenticatedPlayer(player)) {
-            statsButton.addEventListener('click', () => {
-                sessionStorage.setItem('resumeFromPause', 'true');
-                sessionStorage.setItem('statsOrigin', 'game');
-                window.location.href = '/stats.html';
-            });
-        } else {
-            statsButton.disabled = true;
-            statsButton.title = 'Connectez-vous pour voir votre historique';
         }
     }
 
