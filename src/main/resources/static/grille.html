@@ -42,6 +42,7 @@
       ></div>
       <p id="game-error" class="game-error hidden"></p>
 
+      <div class="board-wrapper">
       <div class="planche">
         <div class="case" id="A1" data-state="empty"></div>
         <div class="case" id="B1" data-state="empty"></div>
@@ -115,7 +116,16 @@
         <div class="case" id="G8" data-state="empty"></div>
         <div class="case" id="H8" data-state="empty"></div>
       </div>
-    </div>
+      <button id="hint-btn" class="hint-btn" type="button" title="Demander un conseil à l'IA">?</button>
+      </div>
+
+    <dialog id="hint-dialog">
+      <div id="hint-dialog-content">
+        <h2>Conseil IA</h2>
+        <p id="hint-text" class="hint-text"></p>
+        <button id="hint-close" type="button">Fermer</button>
+      </div>
+    </dialog>
 
     <dialog id="pause-dialog">
       <div id="pause-dialog-content">

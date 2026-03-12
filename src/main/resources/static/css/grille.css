@@ -137,6 +137,169 @@ body {
   box-shadow: 2px 2px 4px rgba(0,0,0,0.4);
 }
 
+/* Pause dialog */
+#pause-dialog-content {
+  padding: 40px 32px 32px;
+  background: #fff;
+  border-radius: 8px;
+  text-align: center;
+}
+
+#pause-dialog-content h2 {
+  margin: 0 0 20px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.pause-value {
+  color: #495057;
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+/* Board wrapper + hint button */
+.board-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.hint-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ced4da;
+  background: #fff;
+  color: #495057;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  align-self: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.hint-btn:hover {
+  background: #f8f9fa;
+  border-color: #495057;
+}
+
+.hint-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Hint dialog */
+#hint-dialog-content {
+  padding: 32px;
+  background: #fff;
+  border-radius: 8px;
+  max-width: 480px;
+}
+
+#hint-dialog-content h2 {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.hint-text {
+  color: #495057;
+  line-height: 1.6;
+  margin: 0 0 24px;
+  min-height: 60px;
+}
+
+#hint-close {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 24px;
+  background: #212529;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#hint-close:hover {
+  background: #343a40;
+}
+
+/* End-of-game dialog */
+#end-dialog-content {
+  padding: 40px 32px 32px;
+  background: #fff;
+  border-radius: 8px;
+  text-align: center;
+}
+
+#end-title {
+  margin: 0 0 12px;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.end-score {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 6px;
+}
+
+.end-mode {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin: 0 0 28px;
+}
+
+.end-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.end-btn-primary {
+  background: #212529;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.end-btn-primary:hover {
+  background: #343a40;
+}
+
+.end-btn-secondary {
+  background: #fff;
+  color: #212529;
+  border: 1px solid #ced4da;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.end-btn-secondary:hover {
+  background: #f8f9fa;
+}
+
+.end-btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* Dialog styling */
 dialog {
   border: none;

@@ -4,6 +4,7 @@ import com.hackathon.othello.dto.GameStateResponse;
 import com.hackathon.othello.dto.MoveRequest;
 import com.hackathon.othello.dto.StartGameRequest;
 import com.hackathon.othello.service.GameService;
+import com.hackathon.othello.service.HintService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class GameController {
 
     private final GameService gameService;
+    private final HintService hintService;
 
-    public GameController(GameService gameService) {
+    public GameController(GameService gameService, HintService hintService) {
         this.gameService = gameService;
+        this.hintService = hintService;
     }
 
     /** Démarre une nouvelle partie et retourne l'état initial */
@@ -23,9 +26,10 @@ public class GameController {
     public ResponseEntity<GameStateResponse> start(@RequestBody(required = false) StartGameRequest request) {
         boolean contreIA = request != null && Boolean.TRUE.equals(request.getContreIA());
         String difficulteIA = request != null ? request.getDifficulteIA() : null;
+        String couleurJoueur = request != null ? request.getCouleurJoueur() : null;
         Integer joueurId = request != null ? request.getJoueurId() : null;
         Integer joueurBlancId = request != null ? request.getJoueurBlancId() : null;
-        gameService.startGame(contreIA, difficulteIA, joueurId, joueurBlancId);
+        gameService.startGame(contreIA, difficulteIA, couleurJoueur, joueurId, joueurBlancId);
         return ResponseEntity.ok(buildState());
     }
 
@@ -53,6 +57,17 @@ public class GameController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Tour IA indisponible");
         }
         return ResponseEntity.ok(buildState());
+    }
+
+    /** Demande un conseil à l'IA pour le coup actuel */
+    @GetMapping("/hint")
+    public ResponseEntity<String> hint() {
+        try {
+            return ResponseEntity.ok(hintService.getHint());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body("L'IA n'est pas disponible pour le moment.");
+        }
     }
 
     // -------------------------------------------------------------------------

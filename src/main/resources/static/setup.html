@@ -33,10 +33,18 @@
                 <label class="field-label" for="player-two-type">Joueur 2</label>
                 <select id="player-two-type" class="field-control">
                     <option value="local">Joueur local</option>
-                    <option value="connected">Joueur connecté</option>
                     <option value="ai">IA</option>
                 </select>
                 <p id="player-two-help" class="helper-text"></p>
+            </section>
+
+            <section class="setup-panel">
+                <label class="field-label" for="player-color">Votre couleur</label>
+                <select id="player-color" class="field-control">
+                    <option value="black" selected>Noir (joue en premier)</option>
+                    <option value="white">Blanc (joue en deuxieme)</option>
+                </select>
+                <p class="helper-text">Le joueur noir commence toujours la partie.</p>
             </section>
 
             <section id="second-player-panel" class="setup-panel hidden">
