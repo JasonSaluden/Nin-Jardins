@@ -62,7 +62,7 @@ function updateScreen() {
     const selectedColor = colorSelect?.value || 'black';
 
     const blackRole = selectedColor === 'black' ? '(Noir)' : '(Blanc)';
-    setText('player-one-label', `${playerOne?.pseudo || 'Invité'} ${blackRole}`);
+    setText('player-one-label', `${playerOne?.pseudo || 'Invité'}`);
     setText('setup-subtitle', playerOne?.guest
         ? 'Choisissez un adversaire local ou une IA pour lancer la partie.'
         : 'Choisissez maintenant qui joue en blanc et le niveau de l’IA si besoin.');
@@ -100,6 +100,7 @@ function updateScreen() {
     if (authButton) {
         authButton.textContent = playerOne?.guest ? "Se connecter/S'inscrire" : 'Se déconnecter';
     }
+    syncVisualState();
 }
 
 function initSetup() {
@@ -112,14 +113,14 @@ function initSetup() {
     const select = document.getElementById('player-two-type');
     syncOpponentOptions(playerOne);
 
-    const savedMode = sessionStorage.getItem('gameMode') || 'human';
+    const savedMode = sessionStorage.getItem('gameMode');
     if (select) {
         if (savedMode === 'ai') {
             select.value = 'ai';
         } else if (isRegisteredPlayer(readPlayer('joueurBlanc'))) {
             select.value = 'connected';
         } else {
-            select.value = 'local';
+            select.value = 'ai';
         }
         select.addEventListener('change', () => {
             setText('setup-error', '');
@@ -166,6 +167,7 @@ function initSetup() {
     });
 
     updateScreen();
+    syncVisualState();
 }
 
 async function loginSecondPlayer(event) {
@@ -252,3 +254,49 @@ function startConfiguredGame() {
 }
 
 initSetup();
+
+// ─── Visual state helpers for Figma UI ───────────────────────────────────────
+
+function selectOpponent(type) {
+    const select = document.getElementById('player-two-type');
+    if (select) {
+        select.value = type;
+        if (type !== 'connected') clearSecondPlayerState();
+    }
+    setText('setup-error', '');
+    updateScreen();
+}
+
+function selectDifficulty(level) {
+    const select = document.getElementById('ai-difficulty');
+    if (select) select.value = level;
+    syncVisualState();
+}
+
+function selectColor(color) {
+    const select = document.getElementById('player-color');
+    if (select) select.value = color;
+    syncVisualState();
+    updateScreen();
+}
+
+function syncVisualState() {
+    const opponentType = document.getElementById('player-two-type')?.value || 'local';
+    const difficulty = document.getElementById('ai-difficulty')?.value || 'medium';
+    const color = document.getElementById('player-color')?.value || 'black';
+
+    document.querySelectorAll('.opponent-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === opponentType);
+    });
+
+    const diffBtns = document.getElementById('difficulty-btns');
+    if (diffBtns) diffBtns.classList.toggle('hidden', opponentType !== 'ai');
+
+    document.querySelectorAll('.diff-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.diff === difficulty);
+    });
+
+    document.querySelectorAll('.color-option').forEach(opt => {
+        opt.classList.toggle('active', opt.dataset.color === color);
+    });
+}
