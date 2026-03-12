@@ -38,7 +38,7 @@ h1{
 
 .forms-wrapper {
     position: relative;
-    min-height: 340px;
+    min-height: 200px;
 }
 
 .auth-form {
