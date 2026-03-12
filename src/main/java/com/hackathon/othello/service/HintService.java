@@ -5,10 +5,31 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
 public class HintService {
+
+    private static final List<String> INTRODUCTIONS = List.of(
+        "Comme le disait le vieux sage",
+        "Comme l'enseignait le maître du bambou",
+        "Comme l'a murmuré le petit scarabée au pied de la montagne",
+        "Comme le répétait le vieux maître au bord de la rivière",
+        "Comme le dit le proverbe des anciens",
+        "Comme l'écrivait le sage dans le livre du vent",
+        "Comme le disait le vieil homme qui regardait pousser les bambous",
+        "Comme l'a appris le disciple auprès du maître silencieux",
+        "Comme le racontait le pêcheur du lac brumeux",
+        "Comme le disait le moine du temple oublié",
+        "Comme l'enseignait le maître assis sous le cerisier",
+        "Comme le disait le sage en observant la lune",
+        "Comme le racontait l'ancien au coin du feu",
+        "Comme le dit la sagesse des montagnes",
+        "Comme le disait le vieux maître en servant le thé"
+    );
+
+    private static final Random RANDOM = new Random();
 
     private final ChatClient chatClient;
     private final GameService gameService;
@@ -16,6 +37,10 @@ public class HintService {
     public HintService(ChatClient.Builder chatClientBuilder, GameService gameService) {
         this.chatClient = chatClientBuilder.build();
         this.gameService = gameService;
+    }
+
+    private String randomIntro() {
+        return INTRODUCTIONS.get(RANDOM.nextInt(INTRODUCTIONS.size()));
     }
 
     public String getHint() {
@@ -34,27 +59,35 @@ public class HintService {
                 %s
                 Coups valides pour %s : %s
 
-                Réponds avec une seule phrase en français : une citation ou sagesse de ninja/samouraï qui évoque subtilement le meilleur coup à jouer, sans nommer la case explicitement.
-                Ne donne aucune explication supplémentaire. Une seule phrase complète et évocatrice.
+                Complète les deux phrases suivantes en français. Ne change pas le début des phrases, invente uniquement la suite indiquée entre crochets.
+
+                Phrase 1 : %s, [invente ici une sagesse ninja ou samouraï originale et légèrement humoristique].
+                Phrase 2 : Joue en [choisis exactement une case parmi : %s].
                 """,
                 couleur,
                 formatPlateau(gameService.getPlateau()),
                 couleur,
+                formatCoups(coupsValides),
+                randomIntro(),
                 formatCoups(coupsValides));
 
         String response = chatClient.prompt().user(prompt).call().content();
-        // Sécurité : ne garder que la première phrase si le modèle en génère plusieurs
+        // Sécurité : ne garder que les 2 premières phrases si le modèle en génère davantage
         if (response != null) {
-            int firstSentenceEnd = -1;
+            int sentenceCount = 0;
+            int secondSentenceEnd = -1;
             for (int i = 0; i < response.length(); i++) {
                 char c = response.charAt(i);
                 if (c == '.' || c == '!' || c == '?') {
-                    firstSentenceEnd = i;
-                    break;
+                    sentenceCount++;
+                    if (sentenceCount == 2) {
+                        secondSentenceEnd = i;
+                        break;
+                    }
                 }
             }
-            if (firstSentenceEnd != -1 && firstSentenceEnd < response.length() - 1) {
-                response = response.substring(0, firstSentenceEnd + 1).trim();
+            if (secondSentenceEnd != -1 && secondSentenceEnd < response.length() - 1) {
+                response = response.substring(0, secondSentenceEnd + 1).trim();
             }
         }
         return response;
@@ -76,12 +109,16 @@ public class HintService {
                 %s
                 Coups valides pour %s : %s
 
-                Réponds avec une seule phrase en français : une citation ou sagesse de ninja/samouraï qui évoque subtilement le meilleur coup à jouer, sans nommer la case explicitement.
-                Ne donne aucune explication supplémentaire. Une seule phrase complète et évocatrice.
+                Complète les deux phrases suivantes en français. Ne change pas le début des phrases, invente uniquement la suite indiquée entre crochets.
+
+                Phrase 1 : %s, [invente ici une sagesse ninja ou samouraï originale et légèrement humoristique].
+                Phrase 2 : Joue en [choisis exactement une case parmi : %s].
                 """,
                 couleur,
                 formatPlateau(gameService.getPlateau()),
                 couleur,
+                formatCoups(coupsValides),
+                randomIntro(),
                 formatCoups(coupsValides));
 
         return chatClient.prompt().user(prompt).stream().content();

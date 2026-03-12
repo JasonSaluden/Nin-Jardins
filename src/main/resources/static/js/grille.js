@@ -126,6 +126,10 @@ async function fetchHint() {
 
     btn.disabled = true;
     textEl.textContent = '';
+    if (chronoIntervalId !== null) {
+        clearInterval(chronoIntervalId);
+        chronoIntervalId = null;
+    }
     dialog.showModal();
 
     let fullText = '';
@@ -136,15 +140,25 @@ async function fetchHint() {
     source.onmessage = (event) => {
         if (sentenceDone) return;
         fullText += event.data;
-        const end = fullText.search(/[.!?]/);
-        if (end !== -1) {
-            textEl.textContent = fullText.substring(0, end + 1);
-            sentenceDone = true;
-            source.close();
-            btn.disabled = false;
-        } else {
-            textEl.textContent = fullText;
+
+        const stripped = fullText.replace(/[Pp]hrase\s*\d+\s*:\s*/g, '').trim();
+
+        // Attend que la Phrase 2 soit présente ET terminée par une ponctuation
+        const hasPhrase2 = /[Pp]hrase\s*2/.test(fullText);
+        if (hasPhrase2) {
+            const phrase2Start = fullText.search(/[Pp]hrase\s*2/);
+            const afterPhrase2 = fullText.substring(phrase2Start);
+            const endInPhrase2 = afterPhrase2.search(/[.!?]/);
+            if (endInPhrase2 !== -1) {
+                const cutRaw = fullText.substring(0, phrase2Start + endInPhrase2 + 1);
+                textEl.textContent = cutRaw.replace(/[Pp]hrase\s*\d+\s*:\s*/g, '').trim();
+                sentenceDone = true;
+                source.close();
+                btn.disabled = false;
+                return;
+            }
         }
+        textEl.textContent = stripped;
     };
 
     source.addEventListener('done', () => {
@@ -519,6 +533,9 @@ function initPageHeader() {
     if (hintClose) {
         hintClose.addEventListener('click', () => {
             document.getElementById('hint-dialog')?.close();
+            if (chronoIntervalId === null) {
+                startChrono();
+            }
         });
     }
 
