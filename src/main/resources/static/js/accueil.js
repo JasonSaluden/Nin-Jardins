@@ -136,5 +136,74 @@ function playAsGuest() {
     window.location.href = '/setup.html';
 }
 
+function openHomeDialog(dialog) {
+    if (!dialog) return;
+
+    if (typeof dialog.showModal === 'function') {
+        if (!dialog.open) {
+            dialog.showModal();
+        }
+        return;
+    }
+
+    dialog.setAttribute('open', 'open');
+}
+
+function closeHomeDialog(dialog) {
+    if (!dialog) return;
+
+    if (typeof dialog.close === 'function') {
+        if (dialog.open) {
+            dialog.close();
+        }
+        return;
+    }
+
+    dialog.removeAttribute('open');
+}
+
+function initRuleDialog() {
+    const ruleButton = document.getElementById('home-rule-link');
+    const ruleDialog = document.getElementById('home-rule-dialog');
+    const ruleDialogContent = document.getElementById('home-rule-dialog-content');
+
+    if (!ruleButton || !ruleDialog || !ruleDialogContent) {
+        return;
+    }
+
+    async function loadRules() {
+        if (ruleDialogContent.innerHTML) return;
+
+        try {
+            const response = await fetch('/rule.html');
+            const html = await response.text();
+            ruleDialogContent.innerHTML = html;
+
+            const closeBtn = document.createElement('button');
+            closeBtn.id = 'home-rule-close';
+            closeBtn.type = 'button';
+            closeBtn.textContent = 'Fermer';
+            closeBtn.addEventListener('click', () => {
+                closeHomeDialog(ruleDialog);
+            });
+            ruleDialogContent.appendChild(closeBtn);
+        } catch {
+            ruleDialogContent.innerHTML = '<p>Erreur lors du chargement des règles.</p>';
+        }
+    }
+
+    ruleButton.addEventListener('click', async () => {
+        await loadRules();
+        openHomeDialog(ruleDialog);
+    });
+
+    ruleDialog.addEventListener('click', (event) => {
+        if (event.target === ruleDialog) {
+            closeHomeDialog(ruleDialog);
+        }
+    });
+}
+
 bindEnterToSubmit();
+initRuleDialog();
 

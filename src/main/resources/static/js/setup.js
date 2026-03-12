@@ -155,6 +155,8 @@ function initSetup() {
         window.location.href = '/stats.html';
     });
 
+    initRuleDialog();
+
     document.getElementById('setup-logout-link')?.addEventListener('click', () => {
         const playerOne = readPlayer('joueur');
         if (playerOne?.guest) {
@@ -254,6 +256,74 @@ function startConfiguredGame() {
 }
 
 initSetup();
+
+function openSetupDialog(dialog) {
+    if (!dialog) return;
+
+    if (typeof dialog.showModal === 'function') {
+        if (!dialog.open) {
+            dialog.showModal();
+        }
+        return;
+    }
+
+    dialog.setAttribute('open', 'open');
+}
+
+function closeSetupDialog(dialog) {
+    if (!dialog) return;
+
+    if (typeof dialog.close === 'function') {
+        if (dialog.open) {
+            dialog.close();
+        }
+        return;
+    }
+
+    dialog.removeAttribute('open');
+}
+
+function initRuleDialog() {
+    const ruleButton = document.getElementById('setup-rule-link');
+    const ruleDialog = document.getElementById('setup-rule-dialog');
+    const ruleDialogContent = document.getElementById('setup-rule-dialog-content');
+
+    if (!ruleButton || !ruleDialog || !ruleDialogContent) {
+        return;
+    }
+
+    async function loadRules() {
+        if (ruleDialogContent.innerHTML) return;
+
+        try {
+            const response = await fetch('/rule.html');
+            const html = await response.text();
+            ruleDialogContent.innerHTML = html;
+
+            const closeBtn = document.createElement('button');
+            closeBtn.id = 'setup-rule-close';
+            closeBtn.type = 'button';
+            closeBtn.textContent = 'Fermer';
+            closeBtn.addEventListener('click', () => {
+                closeSetupDialog(ruleDialog);
+            });
+            ruleDialogContent.appendChild(closeBtn);
+        } catch {
+            ruleDialogContent.innerHTML = '<p>Erreur lors du chargement des règles.</p>';
+        }
+    }
+
+    ruleButton.addEventListener('click', async () => {
+        await loadRules();
+        openSetupDialog(ruleDialog);
+    });
+
+    ruleDialog.addEventListener('click', (event) => {
+        if (event.target === ruleDialog) {
+            closeSetupDialog(ruleDialog);
+        }
+    });
+}
 
 // ─── Visual state helpers for Figma UI ───────────────────────────────────────
 
