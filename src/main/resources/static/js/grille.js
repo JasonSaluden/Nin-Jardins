@@ -392,12 +392,53 @@ function showPauseModal() {
 
     if (resumeBtn) {
         resumeBtn.onclick = () => {
+            resetPauseModalPosition();
             closeDialog(dialog);
             startChrono();
         };
     }
 
     openDialog(dialog);
+    requestAnimationFrame(syncPauseModalToBoard);
+}
+
+function syncPauseModalToBoard() {
+    const pauseDialog = document.getElementById('pause-dialog');
+    const pauseContent = document.getElementById('pause-dialog-content');
+    const boardStage = document.querySelector('.board-stage');
+
+    if (!pauseDialog || !pauseContent || !boardStage || !pauseDialog.open) {
+        return;
+    }
+
+    const rect = boardStage.getBoundingClientRect();
+    pauseContent.style.position = 'fixed';
+    pauseContent.style.left = `${Math.round(rect.left)}px`;
+    pauseContent.style.top = `${Math.round(rect.top)}px`;
+    pauseContent.style.width = `${Math.round(rect.width)}px`;
+    pauseContent.style.height = `${Math.round(rect.height)}px`;
+    pauseContent.style.maxHeight = `${Math.round(rect.height)}px`;
+}
+
+function resetPauseModalPosition() {
+    const pauseContent = document.getElementById('pause-dialog-content');
+    if (!pauseContent) return;
+
+    pauseContent.style.removeProperty('position');
+    pauseContent.style.removeProperty('left');
+    pauseContent.style.removeProperty('top');
+    pauseContent.style.removeProperty('width');
+    pauseContent.style.removeProperty('height');
+    pauseContent.style.removeProperty('max-height');
+}
+
+function bindPauseModalTracking() {
+    const trackPauseModal = () => {
+        syncPauseModalToBoard();
+    };
+
+    window.addEventListener('scroll', trackPauseModal, { passive: true });
+    window.addEventListener('resize', trackPauseModal);
 }
 
 function togglePauseFromKeyboard() {
@@ -406,6 +447,7 @@ function togglePauseFromKeyboard() {
     if (!pauseDialog || endDialog?.open) return;
 
     if (pauseDialog.open) {
+        resetPauseModalPosition();
         closeDialog(pauseDialog);
         if (chronoIntervalId === null) {
             startChrono();
@@ -775,6 +817,7 @@ async function initGamePage() {
     initCaseDiscs();
     initPageHeader();
     bindPauseShortcut();
+    bindPauseModalTracking();
 
     const resumeFromPause = sessionStorage.getItem('resumeFromPause') === 'true';
     try {
