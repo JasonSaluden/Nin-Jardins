@@ -648,6 +648,67 @@ body {
     display: none !important;
 }
 
+/* ─── Short viewport breakpoint ─────────────────────────────────── */
+
+@media (max-height: 760px) and (min-width: 769px) {
+    body {
+        align-items: flex-start;
+    }
+
+    .page-wrapper {
+        padding: 12px 16px;
+    }
+
+    .setup-card {
+        padding: 18px 24px 16px;
+    }
+
+    .setup-title-row {
+        margin-bottom: 12px;
+    }
+
+    .player1-bar {
+        margin-bottom: 10px;
+        padding: 8px 16px;
+    }
+
+    .setup-panel-box {
+        padding: 12px 14px;
+        margin-bottom: 10px;
+    }
+
+    .panel-label {
+        margin-bottom: 8px;
+    }
+
+    .opponent-options {
+        gap: 6px;
+    }
+
+    .color-toggle {
+        height: 60px;
+    }
+
+    .color-perso {
+        width: 72px;
+        height: 88px;
+        bottom: -12px;
+    }
+
+    .color-half:first-child .color-perso {
+        width: 88px;
+        height: 106px;
+    }
+
+    .color-hint {
+        margin-top: 6px;
+    }
+
+    .setup-footer {
+        margin-top: 4px;
+    }
+}
+
 /* ─── Mobile breakpoint ──────────────────────────────────────────── */
 
 @media (max-width: 768px) {

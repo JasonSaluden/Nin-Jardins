@@ -38,7 +38,7 @@ h1{
 
 .forms-wrapper {
     position: relative;
-    min-height: 340px;
+    min-height: 200px;
 }
 
 .auth-form {
@@ -183,4 +183,29 @@ h1{
 
 .form-control{
     background-color: #FFF9DC;
+}
+
+@media (max-height: 760px) {
+    /* Désactive le centrage vertical Bootstrap pour éviter le scroll */
+    body.d-flex.align-items-center {
+        align-items: flex-start !important;
+    }
+
+    /* Réduit les marges Bootstrap du contenu de la carte */
+    .container .card {
+        padding: 16px !important;
+    }
+
+    .container .card .mb-4 {
+        margin-bottom: 12px !important;
+    }
+
+    .container .card .my-4 {
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .forms-wrapper {
+        min-height: 240px;
+    }
 }

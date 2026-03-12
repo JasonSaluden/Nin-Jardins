@@ -340,12 +340,13 @@ body {
 
 .assistant-fab {
   grid-column: 1;
+  grid-row: 1;
   position: static;
   justify-self: center;
   align-self: end;
   margin-bottom: 0;
-  width: 100px;
-  height: 100px;
+  width: 140px;
+  height: 140px;
   border: none;
   background: transparent;
   padding: 0;
@@ -405,6 +406,7 @@ body {
 }
 
 #pause-dialog-content {
+  background-color: #f6f6f6;
   background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
   background-position: 24% center;
   background-repeat: no-repeat;
@@ -455,7 +457,8 @@ body {
   justify-content: flex-start;
   align-items: stretch;
   text-align: left;
-  gap: 6px;
+  gap: 4px;
+  overflow: hidden;
 }
 
 .pause-hero {
@@ -561,13 +564,15 @@ body {
 
 #hint-dialog-content h2,
 #pause-dialog-content h2,
-#end-title,
-#rule-dialog-content h2 {
+#end-title {
   margin: 0 0 14px;
 }
 
-#end-title,
 #rule-dialog-content h2 {
+  margin: 0 0 10px;
+}
+
+#end-title {
   text-align: center;
   font-size: 1.85rem;
   line-height: 0.95;
@@ -578,19 +583,30 @@ body {
   font-family: "Cinzel Black", "Trajan Pro", "Copperplate", serif;
 }
 
-#rule-dialog-content h3 {
-  margin: 4px 0 0;
-  font-size: 1rem;
-  font-weight: 800;
-  color: #2b2018;
+#rule-dialog-content h2 {
+  text-align: center;
+  font-size: 1.4rem;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  font-weight: 900;
+  color: #100b07;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  font-family: "Cinzel Black", "Trajan Pro", "Copperplate", serif;
+}
+
+#rule-dialog-content h3 {
+  margin: 10px 0 4px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #5e280d;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-left: 3px solid var(--accent-red);
+  padding-left: 8px;
 }
 
 #end-score,
-#end-mode,
-#rule-dialog-content p,
-#rule-dialog-content li {
+#end-mode {
   margin: 0;
   padding: 5px 8px;
   border-radius: 10px;
@@ -600,6 +616,19 @@ body {
   font-size: 0.84rem;
   font-weight: 700;
   line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+#rule-dialog-content p,
+#rule-dialog-content li {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #2b2018;
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.45;
   overflow-wrap: anywhere;
 }
 
@@ -671,10 +700,10 @@ body {
 
 #rule-dialog-content ul {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding-left: 14px;
+  list-style: disc;
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .hint-text {
@@ -1205,5 +1234,46 @@ dialog::backdrop {
 
   .board-timer {
     font-size: 0.84rem;
+  }
+}
+
+@media (max-height: 760px) and (min-width: 1081px) {
+  :root {
+    --board-stage-size: min(600px, calc(100vh - 120px));
+  }
+
+  .game-shell {
+    padding: 4px 20px 8px;
+  }
+
+  .score-panel {
+    margin-top: 50px;
+    padding: 8px 6px;
+    gap: 4px;
+  }
+
+  .score-avatar,
+  .score-pion {
+    width: 46px;
+    height: 46px;
+  }
+
+  .score-value {
+    font-size: 1.8rem;
+  }
+
+  .board-base {
+    padding: 6px;
+  }
+
+  .board-timer {
+    margin-top: 6px;
+    font-size: 0.88rem;
+    padding: 3px 12px;
+  }
+
+  .assistant-fab {
+    width: 140px;
+    height: 140px;
   }
 }

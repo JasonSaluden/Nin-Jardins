@@ -924,6 +924,12 @@ function initPageHeader() {
             openDialog(ruleDialog);
             requestAnimationFrame(syncBoardSizedDialogs);
         });
+
+        ruleDialog.addEventListener('click', (e) => {
+            if (e.target === ruleDialog) {
+                closeBoardSizedDialog(ruleDialog, 'rule-dialog-content');
+            }
+        });
     }
 }
 // ─── Initialisation ───────────────────────────────────────────────────────────
