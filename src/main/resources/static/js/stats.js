@@ -22,12 +22,14 @@ function initBackButton() {
 
     if (fromGame) {
         link.href = '/grille.html';
-        link.textContent = 'Retour à la partie';
+        link.title = 'Retour a la partie';
+        link.setAttribute('aria-label', 'Retour a la partie');
         return;
     }
 
     link.href = '/setup.html';
-    link.textContent = 'Configurer une partie';
+    link.title = 'Configurer une partie';
+    link.setAttribute('aria-label', 'Configurer une partie');
 }
 
 let currentStats = null;
@@ -51,7 +53,7 @@ function readCurrentPlayerByKey(key) {
 function showGuestState() {
     document.getElementById('guest-state')?.classList.remove('hidden');
     document.getElementById('stats-content')?.classList.add('hidden');
-    document.getElementById('stats-subtitle').textContent = 'Connectez-vous pour débloquer votre historique.';
+    document.getElementById('stats-player-name').textContent = 'Connectez-vous pour débloquer votre historique.';
 }
 
 function fillText(id, value) {
@@ -120,7 +122,8 @@ function renderHistory(items) {
 
 function renderStats(stats) {
     currentStats = stats;
-    fillText('stats-title', `Statistiques de ${stats.pseudo}`);
+    fillText('stats-title', 'STATISTIQUES');
+    fillText('stats-player-name', stats.pseudo);
     fillText('stats-subtitle', `${stats.totalParties} partie(s) enregistrée(s).`);
     fillText('metric-total', stats.totalParties);
     fillText('metric-average', stats.scoreMoyen);
@@ -199,7 +202,7 @@ async function loadStats(playerId) {
     } catch {
         document.getElementById('stats-content')?.classList.add('hidden');
         document.getElementById('guest-state')?.classList.add('hidden');
-        fillText('stats-subtitle', 'Impossible de charger les statistiques. Réessayez plus tard.');
+        fillText('stats-player-name', 'Impossible de charger les statistiques. Reessayez plus tard.');
     }
 }
 
