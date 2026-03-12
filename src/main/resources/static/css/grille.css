@@ -455,7 +455,8 @@ body {
   justify-content: flex-start;
   align-items: stretch;
   text-align: left;
-  gap: 6px;
+  gap: 4px;
+  overflow: hidden;
 }
 
 .pause-hero {
@@ -574,13 +575,15 @@ body {
 
 #hint-dialog-content h2,
 #pause-dialog-content h2,
-#end-title,
-#rule-dialog-content h2 {
+#end-title {
   margin: 0 0 14px;
 }
 
-#end-title,
 #rule-dialog-content h2 {
+  margin: 0 0 10px;
+}
+
+#end-title {
   text-align: center;
   font-size: 1.85rem;
   line-height: 0.95;
@@ -591,19 +594,30 @@ body {
   font-family: "Cinzel Black", "Trajan Pro", "Copperplate", serif;
 }
 
-#rule-dialog-content h3 {
-  margin: 4px 0 0;
-  font-size: 1rem;
-  font-weight: 800;
-  color: #2b2018;
+#rule-dialog-content h2 {
+  text-align: center;
+  font-size: 1.4rem;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  font-weight: 900;
+  color: #100b07;
   text-transform: uppercase;
-  letter-spacing: 0.02em;
+  font-family: "Cinzel Black", "Trajan Pro", "Copperplate", serif;
+}
+
+#rule-dialog-content h3 {
+  margin: 10px 0 4px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #5e280d;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-left: 3px solid var(--accent-red);
+  padding-left: 8px;
 }
 
 #end-score,
-#end-mode,
-#rule-dialog-content p,
-#rule-dialog-content li {
+#end-mode {
   margin: 0;
   padding: 5px 8px;
   border-radius: 10px;
@@ -613,6 +627,19 @@ body {
   font-size: 0.84rem;
   font-weight: 700;
   line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+#rule-dialog-content p,
+#rule-dialog-content li {
+  margin: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #2b2018;
+  font-size: 0.84rem;
+  font-weight: 500;
+  line-height: 1.45;
   overflow-wrap: anywhere;
 }
 
@@ -684,10 +711,10 @@ body {
 
 #rule-dialog-content ul {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  padding-left: 14px;
+  list-style: disc;
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .hint-text {
