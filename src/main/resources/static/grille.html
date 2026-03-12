@@ -12,38 +12,31 @@
   </head>
   <body>
     <div class="game-shell">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">Ninja Warrior</p>
-          <h1>Partie en cours</h1>
-          <p id="player-info" class="player-info"></p>
-          <p id="timer-display" class="timer-display">Temps : 00:00</p>
-        </div>
-        <div class="top-actions">
-          <a class="ghost-button" href="/setup.html">Accueil</a>
-          <button id="pause-link" class="ghost-button" type="button">
-            Pause
-          </button>
-          <button id="stats-link" class="ghost-button" type="button">
-            Mes statistiques
-          </button>
-          <button id="rule-link" class="ghost-button" type="button">
-            Règles
-          </button>
-        </div>
-        <dialog id="rule-dialog">
-          <div id="rule-dialog-content"></div>
-        </dialog>
-      </header>
-
-      <div
-        id="game-info"
-        style="text-align: center; font-size: 1.2rem; margin: 1rem 0"
-      ></div>
       <p id="game-error" class="game-error hidden"></p>
 
-      <div class="board-wrapper">
-      <div class="planche">
+      <main class="game-layout">
+        <section class="score-panel score-panel-left" aria-label="Score des noirs">
+          <img
+            class="score-avatar"
+            src="/img/persos/profil-ninja.svg"
+            alt="Profil joueur noir"
+          />
+          <p class="score-label">Noirs</p>
+          <p id="black-player-name" class="score-player">Invité</p>
+          <p id="score-noir" class="score-value">00</p>
+          <img
+            class="score-pion"
+            src="/img/pions/pion-noir-3-arme.svg"
+            alt="Pion noir"
+          />
+        </section>
+
+        <section class="board-section" aria-label="Plateau de jeu">
+          <div class="board-stage">
+            <img class="board-top" src="/img/plateau/haut-plateau.svg" alt="Decor haut du plateau" />
+            <div class="board-base">
+              <div class="board-skin">
+                <div class="planche">
         <div class="case" id="A1" data-state="empty"></div>
         <div class="case" id="B1" data-state="empty"></div>
         <div class="case" id="C1" data-state="empty"></div>
@@ -115,9 +108,64 @@
         <div class="case" id="F8" data-state="empty"></div>
         <div class="case" id="G8" data-state="empty"></div>
         <div class="case" id="H8" data-state="empty"></div>
-      </div>
-      <button id="hint-btn" class="hint-btn" type="button" title="Demander un conseil à l'IA">?</button>
-      </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p id="timer-display" class="timer-display board-timer">Temps : 00:00</p>
+        </section>
+
+        <section class="score-panel score-panel-right" aria-label="Score des blancs">
+          <img
+            class="score-avatar"
+            src="/img/persos/profil-samourai.svg"
+            alt="Profil joueur blanc"
+          />
+          <p class="score-label">Blancs</p>
+          <p id="white-player-name" class="score-player">Invité</p>
+          <p id="score-blanc" class="score-value">00</p>
+          <img
+            class="score-pion"
+            src="/img/pions/pion-blanc-2-arme.svg"
+            alt="Pion blanc"
+          />
+        </section>
+
+        <nav class="icon-toolbar" aria-label="Actions du jeu">
+          <a class="icon-btn" href="/connexion.html" title="Accueil" aria-label="Accueil">
+            <img src="/img/icones/home.svg" alt="Accueil" />
+          </a>
+          <button id="pause-link" class="icon-btn" type="button" title="Pause" aria-label="Pause">
+            <img src="/img/icones/pause.svg" alt="Pause" />
+          </button>
+          <button id="stats-link" class="icon-btn" type="button" title="Mes statistiques" aria-label="Mes statistiques">
+            <img src="/img/icones/stats.svg" alt="Mes statistiques" />
+          </button>
+          <button id="rule-link" class="icon-btn" type="button" title="Regles" aria-label="Regles">
+            <img src="/img/icones/parametres.svg" alt="Regles" />
+          </button>
+          <a class="icon-btn" href="/setup.html" title="Sortie" aria-label="Sortie">
+            <img src="/img/icones/sortie.svg" alt="Sortie" />
+          </a>
+        </nav>
+
+        <button
+          id="hint-btn"
+          class="assistant-fab"
+          type="button"
+          title="Demander un conseil a l'IA"
+          aria-label="Demander un conseil a l'IA"
+        >
+          <img
+            src="/img/persos/profil-nain-jardin-converse.svg"
+            alt="Assistant IA"
+          />
+        </button>
+      </main>
+
+      <dialog id="rule-dialog">
+        <div id="rule-dialog-content"></div>
+      </dialog>
 
     <dialog id="hint-dialog">
       <div id="hint-dialog-content">

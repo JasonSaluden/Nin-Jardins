@@ -99,6 +99,12 @@ function renderValidMoves(coupsValides) {
 /** Affiche le score et l'indicateur de tour */
 function renderInfo(state) {
     const infoEl = document.getElementById('game-info');
+    const scoreNoirEl = document.getElementById('score-noir');
+    const scoreBlancEl = document.getElementById('score-blanc');
+
+    if (scoreNoirEl) scoreNoirEl.textContent = String(state.scoreNoir).padStart(2, '0');
+    if (scoreBlancEl) scoreBlancEl.textContent = String(state.scoreBlanc).padStart(2, '0');
+
     if (!infoEl) return;
 
     const modeTexte = getModeTexte(state);
@@ -506,20 +512,33 @@ function initPageHeader() {
     const mode = sessionStorage.getItem('gameMode') || 'human';
     const selectedColor = sessionStorage.getItem('playerColor') || 'black';
     const playerInfo = document.getElementById('player-info');
+    const blackNameEl = document.getElementById('black-player-name');
+    const whiteNameEl = document.getElementById('white-player-name');
     const statsButton = document.getElementById('stats-link');
     const pauseButton = document.getElementById('pause-link');
     const ruleButton = document.getElementById('rule-link');
     const ruleDialog = document.getElementById('rule-dialog');
     const ruleDialogContent = document.getElementById('rule-dialog-content');
 
-    if (playerInfo) {
+    {
         const opponentName = isAuthenticatedPlayer(whitePlayer)
             ? whitePlayer.pseudo
-            : (mode === 'ai' ? 'IA Othello' : 'Joueur local');
+            : 'Invité';
 
         const blackName = selectedColor === 'white' ? opponentName : (player?.pseudo || 'Invité');
         const whiteName = selectedColor === 'white' ? (player?.pseudo || 'Invité') : opponentName;
-        playerInfo.textContent = `Noir : ${blackName}  |  Blanc : ${whiteName}`;
+
+        if (playerInfo) {
+            playerInfo.textContent = `Noir : ${blackName}  |  Blanc : ${whiteName}`;
+        }
+        if (blackNameEl) {
+            blackNameEl.textContent = blackName;
+            blackNameEl.title = blackName;
+        }
+        if (whiteNameEl) {
+            whiteNameEl.textContent = whiteName;
+            whiteNameEl.title = whiteName;
+        }
     }
 
     if (statsButton) {
