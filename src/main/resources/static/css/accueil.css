@@ -1,8 +1,26 @@
+@font-face {
+    font-family: "Shojumaru";
+    src: local("../police/Shojumaru-Regular.ttf"),
+        url("../police/Shojumaru-Regular.ttf");
+}
+@font-face {
+    font-family: "InriaSans";
+    src: local("../police/InriaSans-Bold.ttf"),
+    local("../police/InriaSans-Light.ttf"),
+    local("../police/InriaSans-Regular.ttf"),
+    url("../police/InriaSans-Bold.ttf"),
+    url("../police/InriaSans-Light.ttf"),
+    url("../police/InriaSans-Regular.ttf");
+}
 body{
     background-image: url("../img/arriere-plan/rayon-arriere-plan-web.svg");
     background-repeat: no-repeat;
     background-size:cover;
     background-position: center;
+    font-family: "InriaSans", sans-serif;
+}
+h1{
+    font-family: "Shojumaru";
 }
 .pion {
     width: 50px;
