@@ -40,6 +40,37 @@ function formatDuration(totalSeconds) {
     return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
+function openDialog(dialog) {
+    if (!dialog) return;
+
+    if (typeof dialog.showModal === 'function') {
+        try {
+            if (!dialog.open) {
+                dialog.showModal();
+            }
+            return;
+        } catch {
+            dialog.setAttribute('open', 'open');
+        }
+        return;
+    }
+
+    dialog.setAttribute('open', 'open');
+}
+
+function closeDialog(dialog) {
+    if (!dialog) return;
+
+    if (typeof dialog.close === 'function') {
+        if (dialog.open) {
+            dialog.close();
+        }
+        return;
+    }
+
+    dialog.removeAttribute('open');
+}
+
 // ─── Rendu du plateau ─────────────────────────────────────────────────────────
 
 /** Met à jour toutes les cases d'après le plateau (int[][] 0=vide,1=noir,2=blanc) */
@@ -122,20 +153,47 @@ async function fetchHint() {
     const dialog = document.getElementById('hint-dialog');
     const textEl = document.getElementById('hint-text');
     const btn = document.getElementById('hint-btn');
-    if (!dialog || !textEl) return;
+    if (!dialog || !textEl || !btn) return;
 
     btn.disabled = true;
-    textEl.textContent = "L'IA analyse la position...";
+    textEl.textContent = '';
     dialog.showModal();
 
-    try {
-        const res = await fetch('/api/game/hint');
-        textEl.textContent = await res.text();
-    } catch {
-        textEl.textContent = "Impossible de contacter l'IA pour le moment.";
-    } finally {
+    let fullText = '';
+    let sentenceDone = false;
+
+    const source = new EventSource('/api/game/hint/stream');
+
+    source.onmessage = (event) => {
+        if (sentenceDone) return;
+        fullText += event.data;
+        const end = fullText.search(/[.!?]/);
+        if (end !== -1) {
+            textEl.textContent = fullText.substring(0, end + 1);
+            sentenceDone = true;
+            source.close();
+            btn.disabled = false;
+        } else {
+            textEl.textContent = fullText;
+        }
+    };
+
+    source.addEventListener('done', () => {
+        source.close();
         btn.disabled = false;
-    }
+    });
+
+    source.addEventListener('error', (event) => {
+        textEl.textContent = event.data || "Impossible de contacter l'IA pour le moment.";
+        source.close();
+        btn.disabled = false;
+    });
+
+    source.onerror = () => {
+        source.close();
+        if (!fullText) textEl.textContent = "Impossible de contacter l'IA pour le moment.";
+        btn.disabled = false;
+    };
 }
 
 function showPauseModal() {
@@ -165,12 +223,12 @@ function showPauseModal() {
 
     if (resumeBtn) {
         resumeBtn.onclick = () => {
-            dialog.close();
+            closeDialog(dialog);
             startChrono();
         };
     }
 
-    dialog.showModal();
+    openDialog(dialog);
 }
 
 function togglePauseFromKeyboard() {
@@ -179,7 +237,7 @@ function togglePauseFromKeyboard() {
     if (!pauseDialog || endDialog?.open) return;
 
     if (pauseDialog.open) {
-        pauseDialog.close();
+        closeDialog(pauseDialog);
         if (chronoIntervalId === null) {
             startChrono();
         }
@@ -261,7 +319,7 @@ function showEndModal(state) {
         }
     }
 
-    dialog.showModal();
+    openDialog(dialog);
 }
 
 function getModeTexte(state) {
@@ -491,7 +549,7 @@ function initPageHeader() {
     const hintClose = document.getElementById('hint-close');
     if (hintClose) {
         hintClose.addEventListener('click', () => {
-            document.getElementById('hint-dialog')?.close();
+            closeDialog(document.getElementById('hint-dialog'));
         });
     }
 
@@ -507,7 +565,7 @@ function initPageHeader() {
                 closeBtn.id = 'rule-close';
                 closeBtn.textContent = 'Fermer';
                 closeBtn.addEventListener('click', () => {
-                    ruleDialog.close();
+                    closeDialog(ruleDialog);
                 });
                 ruleDialogContent.appendChild(closeBtn);
             } catch (error) {
@@ -518,7 +576,7 @@ function initPageHeader() {
 
         ruleButton.addEventListener('click', async () => {
             await loadRules();
-            ruleDialog.showModal();
+            openDialog(ruleDialog);
         });
     }
 }
