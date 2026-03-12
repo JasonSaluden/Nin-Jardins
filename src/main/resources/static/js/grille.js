@@ -118,6 +118,26 @@ async function applyState(state) {
     }
 }
 
+async function fetchHint() {
+    const dialog = document.getElementById('hint-dialog');
+    const textEl = document.getElementById('hint-text');
+    const btn = document.getElementById('hint-btn');
+    if (!dialog || !textEl) return;
+
+    btn.disabled = true;
+    textEl.textContent = "L'IA analyse la position...";
+    dialog.showModal();
+
+    try {
+        const res = await fetch('/api/game/hint');
+        textEl.textContent = await res.text();
+    } catch {
+        textEl.textContent = "Impossible de contacter l'IA pour le moment.";
+    } finally {
+        btn.disabled = false;
+    }
+}
+
 function showPauseModal() {
     const dialog = document.getElementById('pause-dialog');
     if (!dialog) return;
@@ -378,6 +398,18 @@ function initPageHeader() {
     if (pauseButton) {
         pauseButton.addEventListener('click', () => {
             showPauseModal();
+        });
+    }
+
+    const hintBtn = document.getElementById('hint-btn');
+    if (hintBtn) {
+        hintBtn.addEventListener('click', fetchHint);
+    }
+
+    const hintClose = document.getElementById('hint-close');
+    if (hintClose) {
+        hintClose.addEventListener('click', () => {
+            document.getElementById('hint-dialog')?.close();
         });
     }
 
