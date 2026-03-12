@@ -99,11 +99,10 @@ async function register(e) {
 
     const body = {
         pseudo: document.getElementById('reg-pseudo').value.trim(),
-        mail: document.getElementById('reg-mail').value.trim(),
         motDePasse: document.getElementById('reg-mdp').value
     };
 
-    if (!body.pseudo || !body.mail || !body.motDePasse) {
+    if (!body.pseudo || !body.motDePasse) {
         errorEl.textContent = 'Veuillez remplir tous les champs.';
         return;
     }

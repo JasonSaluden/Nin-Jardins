@@ -52,8 +52,11 @@ public class HintService {
             return "Aucun coup disponible pour les " + couleur + "s.";
         }
 
+        String coupsFormates = formatCoups(coupsValides);
         String prompt = String.format("""
                 Tu es un maître ninja expert en Othello/Reversi. Donne un conseil au joueur %s.
+
+                RÈGLE ABSOLUE : ta réponse DOIT se terminer par la Phrase 2 contenant un coup à jouer. Omettre le coup est INTERDIT.
 
                 Plateau (0=vide, 1=noir, 2=blanc) — colonnes A à H, lignes 1 à 8 :
                 %s
@@ -62,14 +65,16 @@ public class HintService {
                 Complète les deux phrases suivantes en français. Ne change pas le début des phrases, invente uniquement la suite indiquée entre crochets.
 
                 Phrase 1 : %s, [invente ici une sagesse ninja ou samouraï originale et légèrement humoristique].
-                Phrase 2 : Joue en [choisis exactement une case parmi : %s].
+                Phrase 2 : Joue en [OBLIGATOIRE : choisis exactement une case parmi : %s].
+
+                RAPPEL : la Phrase 2 avec le coup est OBLIGATOIRE.
                 """,
                 couleur,
                 formatPlateau(gameService.getPlateau()),
                 couleur,
-                formatCoups(coupsValides),
+                coupsFormates,
                 randomIntro(),
-                formatCoups(coupsValides));
+                coupsFormates);
 
         String response = chatClient.prompt().user(prompt).call().content();
         // Sécurité : ne garder que les 2 premières phrases si le modèle en génère davantage
@@ -90,6 +95,11 @@ public class HintService {
                 response = response.substring(0, secondSentenceEnd + 1).trim();
             }
         }
+        // Fallback : si aucun coup valide n'est présent dans la réponse, on en ajoute un
+        if (response != null && !containsValidMove(response, coupsValides)) {
+            int[] pick = coupsValides.get(RANDOM.nextInt(coupsValides.size()));
+            response = response + " Joue en " + formatMove(pick) + ".";
+        }
         return response;
     }
 
@@ -102,8 +112,11 @@ public class HintService {
             return Flux.just("Aucun coup disponible pour les " + couleur + "s.");
         }
 
+        String coupsFormates = formatCoups(coupsValides);
         String prompt = String.format("""
                 Tu es un maître ninja expert en Othello/Reversi. Donne un conseil au joueur %s.
+
+                RÈGLE ABSOLUE : ta réponse DOIT se terminer par la Phrase 2 contenant un coup à jouer. Omettre le coup est INTERDIT.
 
                 Plateau (0=vide, 1=noir, 2=blanc) — colonnes A à H, lignes 1 à 8 :
                 %s
@@ -112,16 +125,28 @@ public class HintService {
                 Complète les deux phrases suivantes en français. Ne change pas le début des phrases, invente uniquement la suite indiquée entre crochets.
 
                 Phrase 1 : %s, [invente ici une sagesse ninja ou samouraï originale et légèrement humoristique].
-                Phrase 2 : Joue en [choisis exactement une case parmi : %s].
+                Phrase 2 : Joue en [OBLIGATOIRE : choisis exactement une case parmi : %s].
+
+                RAPPEL : la Phrase 2 avec le coup est OBLIGATOIRE.
                 """,
                 couleur,
                 formatPlateau(gameService.getPlateau()),
                 couleur,
-                formatCoups(coupsValides),
+                coupsFormates,
                 randomIntro(),
-                formatCoups(coupsValides));
+                coupsFormates);
 
-        return chatClient.prompt().user(prompt).stream().content();
+        return chatClient.prompt().user(prompt).stream().content()
+                .collectList()
+                .flatMapMany(chunks -> {
+                    String full = String.join("", chunks);
+                    if (!containsValidMove(full, coupsValides)) {
+                        int[] pick = coupsValides.get(RANDOM.nextInt(coupsValides.size()));
+                        return Flux.fromIterable(chunks)
+                                .concatWith(Flux.just(" Joue en " + formatMove(pick) + "."));
+                    }
+                    return Flux.fromIterable(chunks);
+                });
     }
 
     private String formatPlateau(int[][] plateau) {
@@ -138,7 +163,16 @@ public class HintService {
 
     private String formatCoups(List<int[]> coups) {
         return coups.stream()
-                .map(c -> String.valueOf((char) ('A' + c[1])) + (c[0] + 1))
+                .map(this::formatMove)
                 .collect(Collectors.joining(", "));
+    }
+
+    private String formatMove(int[] coup) {
+        return String.valueOf((char) ('A' + coup[1])) + (coup[0] + 1);
+    }
+
+    private boolean containsValidMove(String text, List<int[]> coupsValides) {
+        return coupsValides.stream()
+                .anyMatch(c -> text.contains(formatMove(c)));
     }
 }

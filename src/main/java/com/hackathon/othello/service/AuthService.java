@@ -25,19 +25,15 @@ public class AuthService {
         if (joueursRepository.existsByPseudo(request.pseudo())) {
             throw new RuntimeException("Ce pseudo est déjà utilisé");
         }
-        if (joueursRepository.existsByMail(request.mail())) {
-            throw new RuntimeException("Cet email est déjà utilisé");
-        }
-
         Joueurs joueur = new Joueurs(
             request.pseudo(),
-            request.mail(),
+            null,
             passwordEncoder.encode(request.motDePasse()),
             new Date()
         );
 
         joueursRepository.save(joueur);
-        return new AuthResponse(joueur.getId_joueurs(), joueur.getPseudo(), joueur.getMail());
+        return new AuthResponse(joueur.getId_joueurs(), joueur.getPseudo(), null);
     }
 
     public AuthResponse login(LoginRequest request) {
