@@ -10,14 +10,11 @@
 <body>
     <main class="stats-shell">
         <header class="hero">
-            <div>
-                <p class="eyebrow">Historique joueur</p>
-                <h1 id="stats-title">Mes statistiques</h1>
-                <p id="stats-subtitle" class="subtitle">Chargement de votre historique...</p>
-            </div>
-            <div class="hero-actions">
-                <a id="back-to-game-link" class="ghost-button" href="/setup.html">Configurer une partie</a>
-                <a class="ghost-button" href="/">Se déconnecter</a>
+            <img class="stats-mascot" src="/img/persos/nain-stats.svg" alt="" aria-hidden="true">
+            <div class="hero-copy">
+                <h1 id="stats-title">STATISTIQUES</h1>
+                <p id="stats-player-name" class="player-name">Chargement...</p>
+                <p id="stats-subtitle" class="visually-hidden">Chargement de votre historique...</p>
             </div>
         </header>
 
@@ -33,10 +30,6 @@
                     <strong id="metric-total">0</strong>
                 </article>
                 <article class="metric-card">
-                    <span>Score moyen</span>
-                    <strong id="metric-average">0</strong>
-                </article>
-                <article class="metric-card">
                     <span>Meilleur score</span>
                     <strong id="metric-best">0</strong>
                 </article>
@@ -46,40 +39,49 @@
                 </article>
             </section>
 
-            <section class="panel split-panel">
-                <div>
-                    <h2>Bilan</h2>
-                    <div class="summary-row">
-                        <span>Victoires</span>
-                        <strong id="summary-wins">0</strong>
+            <section class="bottom-grid">
+                <article class="panel bilan-panel">
+                    <div class="panel-head">
+                        <img class="panel-char" src="/img/persos/profil-ninja.svg" alt="" aria-hidden="true">
+                        <h2>Bilan</h2>
+                        <img class="panel-char" src="/img/persos/perso-samourai-game-over.svg" alt="" aria-hidden="true">
                     </div>
-                    <div class="summary-row">
-                        <span>Défaites</span>
-                        <strong id="summary-losses">0</strong>
+
+                    <div class="summary-list">
+                        <div class="summary-row">
+                            <span>Victoires</span>
+                            <strong id="summary-wins">0</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Défaites</span>
+                            <strong id="summary-losses">0</strong>
+                        </div>
+                        <div class="summary-row">
+                            <span>Égalités</span>
+                            <strong id="summary-draws">0</strong>
+                        </div>
                     </div>
-                    <div class="summary-row">
-                        <span>Égalités</span>
-                        <strong id="summary-draws">0</strong>
+                </article>
+
+                <article class="panel colors-panel">
+                    <h2>Victoires<br>par couleur</h2>
+                    <div class="colors-grid">
+                        <div class="color-card">
+                            <img class="color-avatar" src="/img/persos/winner-ninja.svg" alt="Noir">
+                            <strong id="summary-black">0</strong>
+                            <img class="color-pawn" src="/img/pions/pion-noir-1.svg" alt="Pion noir">
+                        </div>
+                        <div class="color-card">
+                            <img class="color-avatar" src="/img/persos/winner-samourai.svg" alt="Blanc">
+                            <strong id="summary-white">0</strong>
+                            <img class="color-pawn" src="/img/pions/pion-blanc-1.svg" alt="Pion blanc">
+                        </div>
                     </div>
-                </div>
-                <div>
-                    <h2>Victoires par couleur</h2>
-                    <div class="summary-row">
-                        <span>Noir</span>
-                        <strong id="summary-black">0</strong>
-                    </div>
-                    <div class="summary-row">
-                        <span>Blanc</span>
-                        <strong id="summary-white">0</strong>
-                    </div>
-                </div>
+                </article>
             </section>
 
-            <section class="panel">
-                <div class="section-head">
-                    <h2>Dernières parties</h2>
-                    <p id="history-count">Résultats enregistrés à la fin de chaque partie connectée.</p>
-                </div>
+            <section class="history-block hidden" aria-hidden="true">
+                <div id="history-count">Résultats enregistrés à la fin de chaque partie connectée.</div>
                 <div id="history-empty" class="empty-inline hidden">Aucune partie enregistrée pour le moment.</div>
                 <div class="table-wrapper">
                     <table>
@@ -99,6 +101,15 @@
                 </div>
             </section>
         </section>
+
+        <aside class="floating-actions" aria-label="Actions rapides">
+            <a id="back-to-game-link" class="floating-btn" href="/setup.html" title="Retour">
+                <img src="/img/icones/home.svg" alt="Retour">
+            </a>
+            <a class="floating-btn" href="/" title="Se déconnecter">
+                <img src="/img/icones/sortie.svg" alt="Se déconnecter">
+            </a>
+        </aside>
     </main>
 
     <script src="/js/stats.js"></script>
