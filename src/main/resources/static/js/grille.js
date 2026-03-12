@@ -272,6 +272,8 @@ function renderInfo(state) {
 // ─── Verrou plateau ───────────────────────────────────────────────────────────
 
 let boardLocked = false;
+let cachedHint = null;
+let hintPrefetching = false;
 
 function showGameError(message) {
     const el = document.getElementById('game-error');
@@ -301,6 +303,41 @@ async function applyState(state) {
             chronoIntervalId = null;
         }
         showEndModal(state);
+        return;
+    }
+
+    if (!iaDoitJouer(state)) {
+        cachedHint = null;
+        prefetchHint();
+    }
+}
+
+function processHintText(fullText) {
+    const hasPhrase2 = /[Pp]hrase\s*2/.test(fullText);
+    if (hasPhrase2) {
+        const phrase2Start = fullText.search(/[Pp]hrase\s*2/);
+        const afterPhrase2 = fullText.substring(phrase2Start);
+        const endInPhrase2 = afterPhrase2.search(/[.!?]/);
+        if (endInPhrase2 !== -1) {
+            const cutRaw = fullText.substring(0, phrase2Start + endInPhrase2 + 1);
+            return cutRaw.replace(/[Pp]hrase\s*\d+\s*:\s*/g, '').trim();
+        }
+    }
+    return fullText.replace(/[Pp]hrase\s*\d+\s*:\s*/g, '').trim();
+}
+
+async function prefetchHint() {
+    if (hintPrefetching || cachedHint !== null) return;
+    hintPrefetching = true;
+    try {
+        const res = await fetch('/api/game/hint');
+        if (!res.ok) throw new Error();
+        const text = await res.text();
+        cachedHint = processHintText(text);
+    } catch {
+        // silently fail — fetchHint() will fall back to streaming
+    } finally {
+        hintPrefetching = false;
     }
 }
 
@@ -317,6 +354,12 @@ async function fetchHint() {
         chronoIntervalId = null;
     }
     dialog.showModal();
+
+    if (cachedHint !== null) {
+        textEl.textContent = cachedHint;
+        btn.disabled = false;
+        return;
+    }
 
     let fullText = '';
     let sentenceDone = false;
