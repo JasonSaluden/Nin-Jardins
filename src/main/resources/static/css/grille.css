@@ -345,8 +345,8 @@ body {
   justify-self: center;
   align-self: end;
   margin-bottom: 0;
-  width: 100px;
-  height: 100px;
+  width: 140px;
+  height: 140px;
   border: none;
   background: transparent;
   padding: 0;
@@ -1257,7 +1257,7 @@ dialog::backdrop {
   }
 
   .assistant-fab {
-    width: 80px;
-    height: 80px;
+    width: 140px;
+    height: 140px;
   }
 }
