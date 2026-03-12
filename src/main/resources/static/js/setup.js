@@ -157,11 +157,8 @@ function initSetup() {
     document.getElementById('setup-logout-link')?.addEventListener('click', () => {
         const playerOne = readPlayer('joueur');
         if (playerOne?.guest) {
-            sessionStorage.removeItem('joueur');
-            sessionStorage.removeItem('joueurBlanc');
-            sessionStorage.removeItem('gameMode');
-            sessionStorage.removeItem('aiDifficulty');
-            sessionStorage.removeItem('playerColor');
+            window.location.href = '/connexion.html';
+            return;
         } else {
             sessionStorage.clear();
         }
