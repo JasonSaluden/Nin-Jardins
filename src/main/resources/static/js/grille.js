@@ -392,53 +392,84 @@ function showPauseModal() {
 
     if (resumeBtn) {
         resumeBtn.onclick = () => {
-            resetPauseModalPosition();
+            resetDialogPosition('pause-dialog-content');
             closeDialog(dialog);
             startChrono();
         };
     }
 
     openDialog(dialog);
-    requestAnimationFrame(syncPauseModalToBoard);
+    requestAnimationFrame(syncBoardSizedDialogs);
 }
 
-function syncPauseModalToBoard() {
-    const pauseDialog = document.getElementById('pause-dialog');
-    const pauseContent = document.getElementById('pause-dialog-content');
+const BOARD_SIZED_DIALOGS = [
+    { dialogId: 'pause-dialog', contentId: 'pause-dialog-content' },
+    { dialogId: 'rule-dialog', contentId: 'rule-dialog-content' },
+    { dialogId: 'end-dialog', contentId: 'end-dialog-content' }
+];
+
+function syncDialogToBoard(dialogId, contentId) {
+    const dialog = document.getElementById(dialogId);
+    const content = document.getElementById(contentId);
     const boardStage = document.querySelector('.board-stage');
 
-    if (!pauseDialog || !pauseContent || !boardStage || !pauseDialog.open) {
+    if (!dialog || !content || !boardStage || !dialog.open) {
         return;
     }
 
     const rect = boardStage.getBoundingClientRect();
-    pauseContent.style.position = 'fixed';
-    pauseContent.style.left = `${Math.round(rect.left)}px`;
-    pauseContent.style.top = `${Math.round(rect.top)}px`;
-    pauseContent.style.width = `${Math.round(rect.width)}px`;
-    pauseContent.style.height = `${Math.round(rect.height)}px`;
-    pauseContent.style.maxHeight = `${Math.round(rect.height)}px`;
+    content.style.position = 'fixed';
+    content.style.left = `${Math.round(rect.left)}px`;
+    content.style.top = `${Math.round(rect.top)}px`;
+    content.style.width = `${Math.round(rect.width)}px`;
+    content.style.height = `${Math.round(rect.height)}px`;
+    content.style.maxHeight = `${Math.round(rect.height)}px`;
 }
 
-function resetPauseModalPosition() {
-    const pauseContent = document.getElementById('pause-dialog-content');
-    if (!pauseContent) return;
-
-    pauseContent.style.removeProperty('position');
-    pauseContent.style.removeProperty('left');
-    pauseContent.style.removeProperty('top');
-    pauseContent.style.removeProperty('width');
-    pauseContent.style.removeProperty('height');
-    pauseContent.style.removeProperty('max-height');
+function syncBoardSizedDialogs() {
+    BOARD_SIZED_DIALOGS.forEach(({ dialogId, contentId }) => {
+        syncDialogToBoard(dialogId, contentId);
+    });
 }
 
-function bindPauseModalTracking() {
-    const trackPauseModal = () => {
-        syncPauseModalToBoard();
+function resetDialogPosition(contentId) {
+    const content = document.getElementById(contentId);
+    if (!content) return;
+
+    content.style.removeProperty('position');
+    content.style.removeProperty('left');
+    content.style.removeProperty('top');
+    content.style.removeProperty('width');
+    content.style.removeProperty('height');
+    content.style.removeProperty('max-height');
+}
+
+function resetBoardSizedDialogPositions() {
+    BOARD_SIZED_DIALOGS.forEach(({ contentId }) => {
+        resetDialogPosition(contentId);
+    });
+}
+
+function closeBoardSizedDialog(dialog, contentId) {
+    resetDialogPosition(contentId);
+    closeDialog(dialog);
+}
+
+function bindBoardSizedDialogTracking() {
+    const trackDialogs = () => {
+        syncBoardSizedDialogs();
     };
 
-    window.addEventListener('scroll', trackPauseModal, { passive: true });
-    window.addEventListener('resize', trackPauseModal);
+    window.addEventListener('scroll', trackDialogs, { passive: true });
+    window.addEventListener('resize', trackDialogs);
+
+    BOARD_SIZED_DIALOGS.forEach(({ dialogId, contentId }) => {
+        const dialog = document.getElementById(dialogId);
+        if (!dialog) return;
+        dialog.addEventListener('close', () => {
+            resetDialogPosition(contentId);
+        });
+    });
 }
 
 function togglePauseFromKeyboard() {
@@ -447,7 +478,7 @@ function togglePauseFromKeyboard() {
     if (!pauseDialog || endDialog?.open) return;
 
     if (pauseDialog.open) {
-        resetPauseModalPosition();
+        resetDialogPosition('pause-dialog-content');
         closeDialog(pauseDialog);
         if (chronoIntervalId === null) {
             startChrono();
@@ -497,6 +528,12 @@ function showEndModal(state) {
     const whiteName = selectedColor === 'white' ? (player?.pseudo || 'Invité') : opponentName;
 
     const titleEl = document.getElementById('end-title');
+    const blackAvatarEl = document.getElementById('end-black-avatar');
+    const whiteAvatarEl = document.getElementById('end-white-avatar');
+    const blackNameEl = document.getElementById('end-black-name');
+    const whiteNameEl = document.getElementById('end-white-name');
+    const blackStatusEl = document.getElementById('end-black-status');
+    const whiteStatusEl = document.getElementById('end-white-status');
     const scoreEl = document.getElementById('end-score');
     const modeEl = document.getElementById('end-mode');
     const statsBtn = document.getElementById('end-stats-btn');
@@ -515,7 +552,54 @@ function showEndModal(state) {
         }
     }
 
-    if (scoreEl) scoreEl.textContent = `Noir : ${state.scoreNoir}  —  Blanc : ${state.scoreBlanc}`;
+    if (blackNameEl) {
+        blackNameEl.textContent = `${blackName} (${state.scoreNoir})`;
+    }
+
+    if (whiteNameEl) {
+        whiteNameEl.textContent = `(${state.scoreBlanc}) ${whiteName}`;
+    }
+
+    if (blackAvatarEl && whiteAvatarEl) {
+        let blackAvatarSrc = '/img/persos/perso-ninja-game-over.svg';
+        let whiteAvatarSrc = '/img/persos/perso-samourai-game-over.svg';
+        let blackStatusText = 'GAME OVER';
+        let whiteStatusText = 'GAME OVER';
+
+        blackAvatarEl.classList.remove('end-avatar-winner');
+        whiteAvatarEl.classList.remove('end-avatar-winner');
+
+        if (state.vainqueur === 1) {
+            blackAvatarSrc = '/img/persos/winner-ninja.svg';
+            whiteAvatarSrc = '/img/persos/perso-samourai-game-over.svg';
+            blackStatusText = 'WINNER';
+            blackAvatarEl.classList.add('end-avatar-winner');
+        } else if (state.vainqueur === 2) {
+            blackAvatarSrc = '/img/persos/perso-ninja-game-over.svg';
+            whiteAvatarSrc = '/img/persos/winner-samourai.svg';
+            whiteStatusText = 'WINNER';
+            whiteAvatarEl.classList.add('end-avatar-winner');
+        }
+
+        blackAvatarEl.src = blackAvatarSrc;
+        blackAvatarEl.alt = `Joueur noir : ${blackName}`;
+
+        whiteAvatarEl.src = whiteAvatarSrc;
+        whiteAvatarEl.alt = `Joueur blanc : ${whiteName}`;
+
+        if (blackStatusEl) {
+            blackStatusEl.textContent = blackStatusText;
+        }
+
+        if (whiteStatusEl) {
+            whiteStatusEl.textContent = whiteStatusText;
+        }
+    }
+
+    if (scoreEl) {
+        scoreEl.textContent = '';
+        scoreEl.hidden = true;
+    }
     if (modeEl) modeEl.textContent = getModeTexte(state);
 
     if (statsBtn) {
@@ -531,6 +615,7 @@ function showEndModal(state) {
     }
 
     openDialog(dialog);
+    requestAnimationFrame(syncBoardSizedDialogs);
 }
 
 function getModeTexte(state) {
@@ -796,7 +881,7 @@ function initPageHeader() {
                 closeBtn.id = 'rule-close';
                 closeBtn.textContent = 'Fermer';
                 closeBtn.addEventListener('click', () => {
-                    closeDialog(ruleDialog);
+                    closeBoardSizedDialog(ruleDialog, 'rule-dialog-content');
                 });
                 ruleDialogContent.appendChild(closeBtn);
             } catch (error) {
@@ -808,6 +893,7 @@ function initPageHeader() {
         ruleButton.addEventListener('click', async () => {
             await loadRules();
             openDialog(ruleDialog);
+            requestAnimationFrame(syncBoardSizedDialogs);
         });
     }
 }
@@ -817,7 +903,7 @@ async function initGamePage() {
     initCaseDiscs();
     initPageHeader();
     bindPauseShortcut();
-    bindPauseModalTracking();
+    bindBoardSizedDialogTracking();
 
     const resumeFromPause = sessionStorage.getItem('resumeFromPause') === 'true';
     try {

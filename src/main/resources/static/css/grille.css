@@ -425,6 +425,38 @@ body {
   overflow: hidden;
 }
 
+#end-dialog-content,
+#rule-dialog-content {
+  background-color: #f6f6f6;
+  background-image: linear-gradient(rgba(246, 246, 246, 0.62), rgba(246, 246, 246, 0.62)), url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-position: 24% center, 24% center;
+  background-repeat: no-repeat;
+  background-size: 190% 190%, 180% 180%;
+  border: 1px solid rgba(38, 30, 16, 0.14);
+  border-radius: 8px;
+  box-shadow: 0 16px 38px rgba(26, 19, 8, 0.32);
+  width: min(var(--board-stage-size), 92vw);
+  aspect-ratio: 1 / 1;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px 18px;
+  overflow: auto;
+}
+
+#end-dialog-content {
+  gap: 6px;
+}
+
+#rule-dialog-content {
+  justify-content: flex-start;
+  align-items: stretch;
+  text-align: left;
+  gap: 6px;
+}
+
 .pause-hero {
   width: 100%;
   display: flex;
@@ -535,15 +567,126 @@ body {
   }
 }
 
-#hint-dialog-content,
-#rule-dialog-content {
+#hint-dialog-content {
   padding: 28px;
 }
 
 #hint-dialog-content h2,
 #pause-dialog-content h2,
-#end-title {
+#end-title,
+#rule-dialog-content h2 {
   margin: 0 0 14px;
+}
+
+#end-title,
+#rule-dialog-content h2 {
+  text-align: center;
+  font-size: 1.85rem;
+  line-height: 0.95;
+  letter-spacing: 0.04em;
+  font-weight: 900;
+  color: #100b07;
+  text-transform: uppercase;
+  font-family: "Cinzel Black", "Trajan Pro", "Copperplate", serif;
+}
+
+#rule-dialog-content h3 {
+  margin: 4px 0 0;
+  font-size: 1rem;
+  font-weight: 800;
+  color: #2b2018;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+#end-score,
+#end-mode,
+#rule-dialog-content p,
+#rule-dialog-content li {
+  margin: 0;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(39, 29, 18, 0.18);
+  color: #2b2018;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.end-duel {
+  width: min(320px, 100%);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  align-items: end;
+  margin: 0 0 4px;
+}
+
+.end-player {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.end-player-status {
+  width: 100%;
+  margin: 0;
+  text-align: center;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: #100b07;
+  text-transform: uppercase;
+}
+
+.end-avatar {
+  width: min(148px, 100%);
+  height: auto;
+  display: block;
+}
+
+.end-avatar-winner {
+  animation: winnerPulse 1.35s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+@keyframes winnerPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.end-player-name {
+  width: 100%;
+  margin: 0;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(39, 29, 18, 0.18);
+  color: #2b2018;
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+#rule-dialog-content ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
 }
 
 .hint-text {
@@ -565,6 +708,19 @@ body {
   flex-wrap: wrap;
 }
 
+#end-dialog-content .end-actions,
+#rule-dialog-content #rule-close {
+  margin-top: 10px;
+}
+
+#end-dialog-content .end-actions {
+  gap: 8px;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
 .end-btn-primary,
 .end-btn-secondary,
 #hint-close,
@@ -577,6 +733,19 @@ body {
   text-decoration: none;
 }
 
+#end-dialog-content .end-btn-primary,
+#end-dialog-content .end-btn-secondary,
+#rule-close {
+  min-width: 0;
+  width: auto;
+  max-width: none;
+  padding: 9px 10px;
+  font-size: 0.82rem;
+  line-height: 1.15;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
 .end-btn-primary,
 #hint-close,
 #rule-close {
@@ -584,10 +753,23 @@ body {
   color: #fff;
 }
 
+#end-dialog-content .end-btn-primary,
+#rule-close {
+  background: linear-gradient(180deg, #f20f37 0%, #cc0629 100%);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(213, 7, 47, 0.3);
+}
+
 .end-btn-secondary {
   background: #f7f7f7;
   color: #212529;
   border: 1px solid #d4d4d4;
+}
+
+#end-dialog-content .end-btn-secondary {
+  background: #fff;
+  color: #b60728;
+  border: 2px solid #d5072f;
 }
 
 dialog {
@@ -609,13 +791,34 @@ dialog::backdrop {
   box-shadow: none;
 }
 
+#end-dialog,
+#rule-dialog {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  background: transparent;
+  box-shadow: none;
+}
+
 #pause-dialog[open] {
+  display: grid;
+  place-items: center;
+}
+
+#end-dialog[open],
+#rule-dialog[open] {
   display: grid;
   place-items: center;
 }
 
 #pause-dialog[open] #pause-dialog-content {
   margin: 0;
+}
+
+#end-dialog[open] #end-dialog-content,
+#rule-dialog[open] #rule-dialog-content {
+  margin: 0;
+  animation: pauseModalPop 220ms ease-out;
 }
 
 @media (max-width: 1080px) {
@@ -711,8 +914,31 @@ dialog::backdrop {
     padding: 16px 12px 14px;
   }
 
+  #end-dialog-content,
+  #rule-dialog-content {
+    width: min(var(--board-stage-size), 92vw);
+    aspect-ratio: 1 / 1;
+    background-position: 22% center, 22% center;
+    background-size: 210% 210%, 190% 190%;
+    padding: 16px 12px 14px;
+  }
+
   .pause-title {
     font-size: 1.62rem;
+  }
+
+  #end-title,
+  #rule-dialog-content h2 {
+    font-size: 1.62rem;
+  }
+
+  .end-duel {
+    width: min(290px, 100%);
+    gap: 8px;
+  }
+
+  .end-avatar {
+    width: min(126px, 100%);
   }
 
   .pause-meta {
@@ -733,6 +959,15 @@ dialog::backdrop {
     background-size: 185% 185%, cover;
   }
 
+  #end-dialog-content,
+  #rule-dialog-content {
+    width: min(var(--board-stage-size), 92vw);
+    aspect-ratio: 1 / 1;
+    display: flex;
+    background-position: center top, center top;
+    background-size: 185% 185%, cover;
+  }
+
   .pause-hero {
     margin-bottom: 6px;
   }
@@ -742,11 +977,39 @@ dialog::backdrop {
     font-size: 1.9rem;
   }
 
+  #end-title,
+  #rule-dialog-content h2 {
+    text-align: center;
+    font-size: 1.9rem;
+  }
+
+  .end-duel {
+    width: min(280px, 100%);
+    gap: 6px;
+  }
+
+  .end-avatar {
+    width: min(118px, 100%);
+  }
+
+  .end-player-name {
+    font-size: 0.74rem;
+  }
+
+  .end-player-status {
+    font-size: 0.68rem;
+  }
+
   .pause-meta {
     width: min(280px, 100%);
   }
 
   #pause-dialog-content .end-actions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  #end-dialog-content .end-actions {
     justify-content: center;
     flex-wrap: wrap;
   }
