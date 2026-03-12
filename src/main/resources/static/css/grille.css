@@ -158,6 +158,77 @@ body {
   font-size: 1rem;
 }
 
+/* Board wrapper + hint button */
+.board-wrapper {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.hint-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ced4da;
+  background: #fff;
+  color: #495057;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  flex-shrink: 0;
+  align-self: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.hint-btn:hover {
+  background: #f8f9fa;
+  border-color: #495057;
+}
+
+.hint-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Hint dialog */
+#hint-dialog-content {
+  padding: 32px;
+  background: #fff;
+  border-radius: 8px;
+  max-width: 480px;
+}
+
+#hint-dialog-content h2 {
+  margin: 0 0 16px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.hint-text {
+  color: #495057;
+  line-height: 1.6;
+  margin: 0 0 24px;
+  min-height: 60px;
+}
+
+#hint-close {
+  display: block;
+  margin: 0 auto;
+  padding: 10px 24px;
+  background: #212529;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#hint-close:hover {
+  background: #343a40;
+}
+
 /* End-of-game dialog */
 #end-dialog-content {
   padding: 40px 32px 32px;
