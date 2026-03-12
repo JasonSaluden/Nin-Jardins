@@ -728,7 +728,7 @@ function initPageHeader() {
     {
         const opponentName = isAuthenticatedPlayer(whitePlayer)
             ? whitePlayer.pseudo
-            : 'Invité';
+            : (mode === 'ai' ? 'IA Othello' : 'Joueur local');
 
         const blackName = selectedColor === 'white' ? opponentName : (player?.pseudo || 'Invité');
         const whiteName = selectedColor === 'white' ? (player?.pseudo || 'Invité') : opponentName;
