@@ -1046,7 +1046,7 @@ dialog::backdrop {
   #pause-dialog-content {
     width: min(var(--board-stage-size), 92vw);
     aspect-ratio: 1 / 1;
-    background-image: url('/img/arriere-plan/feu-artifice-arriere-plan-mobile.svg');
+    background-image: url('/img/arriere-plan/rayon-arriere-plan-mobile.svg');
     background-size: cover;
     padding: 16px 12px 14px;
   }
@@ -1055,7 +1055,7 @@ dialog::backdrop {
   #rule-dialog-content {
     width: min(var(--board-stage-size), 92vw);
     aspect-ratio: 1 / 1;
-    background-image: url('/img/arriere-plan/feu-artifice-arriere-plan-mobile.svg');
+    background-image: url('/img/arriere-plan/rayon-arriere-plan-mobile.svg');
     background-size: cover;
     padding: 16px 12px 14px;
   }
