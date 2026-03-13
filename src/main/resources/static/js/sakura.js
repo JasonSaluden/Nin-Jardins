@@ -71,14 +71,23 @@
     ctx.restore();
   }
 
-  function loop() {
+  // Toutes les vitesses sont exprimées en unités/seconde (base 60 fps)
+  // Le facteur dt normalise le mouvement quelle que soit la fréquence du moniteur.
+  const BASE_FPS = 60;
+  let lastTime = null;
+
+  function loop(timestamp) {
+    if (lastTime === null) lastTime = timestamp;
+    const dt = Math.min((timestamp - lastTime) / 1000, 0.1) * BASE_FPS;
+    lastTime = timestamp;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (const p of petals) {
-      p.swing += p.swingSpeed;
-      p.x += p.vx + Math.sin(p.swing) * p.swingAmp;
-      p.y += p.vy;
-      p.angle += p.angleSpeed;
+      p.swing += p.swingSpeed * dt;
+      p.x += (p.vx + Math.sin(p.swing) * p.swingAmp) * dt;
+      p.y += p.vy * dt;
+      p.angle += p.angleSpeed * dt;
 
       if (p.y > canvas.height + p.size * 2) {
         Object.assign(p, newPetal());
@@ -91,5 +100,5 @@
     requestAnimationFrame(loop);
   }
 
-  loop();
+  requestAnimationFrame(loop);
 })();
