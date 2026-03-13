@@ -528,9 +528,9 @@ body {
 #pause-dialog-content {
   background-color: #f6f6f6;
   background-image: url('/img/arriere-plan/rayon-arriere-plan-mobile.svg');
-  background-position: 24% center;
+  background-position: center;
   background-repeat: no-repeat;
-  background-size: 180% 180%;
+  background-size: cover;
   filter: saturate(1.2) brightness(1.08);
   border: 1px solid rgba(38, 30, 16, 0.14);
   border-radius: 8px;
@@ -550,9 +550,9 @@ body {
 #end-dialog-content {
   background-color: #f6f6f6;
   background-image: url('/img/arriere-plan/rayon-arriere-plan-mobile-animated.svg');
-  background-position: 24% center;
+  background-position: center;
   background-repeat: no-repeat;
-  background-size: 180% 180%;
+  background-size: cover;
   filter: saturate(1.2) brightness(1.08);
   border: 1px solid rgba(38, 30, 16, 0.14);
   border-radius: 8px;
@@ -1046,8 +1046,8 @@ dialog::backdrop {
   #pause-dialog-content {
     width: min(var(--board-stage-size), 92vw);
     aspect-ratio: 1 / 1;
-    background-position: 22% center, 22% center;
-    background-size: 210% 210%, 190% 190%;
+    background-image: url('/img/arriere-plan/feu-artifice-arriere-plan-mobile.svg');
+    background-size: cover;
     padding: 16px 12px 14px;
   }
 
@@ -1055,8 +1055,8 @@ dialog::backdrop {
   #rule-dialog-content {
     width: min(var(--board-stage-size), 92vw);
     aspect-ratio: 1 / 1;
-    background-position: 22% center, 22% center;
-    background-size: 210% 210%, 190% 190%;
+    background-image: url('/img/arriere-plan/feu-artifice-arriere-plan-mobile.svg');
+    background-size: cover;
     padding: 16px 12px 14px;
   }
 
