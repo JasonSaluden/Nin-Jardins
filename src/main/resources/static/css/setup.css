@@ -515,6 +515,17 @@ body {
     color: #fff;
 }
 
+.btn-stats:disabled {
+    background: #ececec;
+    color: #9a9a9a;
+    border-color: #c9c9c9;
+    cursor: not-allowed;
+}
+
+.btn-stats:disabled img {
+    opacity: 0.55;
+}
+
 .btn-valider {
     display: inline-block;
     padding: 10px 26px;

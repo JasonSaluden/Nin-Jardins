@@ -53,6 +53,14 @@ body {
   min-height: 1.2rem;
 }
 
+.timer-display{
+  border-radius:0 !important;
+  padding: 1em 1.5em !important;
+  background-image: url("../img/icones/timer.png")!important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size:cover !important; 
+}
 .game-layout {
   display: grid;
   grid-template-columns: auto minmax(92px, 110px) minmax(420px, 520px) minmax(92px, 110px) auto;
