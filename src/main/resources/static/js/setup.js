@@ -94,7 +94,11 @@ function updateScreen() {
     }
 
     if (statsButton) {
-        statsButton.classList.toggle('hidden', !isRegisteredPlayer(playerOne));
+        const canSeeStats = isRegisteredPlayer(playerOne);
+        statsButton.disabled = !canSeeStats;
+        statsButton.title = canSeeStats
+            ? 'Voir mes statistiques'
+            : 'Indisponible en mode invité';
     }
 
     if (authButton) {
