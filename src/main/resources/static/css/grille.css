@@ -517,7 +517,7 @@ body {
 
 #pause-dialog-content {
   background-color: #f6f6f6;
-  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-mobile.svg');
   background-position: 24% center;
   background-repeat: no-repeat;
   background-size: 180% 180%;
@@ -604,12 +604,12 @@ body {
   margin: 0 0 6px;
   text-align: center;
   font-size: 1.85rem;
-  line-height: 0.95;
-  letter-spacing: 0.04em;
-  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  font-weight: normal;
   color: #100b07;
-  text-transform: uppercase;
-  font-family: "Cinzel Black", "Trajan Pro", "Copperplate", serif;
+  text-transform: none;
+  font-family: "Shojumaru", cursive;
 }
 
 #pause-dialog-content .pause-value {
@@ -621,6 +621,7 @@ body {
   color: #2b2018;
   font-size: 0.8rem;
   font-weight: 700;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
   line-height: 1.2;
   white-space: normal;
   overflow-wrap: anywhere;
@@ -644,6 +645,7 @@ body {
   font-size: 0.82rem;
   line-height: 1.15;
   font-weight: 800;
+  font-family: "Trebuchet MS", "Verdana", sans-serif;
   white-space: nowrap;
 }
 
