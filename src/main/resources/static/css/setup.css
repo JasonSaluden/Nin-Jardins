@@ -23,7 +23,7 @@ body {
     min-height: 100vh;
     color: var(--text-dark);
     font-family: "Trebuchet MS", "Verdana", sans-serif;
-    background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+    background-image: url('/img/arriere-plan/rayon-arriere-plan-soft.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
