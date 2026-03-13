@@ -547,7 +547,7 @@ body {
 #setup-rule-dialog {
     border: none;
     padding: 0;
-    width: min(760px, 92vw);
+    width: 30vw;
     max-width: none;
     background: transparent;
     box-shadow: none;
@@ -558,15 +558,15 @@ body {
 }
 
 #setup-rule-dialog-content {
-    background-color: var(--surface-white);
-    background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
-    background-position: center;
+    background-image: url('/img/arriere-plan/parchemin-regles-jeu.svg');
+    background-size: 100% 100%;
     background-repeat: no-repeat;
-    background-size: cover;
-    border-radius: 16px;
-    padding: 14px 18px 12px;
-    border: 2px solid var(--panel-yellow);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 72px 44px 80px;
+    aspect-ratio: 271.9 / 400;
     overflow: hidden;
 }
 
@@ -576,18 +576,21 @@ body {
     font-family: 'Shojumaru', "Trebuchet MS", sans-serif;
     font-size: 1.2rem;
     line-height: 1.05;
+    color: #3a2a10;
 }
 
 #setup-rule-dialog-content h3 {
     margin: 8px 0 3px;
     font-size: 0.88rem;
     font-weight: 800;
+    color: #3a2a10;
 }
 
 #setup-rule-dialog-content p,
 #setup-rule-dialog-content li {
     font-size: 0.82rem;
     line-height: 1.35;
+    color: #4a3318;
 }
 
 #setup-rule-dialog-content ul {
