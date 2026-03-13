@@ -23,7 +23,7 @@ body {
   min-height: 100vh;
   color: var(--text-dark);
   font-family: "Trebuchet MS", "Verdana", sans-serif;
-  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-soft.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -471,11 +471,11 @@ body {
 
 #pause-dialog-content {
   background-color: #f6f6f6;
-  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-soft.svg');
   background-position: 24% center;
   background-repeat: no-repeat;
   background-size: 180% 180%;
-  filter: saturate(1.9) brightness(1.4);
+  filter: saturate(1.2) brightness(1.08);
   border: 1px solid rgba(38, 30, 16, 0.14);
   border-radius: 8px;
   box-shadow: 0 16px 38px rgba(26, 19, 8, 0.32);
@@ -497,7 +497,7 @@ body {
   background-position: 24% center;
   background-repeat: no-repeat;
   background-size: 180% 180%;
-  filter: saturate(1.9) brightness(1.4);
+  filter: saturate(1.2) brightness(1.08);
   border: 1px solid rgba(38, 30, 16, 0.14);
   border-radius: 8px;
   box-shadow: 0 16px 38px rgba(26, 19, 8, 0.32);
