@@ -19,6 +19,10 @@ body{
     background-position: center;
     font-family: "InriaSans", sans-serif;
 }
+
+body.login-page {
+    background-image: url("../img/arriere-plan/rayon-arriere-plan-soft.svg");
+}
 h1{
     font-family: "Shojumaru";
 }

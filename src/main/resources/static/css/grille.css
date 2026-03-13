@@ -23,7 +23,7 @@ body {
   min-height: 100vh;
   color: var(--text-dark);
   font-family: "Trebuchet MS", "Verdana", sans-serif;
-  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-soft.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -96,16 +96,54 @@ body {
   align-items: center;
   gap: 6px;
   text-align: center;
-  margin-top: 92px;
+  margin-top: 112px;
+  transform-origin: center;
+  transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
+}
+
+.score-panel.is-active-turn {
+  transform: scale(1.1);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.2);
+  filter: saturate(1.05);
+  z-index: 2;
+}
+
+.score-panel.is-inactive-turn {
+  transform: scale(0.9);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  filter: saturate(0.92) brightness(0.96);
 }
 
 .score-avatar {
-  width: 58px;
-  height: 58px;
+  width: calc(66px * 1.05);
+  height: calc(66px * 1.05);
   object-fit: contain;
   background: transparent;
   border-radius: 50%;
   padding: 0;
+  transform-origin: center 58%;
+}
+
+.score-avatar.is-turn-animating {
+  animation: activeAvatarWobble 1100ms ease-in-out infinite;
+}
+
+@keyframes activeAvatarWobble {
+  0% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+  100% {
+    transform: rotate(-4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .score-avatar.is-turn-animating {
+    animation: none;
+  }
 }
 
 .score-label {
@@ -479,11 +517,11 @@ body {
 
 #pause-dialog-content {
   background-color: #f6f6f6;
-  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-soft.svg');
   background-position: 24% center;
   background-repeat: no-repeat;
   background-size: 180% 180%;
-  filter: saturate(1.9) brightness(1.4);
+  filter: saturate(1.2) brightness(1.08);
   border: 1px solid rgba(38, 30, 16, 0.14);
   border-radius: 8px;
   box-shadow: 0 16px 38px rgba(26, 19, 8, 0.32);
@@ -505,7 +543,7 @@ body {
   background-position: 24% center;
   background-repeat: no-repeat;
   background-size: 180% 180%;
-  filter: saturate(1.9) brightness(1.4);
+  filter: saturate(1.2) brightness(1.08);
   border: 1px solid rgba(38, 30, 16, 0.14);
   border-radius: 8px;
   box-shadow: 0 16px 38px rgba(26, 19, 8, 0.32);

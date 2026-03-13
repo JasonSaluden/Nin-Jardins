@@ -254,6 +254,8 @@ function renderInfo(state) {
     if (scoreNoirEl) scoreNoirEl.textContent = String(state.scoreNoir).padStart(2, '0');
     if (scoreBlancEl) scoreBlancEl.textContent = String(state.scoreBlanc).padStart(2, '0');
 
+    updateCurrentPlayerVisuals(state.joueurCourant);
+
     if (!infoEl) return;
 
     const modeTexte = getModeTexte(state);
@@ -267,6 +269,27 @@ function renderInfo(state) {
         const tour = state.joueurCourant === 1 ? 'Noirs' : 'Blancs';
         infoEl.textContent = `Tour : ${tour}  -  Noir: ${state.scoreNoir} | Blanc: ${state.scoreBlanc}  -  ${modeTexte}`;
     }
+}
+
+function updateCurrentPlayerVisuals(joueurCourant) {
+    const leftPanel = document.querySelector('.score-panel-left');
+    const rightPanel = document.querySelector('.score-panel-right');
+    const leftAvatar = leftPanel?.querySelector('.score-avatar');
+    const rightAvatar = rightPanel?.querySelector('.score-avatar');
+
+    if (!leftPanel || !rightPanel || !leftAvatar || !rightAvatar) {
+        return;
+    }
+
+    const isBlackTurn = joueurCourant === 1;
+
+    leftPanel.classList.toggle('is-active-turn', isBlackTurn);
+    leftPanel.classList.toggle('is-inactive-turn', !isBlackTurn);
+    rightPanel.classList.toggle('is-active-turn', !isBlackTurn);
+    rightPanel.classList.toggle('is-inactive-turn', isBlackTurn);
+
+    leftAvatar.classList.toggle('is-turn-animating', isBlackTurn);
+    rightAvatar.classList.toggle('is-turn-animating', !isBlackTurn);
 }
 
 // ─── Verrou plateau ───────────────────────────────────────────────────────────
