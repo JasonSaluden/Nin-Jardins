@@ -698,7 +698,7 @@ let chronoIntervalId = null;
 function renderChrono() {
     const timerEl = document.getElementById('timer-display');
     if (!timerEl) return;
-    timerEl.textContent = `Temps : ${formatDuration(elapsedSeconds)}`;
+    timerEl.textContent = `${formatDuration(elapsedSeconds)}`;
 }
 
 function startChrono() {
