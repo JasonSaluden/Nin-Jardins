@@ -564,36 +564,35 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     border-radius: 16px;
-    padding: 22px 22px 18px;
+    padding: 14px 18px 12px;
     border: 2px solid var(--panel-yellow);
     box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
-    max-height: min(78vh, 760px);
-    overflow: auto;
+    overflow: hidden;
 }
 
 #setup-rule-dialog-content h2 {
-    margin: 0 0 14px;
+    margin: 0 0 8px;
     text-align: center;
     font-family: 'Shojumaru', "Trebuchet MS", sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     line-height: 1.05;
 }
 
 #setup-rule-dialog-content h3 {
-    margin: 12px 0 6px;
-    font-size: 1rem;
+    margin: 8px 0 3px;
+    font-size: 0.88rem;
     font-weight: 800;
 }
 
 #setup-rule-dialog-content p,
 #setup-rule-dialog-content li {
-    font-size: 0.95rem;
-    line-height: 1.45;
+    font-size: 0.82rem;
+    line-height: 1.35;
 }
 
 #setup-rule-dialog-content ul {
-    margin: 0 0 6px;
-    padding-left: 20px;
+    margin: 0 0 4px;
+    padding-left: 16px;
 }
 
 #setup-rule-close {
