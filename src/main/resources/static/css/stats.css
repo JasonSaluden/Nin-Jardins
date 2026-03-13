@@ -38,13 +38,10 @@ body {
     color: var(--ink);
     font-family: "Inria Sans", sans-serif;
     background-color: var(--paper);
-    background-image: repeating-conic-gradient(
-        from -2deg at 50% 46%,
-        rgba(226, 214, 174, 0.65) 0deg,
-        rgba(226, 214, 174, 0.65) 6deg,
-        rgba(244, 240, 227, 0.9) 6deg,
-        rgba(244, 240, 227, 0.9) 12deg
-    );
+    background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .stats-shell {

@@ -21,7 +21,7 @@ body{
 }
 
 body.login-page {
-    background-image: url("../img/arriere-plan/rayon-arriere-plan-soft.svg");
+    background-image: url("../img/arriere-plan/rayon-arriere-plan-web.svg");
 }
 h1{
     font-family: "Shojumaru";
@@ -135,7 +135,11 @@ h1{
 }
 
 #home-rule-dialog-content {
-    background: #fff;
+    background-color: #fff;
+    background-image: url("../img/arriere-plan/rayon-arriere-plan-web.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     border-radius: 16px;
     padding: 22px 22px 18px;
     border: 2px solid #f7b409;
