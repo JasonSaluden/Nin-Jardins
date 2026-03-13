@@ -170,7 +170,7 @@
       btn.querySelector('img').src = `/img/icones/${audio.muted ? 'volume-mute' : 'volume'}.svg`;
       // Le popup se positionne par rapport au bouton
       btn.parentElement.style.position = 'relative';
-      popup.style.cssText = 'position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);';
+      popup.style.cssText = 'position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);z-index:10000;';
       btn.parentElement.appendChild(popup);
       // Hover géré en JS (pas de #bg-volume-wrap disponible)
       let hideTimer;

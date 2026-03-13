@@ -13,7 +13,7 @@
     url("../police/InriaSans-Regular.ttf");
 }
 body{
-    background-image: url("../img/arriere-plan/rayon-arriere-plan-web.svg");
+    background-image: url("../img/arriere-plan/rayon-arriere-plan-web-animated.svg");
     background-repeat: no-repeat;
     background-size:cover;
     background-position: center;
@@ -21,7 +21,7 @@ body{
 }
 
 body.login-page {
-    background-image: url("../img/arriere-plan/rayon-arriere-plan-soft.svg");
+    background-image: url("../img/arriere-plan/rayon-arriere-plan-web.svg");
 }
 h1{
     font-family: "Shojumaru";
@@ -77,7 +77,6 @@ h1{
 .button-principale:hover{
     background-color:red;
     color: whitesmoke;
-    box-shadow: 0 0 10px 5px crimson;
 }
 .button-secondary{
     background-color:whitesmoke;
@@ -91,7 +90,6 @@ h1{
     background-color:azure;
     color: red;
     border: red solid 2px;
-    box-shadow: 0 0 10px 2px #DC0122;
 }
 
 .button-rules{
@@ -135,7 +133,11 @@ h1{
 }
 
 #home-rule-dialog-content {
-    background: #fff;
+    background-color: #fff;
+    background-image: url("../img/arriere-plan/rayon-arriere-plan-web.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     border-radius: 16px;
     padding: 22px 22px 18px;
     border: 2px solid #f7b409;
