@@ -930,6 +930,7 @@ function initPageHeader() {
                 closeBtn.textContent = 'Fermer';
                 closeBtn.addEventListener('click', () => {
                     closeDialog(ruleDialog);
+                    if (chronoIntervalId === null) startChrono();
                 });
                 ruleDialogContent.appendChild(closeBtn);
             } catch (error) {
@@ -940,12 +941,17 @@ function initPageHeader() {
 
         ruleButton.addEventListener('click', async () => {
             await loadRules();
+            if (chronoIntervalId !== null) {
+                clearInterval(chronoIntervalId);
+                chronoIntervalId = null;
+            }
             openDialog(ruleDialog);
         });
 
         ruleDialog.addEventListener('click', (e) => {
             if (e.target === ruleDialog) {
                 closeDialog(ruleDialog);
+                if (chronoIntervalId === null) startChrono();
             }
         });
     }
