@@ -77,7 +77,6 @@ h1{
 .button-principale:hover{
     background-color:red;
     color: whitesmoke;
-    box-shadow: 0 0 10px 5px crimson;
 }
 .button-secondary{
     background-color:whitesmoke;
@@ -91,7 +90,6 @@ h1{
     background-color:azure;
     color: red;
     border: red solid 2px;
-    box-shadow: 0 0 10px 2px #DC0122;
 }
 
 .button-rules{

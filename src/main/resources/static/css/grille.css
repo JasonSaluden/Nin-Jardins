@@ -32,7 +32,7 @@ body {
 .game-shell {
   width: min(1340px, 100%);
   margin: 0 auto;
-  padding: 10px 20px 18px;
+  padding: 4px 20px 8px;
   position: relative;
 }
 
@@ -53,13 +53,16 @@ body {
   min-height: 1.2rem;
 }
 
-.timer-display{
-  border-radius:0 !important;
-  padding: 1em 1.5em !important;
-  background-image: url("../img/icones/timer.png")!important;
-  background-repeat: no-repeat !important;
-  background-position: center !important;
-  background-size:cover !important; 
+.timer-display {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #2f2a21;
+  margin: 0;
+  pointer-events: none;
 }
 .game-layout {
   display: grid;
@@ -96,7 +99,7 @@ body {
   align-items: center;
   gap: 6px;
   text-align: center;
-  margin-top: 112px;
+  margin-top: 150px;
   transform-origin: center;
   transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
 }
@@ -490,13 +493,18 @@ body {
 }
 
 .board-timer {
-  margin-top: 10px;
-  background: rgba(255, 255, 255, 0.82);
-  border-radius: 999px;
-  padding: 4px 14px;
-  font-size: 1rem;
-  font-weight: 800;
-  text-align: center;
+  position: absolute;
+  top: 6px;
+  right: -140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chrono-img {
+  width: 100%;
+  max-width: 100px;
+  display: block;
 }
 
 .hidden {
@@ -1373,7 +1381,7 @@ dialog::backdrop {
   }
 
   .board-timer {
-    margin-top: 6px;
+    margin-top: 35vh;
     font-size: 0.88rem;
     padding: 3px 12px;
   }
