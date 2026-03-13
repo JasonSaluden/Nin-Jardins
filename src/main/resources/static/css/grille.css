@@ -23,7 +23,7 @@ body {
   min-height: 100vh;
   color: var(--text-dark);
   font-family: "Trebuchet MS", "Verdana", sans-serif;
-  background-image: url('/img/arriere-plan/rayon-arriere-plan-soft.svg');
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -517,7 +517,7 @@ body {
 
 #pause-dialog-content {
   background-color: #f6f6f6;
-  background-image: url('/img/arriere-plan/rayon-arriere-plan-soft.svg');
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
   background-position: 24% center;
   background-repeat: no-repeat;
   background-size: 180% 180%;
@@ -560,7 +560,11 @@ body {
 }
 
 #rule-dialog-content {
-  background: #fff;
+  background-color: #fff;
+  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   border-radius: 16px;
   padding: 22px 22px 18px;
   border: 2px solid var(--panel-yellow);
@@ -938,7 +942,7 @@ dialog::backdrop {
 
 @media (max-width: 1080px) {
   body {
-    background-image: url('/img/arriere-plan/feu-artifice-arriere-plan-mobile.svg');
+    background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
     background-size: cover;
   }
 

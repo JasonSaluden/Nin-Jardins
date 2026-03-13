@@ -23,7 +23,7 @@ body {
     min-height: 100vh;
     color: var(--text-dark);
     font-family: "Trebuchet MS", "Verdana", sans-serif;
-    background-image: url('/img/arriere-plan/rayon-arriere-plan-soft.svg');
+    background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -558,7 +558,11 @@ body {
 }
 
 #setup-rule-dialog-content {
-    background: var(--surface-white);
+    background-color: var(--surface-white);
+    background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     border-radius: 16px;
     padding: 22px 22px 18px;
     border: 2px solid var(--panel-yellow);
@@ -724,7 +728,7 @@ body {
 
 @media (max-width: 768px) {
     body {
-        background-image: url('/img/arriere-plan/feu-artifice-arriere-plan-mobile.svg');
+        background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
         background-size: cover;
         align-items: flex-start;
     }
