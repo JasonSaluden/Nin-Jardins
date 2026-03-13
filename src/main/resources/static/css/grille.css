@@ -55,8 +55,8 @@ body {
 
 .timer-display {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 56%;
+  left: 52%;
   transform: translate(-50%, -50%);
   font-size: 1.1rem;
   font-weight: 800;
@@ -570,20 +570,19 @@ body {
 }
 
 #rule-dialog-content {
-  background-color: #fff;
-  background-image: url('/img/arriere-plan/rayon-arriere-plan-web.svg');
-  background-position: center;
+  background-image: url('/img/arriere-plan/parchemin-regles-jeu.svg');
+  background-size: 100% 100%;
   background-repeat: no-repeat;
-  background-size: cover;
-  border-radius: 16px;
-  padding: 22px 22px 18px;
-  border: 2px solid var(--panel-yellow);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
-  max-height: min(92vh, 800px);
-  overflow: auto;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 72px 44px 80px;
+  aspect-ratio: 271.9 / 400;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   text-align: left;
 }
 
@@ -705,19 +704,20 @@ body {
 }
 
 #rule-dialog-content h2 {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   text-align: center;
   font-family: "Shojumaru", cursive;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   line-height: 1.05;
   font-weight: normal;
+  color: #3a2a10;
 }
 
 #rule-dialog-content h3 {
-  margin: 10px 0 4px;
-  font-size: 1rem;
+  margin: 8px 0 3px;
+  font-size: 0.88rem;
   font-weight: 800;
-  color: #2b2018;
+  color: #3a2a10;
 }
 
 #end-score,
@@ -737,9 +737,10 @@ body {
 #rule-dialog-content p,
 #rule-dialog-content li {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.45;
+  font-size: 0.82rem;
+  line-height: 1.35;
   overflow-wrap: anywhere;
+  color: #4a3318;
 }
 
 .end-duel {
@@ -810,8 +811,8 @@ body {
 }
 
 #rule-dialog-content ul {
-  margin: 0 0 6px;
-  padding-left: 20px;
+  margin: 0 0 4px;
+  padding-left: 16px;
 }
 
 .hint-text {
@@ -923,7 +924,7 @@ dialog::backdrop {
 }
 
 #rule-dialog {
-  width: min(760px, 92vw);
+  width: 30vw;
   max-width: none;
   background: transparent;
   box-shadow: none;
